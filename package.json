@@ -1,0 +1,82 @@
+{
+  "name": "data-behaviours",
+  "version": "1.0.0",
+  "description": "Form, data behaviours",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "better-npm-run dev-server"
+  },
+  "betterScripts": {
+    "dev-server": {
+      "command": "node ./server.js",
+      "env": {
+        "DEV": true,
+        "SOURCE_MAP": false,
+        "ENTRY_FILE_PATH": "./src/example/index",
+        "PAGE_TITLE": "Focus entity dev page",
+        "MINIMIFY": false,
+        "API_PORT": 9999,
+        "PACKAGE_JSON_PATH": "../",
+        "ANCHOR_CLASS": "entity-example"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pierr/data-behaviours.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "data",
+    "focus"
+  ],
+  "author": "Pierre Besson <Pierre.besson7+npm@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pierr/data-behaviours/issues"
+  },
+  "homepage": "https://github.com/pierr/data-behaviours#readme",
+  "devDependencies": {
+    "autoprefixer-loader": "^3.2.0",
+    "babel-core": "^6.4.5",
+    "babel-eslint": "^4.1.8",
+    "babel-focus": "^0.1.2",
+    "babel-loader": "^6.2.2",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-runtime": "^1.0.7",
+    "babel-plugin-transform-class-properties": "^6.4.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-react-hmre": "^1.1.0",
+    "babel-preset-stage-0": "^6.3.13",
+    "better-npm-run": "0.0.6",
+    "body-parser": "^1.14.2",
+    "css-loader": "^0.23.1",
+    "express": "^4.13.4",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "faker": "^3.0.1",
+    "file-loader": "^0.8.5",
+    "html-webpack-plugin": "^2.8.1",
+    "json-loader": "^0.5.4",
+    "lodash": "^4.2.1",
+    "material-design-icons-iconfont": "^2.0.4",
+    "material-design-lite": "^1.1.1",
+    "node-sass": "^3.4.2",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-hot-loader": "^1.3.0",
+    "react-redux": "^4.3.0",
+    "redux": "^3.2.1",
+    "redux-thunk": "^1.0.3",
+    "sass-loader": "^3.1.2",
+    "source-map-loader": "^0.1.5",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-focus": "^0.10.1"
+  }
+}
