@@ -7,6 +7,7 @@ import {fetchEntity} from '../actions';
 import Form from './form';
 import Field from './field';
 import Button from './button';
+import Code from './code';
 
 
 class SmartExampleComponent extends Component{
@@ -37,11 +38,6 @@ class SmartExampleComponent extends Component{
     }
     return (
       <Form onSubmit={_onSubmit}>
-        <pre>
-          <code>
-            {JSON.stringify(this.props)}
-          </code>
-        </pre>
         {
           fields && Object.keys(fields).reduce((res, fieldName)=>{
             res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
@@ -49,6 +45,7 @@ class SmartExampleComponent extends Component{
           }, [])
         }
         <Button onClick={_onSubmit}>{'Save'}</Button>
+        <Code {...this.props} />
       </Form>
     );
   }
