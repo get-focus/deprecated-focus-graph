@@ -1,6 +1,7 @@
 import React , { Component , PropTypes } from 'react';
 import { Provider as StoreProvider} from 'react-redux';
 import {Provider as DefinitionsProvider} from './behaviours/definitions';
+import {Provider as FieldHelpersProvider} from './behaviours/field';
 import ConnectedSmartComponentExample from './components/smart';
 import store from './store';
 const fields = {
@@ -19,10 +20,12 @@ export default function App(){
   return (
     <DefinitionsProvider definitions={definitions}>
       <StoreProvider store={store}>
-        <div>
-          <h1>Example</h1>
-          <ConnectedSmartComponentExample id={1234} fields={fields} />
-        </div>
+        <FieldHelpersProvider>
+          <div>
+            <h1>Example</h1>
+            <ConnectedSmartComponentExample id={1234} fields={fields} />
+          </div>
+        </FieldHelpersProvider>
       </StoreProvider>
     </DefinitionsProvider>
   )

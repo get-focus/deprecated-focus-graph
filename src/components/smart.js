@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect as connectToReduxStore } from 'react-redux';
 import {connect as connectToDefinitions} from '../behaviours/definitions';
-
+import {connect as connectToFieldHelpers} from '../behaviours/field';
 import {fetchEntity} from '../actions';
 // Dumb components
 import Form from './form';
@@ -19,7 +19,6 @@ class SmartExampleComponent extends Component{
     this.props.loadEntity(this.props.id);
   }
   componentWillReceiveProps({fields}){
-    console.log('FIELDS RECEIVED', fields);
     if(!fields){
       return;
     }
@@ -30,7 +29,7 @@ class SmartExampleComponent extends Component{
     return this.setState({fields: newFields});
   }
   render(){
-    const {onSubmit, onChange} = this.props;
+    const {onSubmit, onChange, fieldFor} = this.props;
     const {fields} = this.state;
     const _onSubmit = (e) => {
       e.preventDefault();
@@ -38,13 +37,20 @@ class SmartExampleComponent extends Component{
     }
     return (
       <Form onSubmit={_onSubmit}>
+        {/* Fields auto rendering to test onChange without definitions and redux */}
+        <h3>{'Plain react stateless component'}</h3>
         {
           fields && Object.keys(fields).reduce((res, fieldName)=>{
             res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
             return res;
           }, [])
         }
+        {/*Field for as props i have to find a way to bind on this without use call*/}
+        <h3>{'Use field and definition behaviour'}</h3>
+        {fieldFor.call(this,'firstName')}
+
         <Button onClick={_onSubmit}>{'Save'}</Button>
+        {/*Debug purpose only show data functions are not displayed*/}
         <Code {...this.props} />
       </Form>
     );
@@ -68,7 +74,7 @@ SmartExampleComponent.defaultProps = {
 }
 const DefinitionConnectedSmartExampleComponent = connectToDefinitions('user')(SmartExampleComponent);
 
-const ConnectedSmartExampleComponent = connectToReduxStore(
+const ReduxAndDefinitionConnectedSmartExampleComponent = connectToReduxStore(
   ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
   (dispatch) => ({
     loadEntity: (id) => {
@@ -76,5 +82,7 @@ const ConnectedSmartExampleComponent = connectToReduxStore(
     }
   })
 )(DefinitionConnectedSmartExampleComponent);
+
+const ConnectedSmartExampleComponent = connectToFieldHelpers()(ReduxAndDefinitionConnectedSmartExampleComponent);
 
 export default ConnectedSmartExampleComponent;
