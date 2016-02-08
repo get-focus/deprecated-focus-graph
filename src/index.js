@@ -1,4 +1,18 @@
 import React , { Component , PropTypes } from 'react';
-export default function Data(){
-  return <div>Your Component</div>
+
+import SmartExampleComponent from './components/smart';
+
+const fields = {
+  firstName: 'Pierre',
+  lastName: 'Besson'
+};
+
+
+export default function App(){
+  return (
+    <div>
+      <h1>Example</h1>
+      <SmartExampleComponent fields={fields} />
+    </div>
+  )
 }

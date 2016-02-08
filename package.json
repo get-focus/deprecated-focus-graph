@@ -12,7 +12,7 @@
       "command": "node ./server.js",
       "env": {
         "DEV": true,
-        "SOURCE_MAP": false,
+        "SOURCE_MAPS": false,
         "ENTRY_FILE_PATH": "./src/example/index",
         "PAGE_TITLE": "Focus entity dev page",
         "MINIMIFY": false,
