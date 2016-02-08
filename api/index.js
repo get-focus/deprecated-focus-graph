@@ -4,13 +4,17 @@ const bodyParser = require('body-parser');
 const faker = require('faker');
 
 const NB_GENERATED_ENTITY = 10;
-let entityJSON = [];//require('./api-mock/notifs.json');
+let entityJSON = [{
+  uuid: '1234',
+  firstName: 'Don Diego',
+  lastName: 'De Libercourt'
+}];//require('./api-mock/notifs.json');
 
 function createEntity(){
   return        {
           uuid: faker.random.uuid(),
           firstName: faker.name.firstName(),
-          firstName: faker.name.lastName()
+          lastName: faker.name.lastName()
         };
 
 }
@@ -26,7 +30,7 @@ const MOCKED_API_PORT = process.env.API_PORT || 9999;
 ******************************************/
 
 const app = express();
-const API_ROOT = '/x/entity';
+const API_ROOT = '/x';
 
 
 
@@ -42,7 +46,13 @@ app.use(function corsMiddleware(req, res, next) {
 app.use(bodyParser.json());
 
 app.get(API_ROOT  + '/entity', function getAllNotifications(req, res) {
-    res.json(entityJSON);}
+    res.json(entityJSON);
+  }
+);
+
+app.get(API_ROOT  + '/entity/:id', function getSingleEntity(req, res) {
+    res.json(entityJSON.find(d => d.uuid === req.params.id));
+  }
 );
 
 app.get(API_ROOT  + '/entity/create', function createNotifs(req, res) {

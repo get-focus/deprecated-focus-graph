@@ -9,8 +9,8 @@ function requestEntity({id}){
   return {type: REQUEST_ENTITY, payload: {id}};
 }
 
-function receiveEntity({id}){
-  return {type: RECEIVE_ENTITY, payload: {id}};
+function receiveEntity(jsonEntity){
+  return {type: RECEIVE_ENTITY, payload: jsonEntity};
 }
 
 

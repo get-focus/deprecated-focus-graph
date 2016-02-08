@@ -1,14 +1,31 @@
 import React, {Component, PropTypes} from 'react';
+import { connect as connectToReduxStore } from 'react-redux'
 
+import {fetchEntity} from '../actions';
 // Dumb components
 import Form from './form';
 import Field from './field';
 import Button from './button';
 
+
 class SmartExampleComponent extends Component{
   constructor(props) {
     super(props);
     this.state = {fields: props.fields};
+  }
+  componentWillMount(){
+    this.props.loadEntity(this.props.id);
+  }
+  componentWillReceiveProps({fields}){
+    console.log('FIELDS RECEIVED', fields);
+    if(!fields){
+      return;
+    }
+    const newFields = Object.keys(fields).reduce((res, fieldName)=>{
+      res[fieldName] = {name: fieldName, value: fields[fieldName]};
+      return res;
+    }, {});
+    return this.setState({fields: newFields});
   }
   render(){
     const {onSubmit, onChange} = this.props;
@@ -20,9 +37,8 @@ class SmartExampleComponent extends Component{
     return (
       <Form onSubmit={_onSubmit}>
         {
-          Object.keys(fields).reduce((res, fieldName)=>{
-            const field = fields[fieldName];
-            res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...field} />);
+          fields && Object.keys(fields).reduce((res, fieldName)=>{
+            res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
             return res;
           }, [])
         }
@@ -30,7 +46,10 @@ class SmartExampleComponent extends Component{
       </Form>
     );
   }
+
 }
+
+
 SmartExampleComponent.displayName = SmartExampleComponent;
 SmartExampleComponent.defaultProps = {
   onSubmit(data){
@@ -45,4 +64,13 @@ SmartExampleComponent.defaultProps = {
   }
 }
 
-export default SmartExampleComponent;
+const ConnectedSmartExampleComponent = connectToReduxStore(
+  ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
+  (dispatch) => ({
+    loadEntity: (id) => {
+      dispatch(fetchEntity({id}));
+    }
+  })
+)(SmartExampleComponent);
+
+export default ConnectedSmartExampleComponent;
