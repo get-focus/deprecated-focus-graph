@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import { connect as connectToReduxStore } from 'react-redux'
+import { connect as connectToReduxStore } from 'react-redux';
+import {connect as connectToDefinitions} from '../behaviours/definitions';
 
 import {fetchEntity} from '../actions';
 // Dumb components
@@ -36,6 +37,11 @@ class SmartExampleComponent extends Component{
     }
     return (
       <Form onSubmit={_onSubmit}>
+        <pre>
+          <code>
+            {JSON.stringify(this.props)}
+          </code>
+        </pre>
         {
           fields && Object.keys(fields).reduce((res, fieldName)=>{
             res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
@@ -63,6 +69,7 @@ SmartExampleComponent.defaultProps = {
       }
   }
 }
+const DefinitionConnectedSmartExampleComponent = connectToDefinitions('user')(SmartExampleComponent);
 
 const ConnectedSmartExampleComponent = connectToReduxStore(
   ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
@@ -71,6 +78,6 @@ const ConnectedSmartExampleComponent = connectToReduxStore(
       dispatch(fetchEntity({id}));
     }
   })
-)(SmartExampleComponent);
+)(DefinitionConnectedSmartExampleComponent);
 
 export default ConnectedSmartExampleComponent;
