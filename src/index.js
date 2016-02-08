@@ -3,8 +3,8 @@ import React , { Component , PropTypes } from 'react';
 import SmartExampleComponent from './components/smart';
 
 const fields = {
-  firstName: 'Pierre',
-  lastName: 'Besson'
+  firstName: {name: 'firstName', value:'Pierre'},
+  lastName: {name: 'lastName', value: 'Besson'}
 };
 
 
