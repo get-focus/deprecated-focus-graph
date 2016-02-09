@@ -3,8 +3,17 @@ import {
   REQUEST_ENTITY,
   RECEIVE_ENTITY
 } from '../actions';
-
-export default function entityReducer(state = {entity:{}}, {type, payload}){
+const DEFAULT_STATE = {
+  entity:{
+    data:{
+      firstName: {
+        value: 'Yoooooo',
+        name: 'firstName'
+      }
+    }
+  }
+};
+export default function entityReducer(state = DEFAULT_STATE, {type, payload}){
   const {entity: entityState, ...otherStateProp} = state;
  switch (type) {
   case REQUEST_ENTITY:
