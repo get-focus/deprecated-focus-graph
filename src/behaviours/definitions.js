@@ -6,12 +6,10 @@ const DEFINITION_CONTEXT_TYPE = {
 export function connect(definitionName){
   //check it is a string or an array;
   return function connectComponentToDefinitions(ComponentToConnect){
-    class DefinitionConnectedComponent extends Component {
-      render(){
-        const definition = this.context.definitions[definitionName];
+    function DefinitionConnectedComponent(props, {definitions}){
+        const definition = definitions[definitionName];
         //console.log('def', definition, "props", this.props);
-        return <ComponentToConnect definition={definition} {...this.props} />;
-      }
+        return <ComponentToConnect definition={definition} {...props} />;
     }
     DefinitionConnectedComponent.displayName = `${ComponentToConnect.displayName}DefinitionConnected`;
     DefinitionConnectedComponent.contextTypes = DEFINITION_CONTEXT_TYPE;
