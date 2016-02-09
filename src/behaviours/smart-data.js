@@ -18,9 +18,11 @@ const DEFAULT_PROPS =  {
   }
 }
 export function connect(){
+
   //this is the only component which have state
   // It passes to other using props
   return function connectStateToStores(ComponentToConnect){
+    //console.log('definition b');
     class LifeCycleConnector extends Component {
       constructor(props) {
         super(props);

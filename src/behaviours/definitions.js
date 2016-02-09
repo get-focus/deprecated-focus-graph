@@ -4,6 +4,7 @@ const DEFINITION_CONTEXT_TYPE = {
 };
 
 export function connect(definitionName){
+  //console.log('definition ');
   //check it is a string or an array;
   return function connectComponentToDefinitions(ComponentToConnect){
     function DefinitionConnectedComponent(props, {definitions}){
