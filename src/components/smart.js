@@ -35,6 +35,8 @@ class SmartExampleComponent extends Component{
       e.preventDefault();
       onSubmit(fields);
     }
+    const bFieldFor = fieldFor.bind(this);
+    const mFieldFor = name => fieldFor.call(this, name);
     return (
       <Form onSubmit={_onSubmit}>
         {/* Fields auto rendering to test onChange without definitions and redux */}
@@ -47,8 +49,10 @@ class SmartExampleComponent extends Component{
         }
         {/*Field for as props i have to find a way to bind on this without use call*/}
         <h3>{'Use field and definition behaviour'}</h3>
-        {fieldFor.call(this,'firstName')}
-
+        {fieldFor.call(this,'uuid')}
+        {fieldFor.bind(this)('uuid')}
+        {bFieldFor('lastName')}
+        {mFieldFor('lastName')}
         <Button onClick={_onSubmit}>{'Save'}</Button>
         {/*Debug purpose only show data functions are not displayed*/}
         <Code {...this.props} />
