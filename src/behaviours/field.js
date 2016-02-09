@@ -20,16 +20,17 @@ export function connectWithoutBinding(){
 }
 
 
-export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent}, {fields, definition}){
+export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent}, {fields, definition, onChange}){
   //console.log('FIELD FOR', propertyName, fields, definition)
   //check if this is a component with fields in props
   //check if this has a definition in props
-  return <FieldComponent name={propertyName} value={(fields && fields[propertyName]) ? fields[propertyName].value : undefined} metadata={definition[propertyName]}/>;
+  return <FieldComponent name={propertyName} onChange={onChange} value={(fields && fields[propertyName]) ? fields[propertyName].value : undefined} metadata={definition[propertyName]}/>;
 }
 
 export function connect(ComponentToConnect){
  function FieldConnectedComponent(props, {fieldHelpers}){
      const fieldFor = (name, options = {FieldComponent: DefaultFieldComponent}) => fieldHelpers.fieldFor(name, options, props)
+     //console.log('field helpers behaviour', props);
      return <ComponentToConnect {...props} hasFieldHelpers={true} fieldFor={fieldFor}/>;
  }
  FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;

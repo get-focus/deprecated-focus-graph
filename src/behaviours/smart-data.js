@@ -1,15 +1,16 @@
+import React, {Component, PropTypes} from 'react';
 const DEFAULT_PROPS =  {
   onSubmit(data){
     console.log('submit', data);
   },
-  onChange({name, value}){
+  onChange({name, value, error}){
       const {fields} = this.state;
-      if(fields[name] !== value){
+      if(!fields[name] || fields[name].value !== value){
         fields[name] = {name, value, error};
         this.setState({fields});
       }
   },
-  transformFields(fields){
+  transformFields(fields, propertyToExtract){
     return Object.keys(fields).reduce((res, fieldName)=>{
       res[fieldName] = {name: fieldName, value: fields[fieldName]};
       return res;
@@ -23,24 +24,26 @@ export function connect(){
     class LifeCycleConnector extends Component {
       constructor(props) {
         super(props);
-        this.state = {fields: props.fields};
+        this.state = {
+          fields: props.transformFields(props.fields)
+        };
       }
       componentWillMount(){
-        //this.props.loadEntity(this.props.id);
+        if(this.props.loadEntity){
+          this.props.loadEntity(this.props.id);
+        }
       }
       componentWillReceiveProps({fields}){
         if(!fields){
           return;
         }
-        const newFields = Object.keys(fields).reduce((res, fieldName)=>{
-          res[fieldName] = {name: fieldName, value: fields[fieldName]};
-          return res;
-        }, {});
-        return this.setState({fields: newFields});
+        return this.setState({fields: this.props.transformFields(fields)});
       }
       render(){
-        const {onSubmit, onChange, ...otherProps} = this.props
-        return <ComponentToConnect {...otherProps} />;
+        //console.log('smart data behaviour', this.props);
+        const {onSubmit, onChange, fields: propsFields, ...otherProps} = this.props
+        const {fields} = this.state;
+        return <ComponentToConnect fields={fields} hasConnectedStateToStore={true} onChange={onChange.bind(this)} onSubmit={onSubmit.bind(this)} {...otherProps} />;
       }
     }
     LifeCycleConnector.displayName = `${ComponentToConnect.displayName}LifeCycleConnected`;
