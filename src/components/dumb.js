@@ -18,7 +18,13 @@ function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherPro
   }
   return (
     <Form onSubmit={_onSubmit}>
-      {/* Fields auto rendering to test onChange without definitions and redux */}
+      {/* Fields auto rendering to test direct rendering without helpers*/}
+      <h3>{'Use field helper and definition behaviour'}</h3>
+      {fieldFor('uuid')}
+      {fieldFor('firstName')}
+      {fieldFor('lastName')}
+      <Button onClick={_onSubmit}>{'Save'}</Button>
+      <hr />
       <h3>{'Plain react stateless component'}</h3>
       {
         fields && Object.keys(fields).reduce((res, fieldName)=>{
@@ -27,10 +33,6 @@ function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherPro
         }, [])
       }
       {/*Field for as props i have to find a way to bind on this without use call*/}
-      <h3>{'Use field and definition behaviour'}</h3>
-      {fieldFor('lastName')}
-      {fieldFor('firstName')}
-      <Button onClick={_onSubmit}>{'Save'}</Button>
       {/*Debug purpose only show data functions are not displayed*/}
       <Code {...{fields, ...otherProps}} />
     </Form>
