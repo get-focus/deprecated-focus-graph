@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { connect as connectToReduxStore } from 'react-redux';
+import {connect as connectToReduxStore } from 'react-redux';
 import {connect as connectToDefinitions} from '../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../behaviours/field';
 import {fetchEntity} from '../actions';
@@ -16,7 +16,7 @@ class SmartExampleComponent extends Component{
     this.state = {fields: props.fields};
   }
   componentWillMount(){
-    this.props.loadEntity(this.props.id);
+    //this.props.loadEntity(this.props.id);
   }
   componentWillReceiveProps({fields}){
     if(!fields){
@@ -35,8 +35,6 @@ class SmartExampleComponent extends Component{
       e.preventDefault();
       onSubmit(fields);
     }
-    const bFieldFor = fieldFor.bind(this);
-    const mFieldFor = name => fieldFor.call(this, name);
     return (
       <Form onSubmit={_onSubmit}>
         {/* Fields auto rendering to test onChange without definitions and redux */}
@@ -49,10 +47,8 @@ class SmartExampleComponent extends Component{
         }
         {/*Field for as props i have to find a way to bind on this without use call*/}
         <h3>{'Use field and definition behaviour'}</h3>
-        {fieldFor.call(this,'uuid')}
-        {fieldFor.bind(this)('uuid')}
-        {bFieldFor('lastName')}
-        {mFieldFor('lastName')}
+        {fieldFor('lastName')}
+        {fieldFor('firstName')}
         <Button onClick={_onSubmit}>{'Save'}</Button>
         {/*Debug purpose only show data functions are not displayed*/}
         <Code {...this.props} />
@@ -76,17 +72,18 @@ SmartExampleComponent.defaultProps = {
       }
   }
 }
-const DefinitionConnectedSmartExampleComponent = connectToDefinitions('user')(SmartExampleComponent);
 
-const ReduxAndDefinitionConnectedSmartExampleComponent = connectToReduxStore(
+const FieldConnectedSmartExampleComponent = connectToFieldHelpers(SmartExampleComponent);
+
+const ReduxAndFieldConnectedSmartExampleComponent = connectToReduxStore(
   ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
   (dispatch) => ({
     loadEntity: (id) => {
       dispatch(fetchEntity({id}));
     }
   })
-)(DefinitionConnectedSmartExampleComponent);
+)(FieldConnectedSmartExampleComponent);
 
-const ConnectedSmartExampleComponent = connectToFieldHelpers()(ReduxAndDefinitionConnectedSmartExampleComponent);
+const ConnectedSmartExampleComponent =  connectToDefinitions('user')(ReduxAndFieldConnectedSmartExampleComponent);
 
 export default ConnectedSmartExampleComponent;
