@@ -9,6 +9,7 @@ export function connect(definitionName){
     class DefinitionConnectedComponent extends Component {
       render(){
         const definition = this.context.definitions[definitionName];
+        //console.log('def', definition, "props", this.props);
         return <ComponentToConnect definition={definition} {...this.props} />;
       }
     }
