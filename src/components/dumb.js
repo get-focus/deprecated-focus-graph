@@ -9,7 +9,7 @@ import Form from './form';
 import Field from './field';
 import Button from './button';
 import Code from './code';
-
+import compose from 'lodash/flowRight';
 function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherProps}){
   //console.log('dubm props', onChange, onSubmit)
   const _onSubmit = (e) => {
@@ -39,17 +39,19 @@ function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherPro
 
 DumbExampleComponent.displayName = DumbExampleComponent;
 
-const FieldConnectedDumbExampleComponent = connectToFieldHelpers(DumbExampleComponent);
-const SmartDataAndFieldConnectedDumbExampleComponent = connectSmartData()(FieldConnectedDumbExampleComponent);
-const ReduxAndFieldConnectedDumbExampleComponent = connectToReduxStore(
-  ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
-  (dispatch) => ({
-    loadEntity: (id) => {
-      dispatch(fetchEntity({id}));
-    }
-  })
-)(SmartDataAndFieldConnectedDumbExampleComponent);
-
-const ConnectedDumbExampleComponent =  connectToDefinitions('user')(ReduxAndFieldConnectedDumbExampleComponent);
+//Connect the component to all its behaviours (respect the order for store, store -> props, helper)
+const ConnectedDumbExampleComponent = compose(
+  connectToDefinitions('user'),
+  connectToReduxStore(
+    ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
+    (dispatch) => ({
+      loadEntity: (id) => {
+        dispatch(fetchEntity({id}));
+      }
+    })
+  ),
+  connectSmartData(),
+  connectToFieldHelpers
+)(DumbExampleComponent);
 
 export default ConnectedDumbExampleComponent;
