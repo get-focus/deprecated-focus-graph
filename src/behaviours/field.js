@@ -4,7 +4,7 @@ const FIELD_CONTEXT_TYPE = {
   fieldHelpers: PropTypes.object
 };
 
-export function connect(){
+export function connectWithoutBinding(){
   //check it is a string or an array;
   return function connectComponentToFieldHelpers(ComponentToConnect){
     class FieldConnectedComponent extends Component {
@@ -19,16 +19,31 @@ export function connect(){
 
 }
 
+
+export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent}, {fields, definition}){
+  //console.log('FIELD FOR', propertyName, fields, definition)
+  //check if this is a component with fields in props
+  //check if this has a definition in props
+  return <FieldComponent name={propertyName} value={(fields && fields[propertyName]) ? fields[propertyName].value : undefined} metadata={definition[propertyName]}/>;
+}
+
+export function connect(ComponentToConnect){
+ function FieldConnectedComponent(props, {fieldHelpers}){
+     const fieldFor = (name, options = {FieldComponent: DefaultFieldComponent}) => fieldHelpers.fieldFor(name, options, props)
+     return <ComponentToConnect {...props} hasFieldHelpers={true} fieldFor={fieldFor}/>;
+ }
+ FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
+ FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
+ return FieldConnectedComponent;
+}
+
+
 class FieldProvider extends Component {
   getChildContext(){
     const {FieldComponent} = this.props;
     return {
       fieldHelpers: {
-        fieldFor(propertyName){
-          //check if this is a component with fields in props
-          //check if this has a definition in props
-          return <FieldComponent name={propertyName} value={(this.state.fields && this.state.fields[propertyName]) ? this.state.fields[propertyName].value : undefined} metadata={this.props.definition[propertyName]}/>;
-        }
+        fieldFor
       }
     }
   }

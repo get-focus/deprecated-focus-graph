@@ -4,10 +4,6 @@ import {Provider as DefinitionsProvider} from './behaviours/definitions';
 import {Provider as FieldHelpersProvider} from './behaviours/field';
 import ConnectedSmartComponentExample from './components/smart';
 import store from './store';
-const fields = {
-  firstName: {name: 'firstName', value:'Pierre'},
-  lastName: {name: 'lastName', value: 'Besson'}
-};
 
 const definitions = {
   user:{
@@ -23,7 +19,7 @@ export default function App(){
         <FieldHelpersProvider>
           <div>
             <h1>Example</h1>
-            <ConnectedSmartComponentExample id={1234} fields={fields} />
+            <ConnectedSmartComponentExample id={1234} />
           </div>
         </FieldHelpersProvider>
       </StoreProvider>
