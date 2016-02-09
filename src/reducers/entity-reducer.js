@@ -6,10 +6,7 @@ import {
 const DEFAULT_STATE = {
   entity:{
     data:{
-      firstName: {
-        value: 'Yoooooo',
-        name: 'firstName'
-      }
+      firstName:'Yolo'
     }
   }
 };

@@ -3,6 +3,8 @@ import { Provider as StoreProvider} from 'react-redux';
 import {Provider as DefinitionsProvider} from './behaviours/definitions';
 import {Provider as FieldHelpersProvider} from './behaviours/field';
 import ConnectedSmartComponentExample from './components/smart';
+import ConnectedDumbComponentExample from './components/dumb';
+
 import store from './store';
 
 const definitions = {
@@ -18,8 +20,8 @@ export default function App(){
       <StoreProvider store={store}>
         <FieldHelpersProvider>
           <div>
-            <h1>Example</h1>
-            <ConnectedSmartComponentExample id={1234} />
+            <h1>Example Dumb</h1>
+            <ConnectedDumbComponentExample id={1234} />
           </div>
         </FieldHelpersProvider>
       </StoreProvider>

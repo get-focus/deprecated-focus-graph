@@ -4,12 +4,13 @@ const DEFINITION_CONTEXT_TYPE = {
 };
 
 export function connect(definitionName){
+  //console.log('definition ');
   //check it is a string or an array;
   return function connectComponentToDefinitions(ComponentToConnect){
     function DefinitionConnectedComponent(props, {definitions}){
         const definition = definitions[definitionName];
-        //console.log('def', definition, "props", this.props);
-        return <ComponentToConnect definition={definition} {...props} />;
+        //console.log('def', definition, "props", props);
+        return <ComponentToConnect hasConnectedToDefinition={true} definition={definition} {...props} />;
     }
     DefinitionConnectedComponent.displayName = `${ComponentToConnect.displayName}DefinitionConnected`;
     DefinitionConnectedComponent.contextTypes = DEFINITION_CONTEXT_TYPE;
