@@ -19,11 +19,29 @@ function errorEntity(error){
 }
 
 export function fetchEntity({id}){
-  return function middleWareFetchCall(dispatch){
-    dispatch(requestEntity({id}));
-    return fetch(`http://localhost:9999/x/entity/${id}`)
-            .then(response => response.json())
-            .then(json => dispatch(receiveEntity(json)))
-            .catch(err => dispatch(errorEntity(err)));
+  return async dispatch => {
+    try{
+      dispatch(requestEntity({id}));
+      const response = await fetch(`http://localhost:9999/x/entity/${id}`)
+      const data = await response.json();
+      dispatch(receiveEntity(data));
+    }
+    catch(err){
+      dispatch(errorEntity(err));
+    }
+  }
+}
+
+export function saveEntity({id}){
+  return async dispatch => {
+    try{
+      dispatch(requestEntity({id}));
+      const response = await fetch(`http://localhost:9999/x/entity/${id}`)
+      const data = await response.json();
+      dispatch(receiveEntity(data));
+    }
+    catch(err){
+      dispatch(errorEntity(err));
+    }
   }
 }
