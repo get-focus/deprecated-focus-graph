@@ -2,7 +2,7 @@
 import {
   REQUEST_ENTITY,
   RECEIVE_ENTITY
-} from '../actions';
+} from '../actions/entity';
 const DEFAULT_STATE = {
   entity:{
     data:{
