@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect as connectToReduxStore } from 'react-redux';
 import {connect as connectToDefinitions} from '../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../behaviours/field';
-import {fetchEntity} from '../actions/entity';
+import {loadEntity} from '../actions/entity';
 // Dumb components
 import Form from './form';
 import Field from './field';
@@ -79,7 +79,7 @@ const ReduxAndFieldConnectedSmartExampleComponent = connectToReduxStore(
   ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
   (dispatch) => ({
     loadEntity: (id) => {
-      dispatch(fetchEntity({id}));
+      dispatch(loadEntity({id}));
     }
   })
 )(FieldConnectedSmartExampleComponent);
