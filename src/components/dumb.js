@@ -3,7 +3,7 @@ import {connect as connectToReduxStore } from 'react-redux';
 import {connect as connectToDefinitions} from '../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../behaviours/field';
 import {connect as connectSmartData} from '../behaviours/smart-data';
-import {loadEntity} from '../actions/entity';
+import {loadEntity, saveEntity} from '../actions/entity';
 // Dumb components
 import Form from './form';
 import Field from './field';
@@ -46,10 +46,9 @@ const ConnectedDumbExampleComponent = compose(
   connectToDefinitions('user'),
   connectToReduxStore(
     ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
-    (dispatch) => ({
-      loadEntity: (id) => {
-        dispatch(loadEntity({id}));
-      }
+    dispatch => ({
+      loadEntity: (id) => dispatch(loadEntity({id})),
+      saveEntity:(id, json) => dispatch(saveEntity(id, json))
     })
   ),
   connectSmartData(),

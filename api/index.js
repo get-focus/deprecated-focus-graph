@@ -39,7 +39,7 @@ const API_ROOT = '/x';
 app.use(function corsMiddleware(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
-    res.header('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,DELETE');
+    res.header('Access-Control-Allow-Methods', 'POST,PUT,GET,OPTIONS,DELETE');
     res.header('Content-Type', 'application/json');
     next();
 });
@@ -54,14 +54,19 @@ app.get(API_ROOT  + '/entity/:id', function getSingleEntity(req, res) {
     res.json(entityJSON.find(d => d.uuid === req.params.id));
   }
 );
-
+app.put(API_ROOT  + '/entity/:id', function saveSingleEntity(req, res) {
+    var savedData = req.body;
+    savedData.isSaved = true;
+    res.json(JSON.stringify(savedData));
+  }
+);
 app.get(API_ROOT  + '/entity/create', function createNotifs(req, res) {
     entityJSON.push(createEntity())
     res.json(entityJSON);}
 );
 app.delete(API_ROOT  + '/entity', function deleteNotifs(req, res) {
-    res.json(JSON.stringify(req.body));
 
+  res.json(JSON.stringify(req.body));
 });
 app.delete(API_ROOT  + '/entity/:id', function deleteNotif(req, res) {
     res.json({id: req.params.id});

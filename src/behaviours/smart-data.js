@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 const DEFAULT_PROPS =  {
   onSubmit(data){
     console.log('submit', data);
+    this.props.saveEntity(data.uuid.value, data);
   },
   onChange({name, value, error}){
       const {fields} = this.state;
