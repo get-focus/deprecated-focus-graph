@@ -4,6 +4,8 @@ import {Provider as DefinitionsProvider} from './behaviours/definitions';
 import {Provider as FieldHelpersProvider} from './behaviours/field';
 import ConnectedSmartComponentExample from './components/smart';
 import ConnectedDumbComponentExample from './components/dumb';
+import UserDumbComponent from './components/user-dumb';
+
 
 import store from './store';
 
@@ -22,6 +24,8 @@ export default function App(){
           <div>
             <h1>Example Dumb</h1>
             <ConnectedDumbComponentExample id={1234} />
+            <h1>User Dumb</h1>
+            <UserDumbComponent id={1234} />
           </div>
         </FieldHelpersProvider>
       </StoreProvider>
