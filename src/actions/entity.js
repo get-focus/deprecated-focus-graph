@@ -56,13 +56,17 @@ function errorSaveEntity(error){
 }
 
 export function saveEntity(id, entityJSON){
+  console.log('save', entityJSON);
   return async dispatch => {
     try{
       dispatch(requestSaveEntity({id}));
       const response = await fetch(
         `http://localhost:9999/x/entity/${id}`, {
-          method: 'put',
-          body: JSON.stringify(entityJSON)
+          method: 'PUT',
+          body: JSON.stringify(entityJSON),
+          headers: new Headers({
+		          'Content-Type': 'application/json'
+          })
         }
       );
       const data = await response.json();
