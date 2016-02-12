@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 const DEFAULT_PROPS =  {
   onSubmit(data){
     console.log('submit', data);
-    this.props.saveEntity(data.uuid.value, data);
+    const transfromedData =this.props.transformFieldsToData(data);
+    this.props.saveEntity(transfromedData.uuid, transfromedData);
   },
   onChange({name, value, error}){
       const {fields} = this.state;
@@ -11,7 +12,13 @@ const DEFAULT_PROPS =  {
         this.setState({fields});
       }
   },
-  transformFields(fields, propertyToExtract){
+  transformFieldsToData(data, propertyToMap){
+    return Object.keys(data).reduce((res, fieldName)=>{
+      res[fieldName] = data[fieldName].value;
+      return res;
+    }, {})
+  },
+  transformDataToFields(fields, propertyToExtract){
     return Object.keys(fields).reduce((res, fieldName)=>{
       res[fieldName] = {name: fieldName, value: fields[fieldName]};
       return res;
@@ -28,7 +35,7 @@ export function connect(){
       constructor(props) {
         super(props);
         this.state = {
-          fields: props.transformFields(props.fields)
+          fields: props.transformDataToFields(props.fields)
         };
       }
       componentWillMount(){
@@ -40,7 +47,7 @@ export function connect(){
         if(!fields){
           return;
         }
-        return this.setState({fields: this.props.transformFields(fields)});
+        return this.setState({fields: this.props.transformDataToFields(fields)});
       }
       render(){
         //console.log('smart data behaviour', this.props);
