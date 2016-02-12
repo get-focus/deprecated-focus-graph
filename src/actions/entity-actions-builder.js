@@ -28,7 +28,7 @@ const _baseActionAsync = ({service: promiseSvc, creators:{receive: {value: recei
   }
 });
 
-export const action = ({name, type, service}) => {
+export const actionBuilder = ({name, type, service}) => {
   //Case transformation
   const UPPER_TYPE = toUpper(type);
   const UPPER_NAME = toUpper(name);
