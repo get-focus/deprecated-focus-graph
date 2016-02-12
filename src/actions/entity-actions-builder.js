@@ -2,8 +2,8 @@ import {capitalize, toUpper} from 'lodash/string';
 
 // A simple function to create action creators
 // Return a function which returns a type and a payload
-// example:  _baseActionCreator('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _baseActionCreator = type => (payload => ({type, payload}));
+// example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
+const _actionCreatorBuilder = type => (payload => ({type, payload}));
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
@@ -15,7 +15,7 @@ const _baseActionCreator = type => (payload => ({type, payload}));
 //     error:{name, value} where value is the function standing for an action creator
 //   }
 // }
-const _baseActionAsync = ({service: promiseSvc, creators:{receive: {value: receiveActionCreator}, request: {value: requestActionCreator}, error: {value: errorActionCreator}}}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, creators:{receive: {value: receiveActionCreator}, request: {value: requestActionCreator}, error: {value: errorActionCreator}}}) => (data => {
   return async dispatch => {
     try{
       dispatch(requestActionCreator(data));
@@ -41,13 +41,13 @@ export const actionBuilder = ({name, type, service}) => {
     error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
   }
   const creators = {
-    request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _baseActionCreator(constants.request)},
-    receive: {name: `receive${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _baseActionCreator(constants.receive)},
-    error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _baseActionCreator(constants.error)}
+    request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request)},
+    receive: {name: `receive${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.receive)},
+    error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error)}
   }
 
 
-  const action = _baseActionAsync({service, creators});
+  const action = _asyncActionCreator({service, creators});
   return {
     types: {
       [constants.request]: constants.request,
@@ -71,7 +71,7 @@ res[types[actionName]] = `${toUpper(actionName)}_${UPPER_TYPE}_${UPPER_NAME}`;
 //creates the action creators
 res[creators[actionName]] = {
 name: `${actionName}${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`,
-value: payload => _baseActionCreator(res[types[actionName]], payload)
+value: payload => _actionCreatorBuilder(res[types[actionName]], payload)
 };
 return res;
 }, {types:{}, creators:{}})
