@@ -1,28 +1,26 @@
 
 import {
-  REQUEST_ENTITY,
-  RECEIVE_ENTITY
-} from '../actions';
+  REQUEST_LOAD_ENTITY,
+  RECEIVE_LOAD_ENTITY,
+  ERROR_LOAD_ENTITY,
+  REQUEST_SAVE_ENTITY,
+  RECEIVE_SAVE_ENTITY,
+  ERROR_SAVE_ENTITY
+} from '../actions/entity';
 const DEFAULT_STATE = {
-  entity:{
     data:{
       firstName:'Yolo'
     }
-  }
 };
 export default function entityReducer(state = DEFAULT_STATE, {type, payload}){
-  const {entity: entityState, ...otherStateProp} = state;
+ const {data} = state;
  switch (type) {
-  case REQUEST_ENTITY:
-      return {
-        ...otherStateProp,
-        entity: {data: entityState.data, isLoading: true}
-      };
-  case RECEIVE_ENTITY:
-      return {
-        ...otherStateProp,
-        entity: {data: payload, isLoading: false}
-      };
+  case REQUEST_LOAD_ENTITY:
+  case REQUEST_SAVE_ENTITY:
+      return {data, isLoading: true};
+  case RECEIVE_LOAD_ENTITY:
+  case RECEIVE_SAVE_ENTITY:
+      return {data: payload, isLoading: false};
   default:
       return state
   }

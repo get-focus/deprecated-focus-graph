@@ -3,14 +3,14 @@ import {connect as connectToReduxStore } from 'react-redux';
 import {connect as connectToDefinitions} from '../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../behaviours/field';
 import {connect as connectSmartData} from '../behaviours/smart-data';
-import {loadEntity, saveEntity} from '../actions/entity';
+import {loadUserAction} from '../actions/user-actions';
 // Dumb components
 import Form from './form';
 import Field from './field';
 import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
-function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherProps}){
+function UserDumbComponent({fields, onChange, onSubmit, fieldFor, ...otherProps}){
   //console.log('dubm props', onChange, onSubmit)
   const _onSubmit = (e) => {
     e.preventDefault();
@@ -39,20 +39,20 @@ function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherPro
   );
 }
 
-DumbExampleComponent.displayName = DumbExampleComponent;
+UserDumbComponent.displayName = UserDumbComponent;
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
-const ConnectedDumbExampleComponent = compose(
+const ConnectedUserDumbComponent = compose(
   connectToDefinitions('user'),
   connectToReduxStore(
-    ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
+    ({user:{data, isLoading}}) => ({fields: data, isLoading}),
     dispatch => ({
-      loadEntity: (id) => dispatch(loadEntity({id})),
-      saveEntity:(id, json) => dispatch(saveEntity(id, json))
+      loadEntity: (id) => dispatch(loadUserAction({id})),
+      saveEntity:(id, json) => dispatch(loadUserAction(id, json))
     })
   ),
   connectSmartData(),
   connectToFieldHelpers
-)(DumbExampleComponent);
+)(UserDumbComponent);
 
-export default ConnectedDumbExampleComponent;
+export default ConnectedUserDumbComponent;

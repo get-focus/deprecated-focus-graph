@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const faker = require('faker');
+const isEmpty = require('lodash/isEmpty');
 
 const NB_GENERATED_ENTITY = 10;
 let entityJSON = [{
@@ -29,21 +30,31 @@ const MOCKED_API_PORT = process.env.API_PORT || 9999;
 ************** Mocked API ****************
 ******************************************/
 
-const app = express();
 const API_ROOT = '/x';
-
-
-
-// Middlewares
-
-app.use(function corsMiddleware(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
-    res.header('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,DELETE');
-    res.header('Content-Type', 'application/json');
+const app = express();
+//middleware
+//app.use(express.static(staticFolder));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use((req, res, next) => {
+    console.log(new Date() + ', ' + req.method + ', ' + req.url);
+    if (!isEmpty(req.body)) {
+        console.log(req.body);
+    }
     next();
 });
-app.use(bodyParser.json());
+//CORS middleware
+const allowCrossDomain = (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
+    res.header('Access-Control-Allow-Methods', 'POST,PUT,GET,OPTIONS,DELETE');
+    res.header('Content-Type', 'application/json');
+    next();
+}
+app.use(allowCrossDomain);
+
 
 app.get(API_ROOT  + '/entity', function getAllNotifications(req, res) {
     res.json(entityJSON);
@@ -55,13 +66,30 @@ app.get(API_ROOT  + '/entity/:id', function getSingleEntity(req, res) {
   }
 );
 
+app.put(API_ROOT  + '/entity/:id', (req, res) => {
+    var savedData = req.body;
+    //console.log(Object.keys(req.body))
+    //console.log('saved', JSON.stringify(req.body  ));
+    savedData.isSaved = true;
+    res.json(savedData);
+  }
+);
+
+app.post(API_ROOT  + '/entity/:id', (req, res) => {
+    var savedData = req.body;
+    //console.log(req.params.id, Object.keys(req))
+    //console.log('saved', JSON.stringify(req.body  ));
+    savedData.isSaved = true;
+    res.json(savedData);
+  }
+);
 app.get(API_ROOT  + '/entity/create', function createNotifs(req, res) {
     entityJSON.push(createEntity())
     res.json(entityJSON);}
 );
 app.delete(API_ROOT  + '/entity', function deleteNotifs(req, res) {
-    res.json(JSON.stringify(req.body));
 
+  res.json(JSON.stringify(req.body));
 });
 app.delete(API_ROOT  + '/entity/:id', function deleteNotif(req, res) {
     res.json({id: req.params.id});
