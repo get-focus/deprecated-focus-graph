@@ -28,6 +28,31 @@ const _asyncActionCreator = ({service: promiseSvc, creators:{receive: {value: re
   }
 });
 
+
+// Action builder is a simple way to create action types, action creator, and an async action
+// It takes one object parameter
+// ### doc
+// ```javascript
+// {
+//   name, // The name of your data in the store (example user)
+//   type, // Which type of action it is: load, save, delete, ...
+//   service // an async action to load data
+// }
+// ```
+//
+// ### example
+// ```javascript
+// const loadAction = actionBuilder({name:'user', type:'load', service:loadUserSvc});
+//```
+//
+// will produce
+//
+//```javascript
+// export const loadUserTypes = loadAction.types;
+// // which are the action types {REQUEST_LOAD_USER, RECEIVE_LOAD_USER}
+// export const loadUserAction = loadAction.action;
+// //which is a function taking the criteria as param
+// ```
 export const actionBuilder = ({name, type, service}) => {
   //Case transformation
   const UPPER_TYPE = toUpper(type);
