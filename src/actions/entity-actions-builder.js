@@ -1,5 +1,7 @@
 import {capitalize, toUpper} from 'lodash/string';
-
+import {isString, isUndefined} from 'lodash/lang';
+const ACTION_BUILDER = 'ACTION_BUILDER';
+const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
@@ -28,6 +30,19 @@ const _asyncActionCreator = ({service: promiseSvc, creators:{receive: {value: re
   }
 });
 
+// Validate the action builder parameters
+const _validateActionBuilderParams = ({name, type, service})=>{
+  if(!isString(name)){
+    throw new Error(`${ACTION_BUILDER}: the name parameter should be a string.`);
+  }
+
+  if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1){
+    throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
+  }
+  if(isUndefined(service) || !(service instanceof Promise)){
+    throw new Error(`${ACTION_BUILDER}: the service parameter should be a Promise.`);
+  }
+}
 
 // Action builder is a simple way to create action types, action creator, and an async action
 // It takes one object parameter
@@ -54,6 +69,7 @@ const _asyncActionCreator = ({service: promiseSvc, creators:{receive: {value: re
 // //which is a function taking the criteria as param
 // ```
 export const actionBuilder = ({name, type, service}) => {
+  _validateActionBuilderParams({name, type, service});
   //Case transformation
   const UPPER_TYPE = toUpper(type);
   const UPPER_NAME = toUpper(name);
