@@ -10,6 +10,7 @@ describe('The actionBuilder', () => {
             expect(()=>{ actionBuilder({name: 1})}).to.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: {}})}).to.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: ()=>{}})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: ''})}).to.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test'})}).to.not.throw(NAME_MESSAGE);
         });
         it('should throw an error when called without a string type parameter : load,save,delete', () => {
