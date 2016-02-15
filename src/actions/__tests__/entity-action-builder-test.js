@@ -43,6 +43,13 @@ describe('The actionBuilder', () => {
             const actionBuilded = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
             expect(actionBuilded).to.be.an.object;
             expect(actionBuilded).to.include.keys('types', 'creators', 'action');
-        });}
-    );
+        });
+        describe('The types part of the result', () => {
+          it('should return an object with three types with REQUEST, RECEIVE and ERROR', () => {
+              const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+              expect(actionBuildedTypes).to.be.an.object;
+              expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RECEIVE_LOAD_TEST', 'ERROR_LOAD_TEST');
+          });
+        });
+    });
 });
