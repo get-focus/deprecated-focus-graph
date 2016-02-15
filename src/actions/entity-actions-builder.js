@@ -1,5 +1,5 @@
 import {capitalize, toUpper} from 'lodash/string';
-import {isString, isUndefined} from 'lodash/lang';
+import {isFunction, isString} from 'lodash/lang';
 const ACTION_BUILDER = 'ACTION_BUILDER';
 const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
 const STRING_EMPTY = '';
@@ -39,8 +39,8 @@ const _validateActionBuilderParams = ({name, type, service})=>{
   if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1){
     throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
   }
-  if(isUndefined(service) || !(service instanceof Promise)){
-    throw new Error(`${ACTION_BUILDER}: the service parameter should be a Promise.`);
+  if(!isFunction(service)){
+    throw new Error(`${ACTION_BUILDER}: the service parameter should be a function.`);
   }
 }
 

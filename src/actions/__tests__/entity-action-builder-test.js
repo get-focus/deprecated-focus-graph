@@ -26,16 +26,23 @@ describe('The actionBuilder', () => {
             expect(()=>{ actionBuilder({name: 'test', type: 'save'})}).to.not.throw(TYPE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'delete'})}).to.not.throw(TYPE_MESSAGE);
         });
-        it('should throw an error when called without a Promise service parameter', () => {
-            const SERVICE_MESSAGE = 'ACTION_BUILDER: the service parameter should be a Promise.';
+        it('should throw an error when called without a function returning a Promise service parameter', () => {
+            const SERVICE_MESSAGE = 'ACTION_BUILDER: the service parameter should be a function.';
             expect(()=>{ actionBuilder({name: 'test', type: 'load'})}).to.throw(SERVICE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'load', service: undefined})}).to.throw(SERVICE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'load', service: 1})}).to.throw(SERVICE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'load', service: 'nimp'})}).to.throw(SERVICE_MESSAGE);
-            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: ()=>{}})}).to.throw(SERVICE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'load', service: {}})}).to.throw(SERVICE_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'load', service: null})}).to.throw(SERVICE_MESSAGE);
-            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: Promise.resolve({test: 'test'})})}).to.not.throw(SERVICE_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: () =>Promise.resolve({test: 'test'})})}).to.not.throw(SERVICE_MESSAGE);
         });
     })
+    describe('when called with right parameters', () => {
+        const TEST_VALID_ACTION_BUILDER_PARAMS = {name: 'test', type: 'load', service: ()=> Promise.resolve('tests')};
+        it('should return an object with types, creators, action', () => {
+            const actionBuilded = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+            expect(actionBuilded).to.be.an.object;
+            expect(actionBuilded).to.include.keys('types', 'creators', 'action');
+        });}
+    );
 });
