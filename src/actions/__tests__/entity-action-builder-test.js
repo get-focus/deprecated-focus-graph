@@ -38,21 +38,24 @@ describe('The actionBuilder', () => {
         });
     })
     describe('when called with right parameters', () => {
-        const TEST_VALID_ACTION_BUILDER_PARAMS = {name: 'test', type: 'load', service: ()=> Promise.resolve('tests')};
+        const RESOLVE_VALUE = {testValue: 'tests'};
+        const REJECT_VALUE = {error: 'error'};
+        const TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE = {name: 'test', type: 'load', service: ()=> Promise.resolve(RESOLVE_VALUE)};
+        const TEST_VALID_ACTION_BUILDER_PARAMS_REJECT = {name: 'test', type: 'load', service: ()=> Promise.reject(REJECT_VALUE)};
         it('should return an object with types, creators, action', () => {
-            const actionBuilded = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+            const actionBuilded = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
             expect(actionBuilded).to.be.an.object;
             expect(actionBuilded).to.include.keys('types', 'creators', 'action');
         });
         describe('The types part of the result', () => {
           it('should return an object with three types with REQUEST, RECEIVE and ERROR', () => {
-              const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+              const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
               expect(actionBuildedTypes).to.be.an.object;
               expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RECEIVE_LOAD_TEST', 'ERROR_LOAD_TEST');
           });
         });
         describe('The creators part of the result', () => {
-          const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+          const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
           it('should return an object with three keys with request, receive, error', () => {
               expect(actionBuildedCreators).to.be.an.object;
               expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'receiveLoadTest', 'errorLoadTest');
@@ -69,9 +72,26 @@ describe('The actionBuilder', () => {
           });
         });
         describe('The action part of the result', () => {
+          const {action: actionBuildedResolveAsync} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
+          const {action: actionBuildedRejectAsync} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_REJECT);
+          const CRITERIA = {id: 'test'};
           it('should return a function', () => {
-              const {action: actionBuildedAsync} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
-              expect(actionBuildedAsync).to.be.a.function;
+              expect(actionBuildedResolveAsync).to.be.a.function;
+              expect(actionBuildedRejectAsync).to.be.a.function;
+          });
+          it('when called with a successfull service should call the receive and request action creators', async done => {
+            const dispatchSpy = sinon.spy();
+            await actionBuildedResolveAsync()(dispatchSpy);
+            expect(dispatchSpy).to.have.been.called.twice;
+            expect(dispatchSpy).to.have.callCount(2);
+            done();
+          });
+          it('when called with an unsuccessfull service should call the error action creator', async done => {
+            const dispatchSpy = sinon.spy();
+            await actionBuildedRejectAsync()(dispatchSpy);
+            expect(dispatchSpy).to.have.been.called.once;
+            expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_LOAD_TEST', payload: REJECT_VALUE});
+            done();
           });
         });
     });
