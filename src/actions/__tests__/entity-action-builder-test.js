@@ -1,17 +1,8 @@
 import {actionBuilder} from '../entity-actions-builder';
 describe('The actionBuilder', () => {
     describe('when called with wrong parameters', () => {
-//        let component;
-        before(
-            () => {
-  //              const shallowRenderer = TestUtils.createRenderer();
-    //            shallowRenderer.render(<Input/>);
-      //          component = shallowRenderer.getRenderOutput();
-            }
-        );
         it('should throw a type error when called without all parameters', () => {
             expect(()=>{ actionBuilder()}).to.throw(TypeError,"Cannot read property 'name' of undefined");
-            //name, type, service
         });
         it('should throw an error when called without a string name parameter', () => {
             const NAME_MESSAGE = 'ACTION_BUILDER: the name parameter should be a string.';
