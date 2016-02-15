@@ -68,5 +68,11 @@ describe('The actionBuilder', () => {
               expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD});
           });
         });
+        describe('The action part of the result', () => {
+          it('should return a function', () => {
+              const {action: actionBuildedAsync} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+              expect(actionBuildedAsync).to.be.a.function;
+          });
+        });
     });
 });
