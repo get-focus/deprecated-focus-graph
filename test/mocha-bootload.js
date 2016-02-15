@@ -1,3 +1,4 @@
+require('babel-polyfill');
 // Global configuration uese for tests.
 require('babel-core/register')({
   "presets": ["focus"]
