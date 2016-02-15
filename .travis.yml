@@ -1,0 +1,12 @@
+sudo: false
+language: node_js
+node_js:
+- '4.2'
+branches:
+  only:
+  - master
+  - develop
+  - "/^hotfix-.*$/"
+cache:
+  directories:
+  - node_modules
