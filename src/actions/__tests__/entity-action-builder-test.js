@@ -84,6 +84,8 @@ describe('The actionBuilder', () => {
             await actionBuildedResolveAsync()(dispatchSpy);
             expect(dispatchSpy).to.have.been.called.twice;
             expect(dispatchSpy).to.have.callCount(2);
+            expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST'});
+            expect(dispatchSpy).to.have.been.called.calledWith({type: 'RECEIVE_LOAD_TEST', payload: RESOLVE_VALUE});
             done();
           });
           it('when called with an unsuccessfull service should call the error action creator', async done => {

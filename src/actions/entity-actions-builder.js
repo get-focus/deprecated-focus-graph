@@ -6,7 +6,7 @@ const STRING_EMPTY = '';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = type => (payload => ({type, payload}));
+const _actionCreatorBuilder = type => (payload => (payload ? {type, payload}: {type}));
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
