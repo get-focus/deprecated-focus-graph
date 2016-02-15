@@ -51,5 +51,22 @@ describe('The actionBuilder', () => {
               expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RECEIVE_LOAD_TEST', 'ERROR_LOAD_TEST');
           });
         });
+        describe('The creators part of the result', () => {
+          const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS);
+          it('should return an object with three keys with request, receive, error', () => {
+              expect(actionBuildedCreators).to.be.an.object;
+              expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'receiveLoadTest', 'errorLoadTest');
+          });
+          it('should return an object with three values with request, receive, error', () => {
+              const {requestLoadTest: requestActionCreator, receiveLoadTest: receiveActionCreator, errorLoadTest: errorActionCreator} = actionBuildedCreators;
+              expect(requestActionCreator).to.be.a.function;
+              expect(receiveActionCreator).to.be.a.function;
+              expect(errorActionCreator).to.be.a.function;
+              const PAYLOAD =  {test: 'test'};
+              expect(requestActionCreator(PAYLOAD)).to.deep.equal({type: 'REQUEST_LOAD_TEST', payload: PAYLOAD});
+              expect(receiveActionCreator(PAYLOAD)).to.deep.equal({type: 'RECEIVE_LOAD_TEST', payload: PAYLOAD});
+              expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD});
+          });
+        });
     });
 });
