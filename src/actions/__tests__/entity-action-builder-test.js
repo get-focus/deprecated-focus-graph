@@ -34,5 +34,16 @@ describe('The actionBuilder', () => {
             expect(()=>{ actionBuilder({name: 'test', type: 'save'})}).to.not.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'delete'})}).to.not.throw(NAME_MESSAGE);
         });
+        it('should throw an error when called without a Promise service parameter', () => {
+            const NAME_MESSAGE = 'ACTION_BUILDER: the service parameter should be a Promise.';
+            expect(()=>{ actionBuilder({name: 'test', type: 'load'})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: undefined})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: 1})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: 'nimp'})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: ()=>{}})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: {}})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: null})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load', service: Promise.resolve({test: 'test'})})}).to.not.throw(NAME_MESSAGE);
+        });
     })
 });
