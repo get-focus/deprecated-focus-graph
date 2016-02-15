@@ -30,6 +30,9 @@ describe('The actionBuilder', () => {
             expect(()=>{ actionBuilder({name: 'test', type: ()=>{}})}).to.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: ''})}).to.throw(NAME_MESSAGE);
             expect(()=>{ actionBuilder({name: 'test', type: 'nimp'})}).to.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'load'})}).to.not.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'save'})}).to.not.throw(NAME_MESSAGE);
+            expect(()=>{ actionBuilder({name: 'test', type: 'delete'})}).to.not.throw(NAME_MESSAGE);
         });
     })
 });

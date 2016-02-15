@@ -35,7 +35,6 @@ const _validateActionBuilderParams = ({name, type, service})=>{
   if(!isString(name)){
     throw new Error(`${ACTION_BUILDER}: the name parameter should be a string.`);
   }
-
   if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1){
     throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
   }
