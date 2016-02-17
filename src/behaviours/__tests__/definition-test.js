@@ -21,40 +21,24 @@ describe('Definition behaviour', () => {
          expect(component.type).to.be.equal(TestComponent);
        });
        it('should throw an error when there are no props', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps();
-         }).to.throw(PROVIDER_VALIDATION_MSG)
+         expect(() => _tryRenderProviderWithProps()).to.throw(PROVIDER_VALIDATION_MSG)
        })
        it('should throw an error when props is an empty object', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
+         expect(() => _tryRenderProviderWithProps({})).to.throw(PROVIDER_VALIDATION_MSG)
        })
        it('should throw an error when  definitions is a number', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({definitions: 1});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
+         expect(() => _tryRenderProviderWithProps({definitions: 1})).to.throw(PROVIDER_VALIDATION_MSG)
        })
        it('should throw an error when  definitions is a string', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({definitions: "a"});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
-       })
+         expect(() => _tryRenderProviderWithProps({definitions: 'a'})).to.throw(PROVIDER_VALIDATION_MSG)
+       });
        it('should throw an error when definitions is an array', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({definitions: []});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
-       })
-
+         expect(() => _tryRenderProviderWithProps({definitions: []})).to.throw(PROVIDER_VALIDATION_MSG)
+       });
        it('should throw an error when definitions is a function', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({definitions: ()=>{}});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
+         expect(() => _tryRenderProviderWithProps({definitions: ()=>{}})).to.throw(PROVIDER_VALIDATION_MSG)
        })
        it('should throw an error when definitions is an empty object', ()=>{
-         expect(()=>{
-           _tryRenderProviderWithProps({definitions: {}});
-         }).to.throw(PROVIDER_VALIDATION_MSG)
+         expect(() => _tryRenderProviderWithProps({definitions: {}})).to.throw(PROVIDER_VALIDATION_MSG)
        })
-
 })});
