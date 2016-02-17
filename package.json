@@ -4,8 +4,8 @@
   "description": "Form, data behaviours",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha src/**/__tests__/**/*.js",
-    "test:watch": "mocha src/**/__tests__/**/*.js --watch",
+    "test": "BABEL_ENV=test mocha src/**/__tests__/**/*.js",
+    "test:watch": "BABEL_ENV=test mocha src/**/__tests__/**/*.js --watch",
     "start": "better-npm-run dev-server"
   },
   "betterScripts": {
