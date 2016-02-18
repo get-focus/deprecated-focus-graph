@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {connect, Provider} from '../definitions';
 
 describe('Definition behaviour', () => {
@@ -15,6 +15,17 @@ describe('Definition behaviour', () => {
         );
           return shallowRenderer.getRenderOutput();
       };
+       it('should be a class', () => {
+          expect(Provider).to.be.a.function;
+       });
+       it('should be a react component with childContextTypes', () => {
+         expect(Provider.childContextTypes).to.deep.equal({
+           definitions: PropTypes.object
+         })
+       });
+       it('should be a class with getChildContext method', () => {
+         expect(Provider.getChildContext).to.be.a.function;
+       });
        it('should render a React component', () => {
          component = _tryRenderProviderWithProps({definitions:{test: {name: 'test'}}});
          expect(component).to.be.an('object');
@@ -41,4 +52,5 @@ describe('Definition behaviour', () => {
        it('should throw an error when definitions is an empty object', ()=>{
          expect(() => _tryRenderProviderWithProps({definitions: {}})).to.throw(PROVIDER_VALIDATION_MSG)
        })
-})});
+  })
+});
