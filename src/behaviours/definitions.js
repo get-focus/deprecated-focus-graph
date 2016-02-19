@@ -17,13 +17,14 @@ export function connect(definitionName){
   if(!((isString(definitionName) || isArray(definitionName)) && definitionName.length) > 0){
     throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT}:  The definition name should be s string or an array of strings.`)
   }
-  //console.log('definition ');
-  //check it is a string or an array;
+
   return function connectComponentToDefinitions(ComponentToConnect){
     function DefinitionConnectedComponent(props, {definitions}){
         const definition = definitions[definitionName];
+        const {_behaviours, ...otherProps} = props;
+        const behaviours = {isConnectedToDefinition: true,..._behaviours}
         //console.log('def', definition, "props", props);
-        return <ComponentToConnect hasConnectedToDefinition={true} definition={definition} {...props} />;
+        return <ComponentToConnect _behaviours={behaviours} definition={definition} {...otherProps} />;
     }
     DefinitionConnectedComponent.displayName = `${ComponentToConnect.displayName}DefinitionConnected`;
     DefinitionConnectedComponent.contextTypes = DEFINITION_CONTEXT_TYPE;
@@ -37,6 +38,7 @@ class DefinitionsProvider extends Component {
   constructor(props){
     super(props);
     this._validatePropsDefinitions(props);
+    //console.log(props);
   }
   _validatePropsDefinitions(props){
     if(!isObject(props.definitions) || isFunction(props.definitions) || isEmpty(props.definitions)){

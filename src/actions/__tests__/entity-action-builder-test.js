@@ -44,20 +44,20 @@ describe('The actionBuilder', () => {
         const TEST_VALID_ACTION_BUILDER_PARAMS_REJECT = {name: 'test', type: 'load', service: ()=> Promise.reject(REJECT_VALUE)};
         it('should return an object with types, creators, action', () => {
             const actionBuilded = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
-            expect(actionBuilded).to.be.an.object;
+            expect(actionBuilded).to.be.an('object');
             expect(actionBuilded).to.include.keys('types', 'creators', 'action');
         });
         describe('The types part of the result', () => {
           it('should return an object with three types with REQUEST, RECEIVE and ERROR', () => {
               const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
-              expect(actionBuildedTypes).to.be.an.object;
+              expect(actionBuildedTypes).to.be.an('object');
               expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RECEIVE_LOAD_TEST', 'ERROR_LOAD_TEST');
           });
         });
         describe('The creators part of the result', () => {
           const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
           it('should return an object with three keys with request, receive, error', () => {
-              expect(actionBuildedCreators).to.be.an.object;
+              expect(actionBuildedCreators).to.be.an('object');
               expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'receiveLoadTest', 'errorLoadTest');
           });
           it('should return an object with three values with request, receive, error', () => {

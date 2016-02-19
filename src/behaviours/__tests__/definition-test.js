@@ -12,7 +12,7 @@ describe('Definition behaviour', () => {
           return shallowRenderer.getRenderOutput();
        };
        it('should be a class', () => {
-          expect(Provider).to.be.a.function;
+          expect(Provider).to.be.a('function');
         });
        it('should be a react component with childContextTypes', () => {
          expect(Provider.childContextTypes).to.deep.equal({
@@ -20,7 +20,7 @@ describe('Definition behaviour', () => {
          })
        });
        it('should be a class with getChildContext method', () => {
-         expect(Provider.getChildContext).to.be.a.function;
+         expect(Provider.prototype.getChildContext).to.be.a('function');
        });
        it('should render a React component', () => {
          component = _tryRenderProviderWithProps({definitions:{test: {name: 'test'}}});
@@ -53,10 +53,10 @@ describe('Definition behaviour', () => {
     describe('the connect function', () => {
       const CONNECTOR_VALIDATION_MESSAGE = 'BEHAVIOUR_DEFINITION_CONNECT:  The definition name should be s string or an array of strings.';
       it('shoud be a function', () => {
-        expect(connect).to.be.a.function;
+        expect(connect).to.be.a('function');
       });
       it('shoud accept a string parameter and return a connector', () => {
-        expect(connect('n1')).to.be.a.function;
+        expect(connect('n1')).to.be.a('function');
       });
       it('shoud not accept a number parameter', () => {
         expect(()=> connect(1)).to.throw(CONNECTOR_VALIDATION_MESSAGE);
@@ -71,18 +71,42 @@ describe('Definition behaviour', () => {
         expect(()=> connect([])).to.throw(CONNECTOR_VALIDATION_MESSAGE);
       });
       it('shoud accept an array of string parameter and return a connector', () => {
-        expect(connect(['n1', 'n2'])).to.be.a.function;
+        expect(connect(['n1', 'n2'])).to.be.a('function');
       });
     });
     describe('the connectComponentToDefinitions function', () => {
-      const DEFINITIONS = {n1: {f1:{domain: 'DO_LOPEZ'}, f2:{domain: 'DO_JOE'}}, n2: {f1:{domain: 'DO_DAVID'}, f2:{domain: 'DO_DIEGO'}}}
-      const _tryRenderInAProvider = toRender => {
+      const TestComponent = props => JSON.stringify(props);
+      TestComponent.displayName = 'TestComponent';
+      const _tryRenderWithDefinitionContext = (toRender, context) => {
         const shallowRenderer = TestUtils.createRenderer();
-        shallowRenderer.render(<Provider definitions={DEFINITIONS}>{toRender()}</Provider>);
-          return shallowRenderer.getRenderOutput();
+        shallowRenderer.render(toRender(), context);
+        return shallowRenderer.getRenderOutput();
        };
-      it('shoud accept a string parameter', () => {
-        expect(_tryRenderInAProvider(() => connect('n1')(props => <div>test</div>))).to.be.a.function;
+      it('shoud return a react component', () => {
+       const ConnectedTestComponent = connect('n1')(TestComponent);
+       expect(ConnectedTestComponent).to.be.a('function');
+      });
+      describe('render with a correct definitionContext', () => {
+        const DEFINITIONS = {n1: {f1:{domain: 'DO_LOPEZ'}, f2:{domain: 'DO_JOE'}}, n2: {f1:{domain: 'DO_DAVID'}, f2:{domain: 'DO_DIEGO'}}}
+        const ConnectedTestComponent = connect('n1')(TestComponent);
+        const component = _tryRenderWithDefinitionContext(() =>  <ConnectedTestComponent/>, {definitions: DEFINITIONS});
+        it('shoud render a component', () => {
+          expect(component).to.be.a('object');
+        });
+        it('shoud render a component with props', () => {
+          expect(component.props).to.be.a('object');
+        });
+        it('should have the _behaviours{isConnectedToDefinition} as props', () => {
+          const {_behaviours} = component.props;
+          expect(_behaviours).to.be.a('object');
+          expect(_behaviours.isConnectedToDefinition).to.be.a('boolean');
+          expect(_behaviours.isConnectedToDefinition).to.be.equal(true);
+        })
+        it('should have the definition as props', () => {
+          const {definition} = component.props;
+          expect(definition).to.be.a('object');
+          expect(definition).to.be.deep.equal(DEFINITIONS.n1);
+        });
       });
     });
   });
