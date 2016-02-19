@@ -19,8 +19,18 @@ export function connect(definitionName){
   }
 
   return function connectComponentToDefinitions(ComponentToConnect){
-    function DefinitionConnectedComponent(props, {definitions}){
+    function DefinitionConnectedComponent(props, context){
+        if(!isObject(context)){
+          throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT} The context must be an object check your **DefinitionsProvider**`)
+        }
+        const {definitions} = context;
+        if(!isObject(definitions)){
+          throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT} The definitions must be an object check your **DefinitionsProvider**`)
+        }
         const definition = definitions[definitionName];
+        if(!isObject(definition)){
+          throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT} The definition you requested : ${definitionName} does not exists or is not an object, check your **DefinitionsProvider**`)
+        }
         const {_behaviours, ...otherProps} = props;
         const behaviours = {isConnectedToDefinition: true,..._behaviours}
         //console.log('def', definition, "props", props);

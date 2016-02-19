@@ -75,16 +75,41 @@ describe('Definition behaviour', () => {
       });
     });
     describe('the connectComponentToDefinitions function', () => {
-      const TestComponent = props => JSON.stringify(props);
+      const TestComponent = props => <pre><code>{JSON.stringify(props)}</code></pre>;
       TestComponent.displayName = 'TestComponent';
       const _tryRenderWithDefinitionContext = (toRender, context) => {
         const shallowRenderer = TestUtils.createRenderer();
         shallowRenderer.render(toRender(), context);
         return shallowRenderer.getRenderOutput();
        };
+       const NO_DEF_MSG = 'BEHAVIOUR_DEFINITION_CONNECT The definitions must be an object check your **DefinitionsProvider**';
       it('shoud return a react component', () => {
        const ConnectedTestComponent = connect('n1')(TestComponent);
        expect(ConnectedTestComponent).to.be.a('function');
+      });
+      describe('when rendered with a wrong context', () => {
+        it('should throw an error when there is no context', () => {
+          const ConnectedTestComponent = connect('n1')(TestComponent);
+          expect(
+            () => _tryRenderWithDefinitionContext(
+              () => <ConnectedTestComponent />,
+              null
+            )
+          ).to.throw(NO_DEF_MSG)
+        })
+        it('should throw an error when there are no definitions', () => {
+          expect(()=> _tryRenderWithDefinitionContext(() => <ConnectedTestComponent />, {})).to.throw('ConnectedTestComponent is not defined')
+        })
+        it('should throw an error when the requested definition is not present', () => {
+          const WRONG_DEF_MSG = 'BEHAVIOUR_DEFINITION_CONNECT The definition you requested : nimp does not exists or is not an object, check your **DefinitionsProvider**';
+          const ConnectedTestComponent = connect('nimp')(TestComponent);
+          expect(
+            () => _tryRenderWithDefinitionContext(
+              () => <ConnectedTestComponent />,
+              {definitions: {n1: {domain: 'PAPA'}}}
+            )
+          ).to.throw(WRONG_DEF_MSG);
+        })
       });
       describe('render with a correct definitionContext', () => {
         const DEFINITIONS = {n1: {f1:{domain: 'DO_LOPEZ'}, f2:{domain: 'DO_JOE'}}, n2: {f1:{domain: 'DO_DAVID'}, f2:{domain: 'DO_DIEGO'}}}
