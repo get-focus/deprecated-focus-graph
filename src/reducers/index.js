@@ -3,7 +3,6 @@ import { combineReducers } from 'redux';
 import entityReducer from './entity-reducer';
 import userReducer from './user-reducer';
 
-export default entityReducer;
 // export a root reducer
 export default combineReducers({
   entity: entityReducer,
