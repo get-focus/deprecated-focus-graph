@@ -14,7 +14,7 @@ const DEFINITION_CONTEXT_TYPE = {
 //
 //
 export function connect(definitionName){
-  if(!(isString(definitionName) || isArray(definitionName)) || (isArray(definitionName) && definitionName.length === 0)){
+  if(!(isString(definitionName) || isArray(definitionName)) || ((isArray(definitionName) || isString(definitionName)) && definitionName.length === 0)){
     throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT}:  The definition name should be a string or an array of strings.`)
   }
 

@@ -1,5 +1,6 @@
 import React , {Component, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
+
 const FIELD_CONTEXT_TYPE = {
   fieldHelpers: PropTypes.object
 };
@@ -20,11 +21,12 @@ export function connectWithoutBinding(){
 }
 
 
-export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent}, {fields, definition, onChange}){
+export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, ...options}, {fields, definition, onChange}){
   //console.log('FIELD FOR', propertyName, fields, definition)
   //check if this is a component with fields in props
   //check if this has a definition in props
-  return <FieldComponent name={propertyName} onChange={onChange} value={(fields && fields[propertyName]) ? fields[propertyName].value : undefined} metadata={definition[propertyName]}/>;
+  const value = (fields && fields[propertyName]) ? fields[propertyName].value : undefined;
+  return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options}/>;
 }
 
 export function connect(ComponentToConnect){
