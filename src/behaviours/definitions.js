@@ -14,8 +14,8 @@ const DEFINITION_CONTEXT_TYPE = {
 //
 //
 export function connect(definitionName){
-  if(!((isString(definitionName) || isArray(definitionName)) && definitionName.length) > 0){
-    throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT}:  The definition name should be s string or an array of strings.`)
+  if(!(isString(definitionName) || isArray(definitionName)) || ((isArray(definitionName) || isString(definitionName)) && definitionName.length === 0)){
+    throw new Error(`${BEHAVIOUR_DEFINITION_CONNECT}:  The definition name should be a string or an array of strings.`)
   }
 
   return function connectComponentToDefinitions(ComponentToConnect){
@@ -48,11 +48,10 @@ class DefinitionsProvider extends Component {
   constructor(props){
     super(props);
     this._validatePropsDefinitions(props);
-    //console.log(props);
   }
   _validatePropsDefinitions(props){
     if(!isObject(props.definitions) || isFunction(props.definitions) || isEmpty(props.definitions)){
-      throw new Error(`${BEHAVIOUR_DEFINITION_PROVIDER} the provider needs a definitions props which should be a non empty object`);
+      throw new Error(`${BEHAVIOUR_DEFINITION_PROVIDER} the provider needs a definition props which should be a non empty object`);
     }
   }
   getChildContext(){

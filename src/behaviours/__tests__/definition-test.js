@@ -5,7 +5,7 @@ describe('Definition behaviour', () => {
     describe('The definitions provider', () => {
       let component;
       const TestComponent = (props, context) => <div id='testContent'>{JSON.stringify(context)}</div>;
-      const PROVIDER_VALIDATION_MSG = 'BEHAVIOUR_DEFINITION_PROVIDER the provider needs a definitions props which should be a non empty object';
+      const PROVIDER_VALIDATION_MSG = 'BEHAVIOUR_DEFINITION_PROVIDER the provider needs a definition props which should be a non empty object';
       const _tryRenderProviderWithProps = props => {
         const shallowRenderer = TestUtils.createRenderer();
         shallowRenderer.render(<Provider {...props}><TestComponent /></Provider>);
@@ -51,26 +51,26 @@ describe('Definition behaviour', () => {
   });
   describe('The connect to definitions', () => {
     describe('the connect function', () => {
-      const CONNECTOR_VALIDATION_MESSAGE = 'BEHAVIOUR_DEFINITION_CONNECT:  The definition name should be s string or an array of strings.';
-      it('shoud be a function', () => {
+      const CONNECTOR_VALIDATION_MESSAGE = 'BEHAVIOUR_DEFINITION_CONNECT:  The definition name should be a string or an array of strings.';
+      it('should be a function', () => {
         expect(connect).to.be.a('function');
       });
-      it('shoud accept a string parameter and return a connector', () => {
+      it('should accept a string parameter and return a connector', () => {
         expect(connect('n1')).to.be.a('function');
       });
-      it('shoud not accept a number parameter', () => {
+      it('should not accept a number parameter', () => {
         expect(()=> connect(1)).to.throw(CONNECTOR_VALIDATION_MESSAGE);
       });
-      it('shoud not accept a number parameter', () => {
+      it('should not accept a number parameter', () => {
         expect(()=> connect(()=>{})).to.throw(CONNECTOR_VALIDATION_MESSAGE);
       });
-      it('shoud not accept an empty string parameter', () => {
+      it('should not accept an empty string parameter', () => {
         expect(()=> connect('')).to.throw(CONNECTOR_VALIDATION_MESSAGE);
       });
-      it('shoud not accept an empty array parameter', () => {
+      it('should not accept an empty array parameter', () => {
         expect(()=> connect([])).to.throw(CONNECTOR_VALIDATION_MESSAGE);
       });
-      it('shoud accept an array of string parameter and return a connector', () => {
+      it('should accept an array of string parameter and return a connector', () => {
         expect(connect(['n1', 'n2'])).to.be.a('function');
       });
     });
@@ -83,7 +83,7 @@ describe('Definition behaviour', () => {
         return shallowRenderer.getRenderOutput();
        };
        const NO_DEF_MSG = 'BEHAVIOUR_DEFINITION_CONNECT The definitions must be an object check your **DefinitionsProvider**';
-      it('shoud return a react component', () => {
+      it('should return a react component', () => {
        const ConnectedTestComponent = connect('n1')(TestComponent);
        expect(ConnectedTestComponent).to.be.a('function');
       });
@@ -115,10 +115,10 @@ describe('Definition behaviour', () => {
         const DEFINITIONS = {n1: {f1:{domain: 'DO_LOPEZ'}, f2:{domain: 'DO_JOE'}}, n2: {f1:{domain: 'DO_DAVID'}, f2:{domain: 'DO_DIEGO'}}}
         const ConnectedTestComponent = connect('n1')(TestComponent);
         const component = _tryRenderWithDefinitionContext(() =>  <ConnectedTestComponent/>, {definitions: DEFINITIONS});
-        it('shoud render a component', () => {
+        it('should render a component', () => {
           expect(component).to.be.a('object');
         });
-        it('shoud render a component with props', () => {
+        it('should render a component with props', () => {
           expect(component.props).to.be.a('object');
         });
         it('should have the _behaviours{isConnectedToDefinition} as props', () => {
