@@ -1,4 +1,4 @@
-import {reducerBuilder} from './reducer-builder';
+import {reducerBuilder} from '../../reducers/reducer-builder';
 import {loadUserTypes} from '../actions/user-actions';
 
 //types to use
