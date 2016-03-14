@@ -5,6 +5,6 @@ import userReducer from './user-reducer';
 
 // export a root reducer
 export default combineReducers({
-  entity: entityReducer,
-  user: userReducer
+    entity: entityReducer,
+    user: userReducer
 });

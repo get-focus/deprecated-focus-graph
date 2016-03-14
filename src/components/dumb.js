@@ -10,13 +10,13 @@ import Field from './field';
 import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
-function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherProps}){
+function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherProps}) {
   //console.log('dubm props', onChange, onSubmit)
-  const _onSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(fields);
+    const _onSubmit = (e) => {
+      e.preventDefault();
+      onSubmit(fields);
   }
-  return (
+    return (
     <Form onSubmit={_onSubmit}>
       {/* Fields auto rendering to test direct rendering without helpers*/}
       <h3>{'Use field helper and definition behaviour'}</h3>
@@ -27,9 +27,9 @@ function DumbExampleComponent({fields, onChange, onSubmit, fieldFor, ...otherPro
       <hr />
       <h3>{'Plain react stateless component'}</h3>
       {
-        fields && Object.keys(fields).reduce((res, fieldName)=>{
-          res.push(<Field key={fieldName} onChange={onChange} {...fields[fieldName]} />);
-          return res;
+        fields && Object.keys(fields).reduce((res, fieldName) => {
+            res.push(<Field key={fieldName} onChange={onChange} {...fields[fieldName]} />);
+            return res;
         }, [])
       }
       {/*Field for as props i have to find a way to bind on this without use call*/}
@@ -47,8 +47,8 @@ const ConnectedDumbExampleComponent = compose(
   connectToReduxStore(
     ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
     dispatch => ({
-      loadEntity: (id) => dispatch(loadEntity({id})),
-      saveEntity:(id, json) => dispatch(saveEntity(id, json))
+        loadEntity: (id) => dispatch(loadEntity({id})),
+        saveEntity:(id, json) => dispatch(saveEntity(id, json))
     })
   ),
   connectSmartData(),

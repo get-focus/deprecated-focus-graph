@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 
-function Form({onSubmit, children}){
-  return (
+function Form({onSubmit, children}) {
+    return (
       <form action={onSubmit}>
           {children}
       </form>
@@ -11,6 +11,6 @@ function Form({onSubmit, children}){
 
 Form.displayName = 'Form';
 Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
 };
 export default Form;

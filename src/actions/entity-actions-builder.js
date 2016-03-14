@@ -19,28 +19,28 @@ const _actionCreatorBuilder = type => (payload => (payload ? {type, payload}: {t
 //   }
 // }
 const _asyncActionCreator = ({service: promiseSvc, creators:{receive: {value: receiveActionCreator}, request: {value: requestActionCreator}, error: {value: errorActionCreator}}}) => (data => {
-  return async dispatch => {
-    try{
-      dispatch(requestActionCreator(data));
-      const svcValue = await promiseSvc(data)
-      dispatch(receiveActionCreator(svcValue));
+    return async dispatch => {
+      try{
+        dispatch(requestActionCreator(data));
+        const svcValue = await promiseSvc(data)
+        dispatch(receiveActionCreator(svcValue));
     }
-    catch(err){
-      dispatch(errorActionCreator(err));
+    catch(err) {
+        dispatch(errorActionCreator(err));
     }
   }
 });
 
 // Validate the action builder parameters
-const _validateActionBuilderParams = ({name, type, service})=>{
-  if(!isString(name) || STRING_EMPTY === name){
-    throw new Error(`${ACTION_BUILDER}: the name parameter should be a string.`);
+const _validateActionBuilderParams = ({name, type, service}) => {
+    if(!isString(name) || STRING_EMPTY === name) {
+      throw new Error(`${ACTION_BUILDER}: the name parameter should be a string.`);
   }
-  if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1){
-    throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
+    if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1) {
+      throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
   }
-  if(!isFunction(service)){
-    throw new Error(`${ACTION_BUILDER}: the service parameter should be a function.`);
+    if(!isFunction(service)) {
+      throw new Error(`${ACTION_BUILDER}: the service parameter should be a function.`);
   }
 }
 
@@ -69,38 +69,38 @@ const _validateActionBuilderParams = ({name, type, service})=>{
 // //which is a function taking the criteria as param
 // ```
 export const actionBuilder = ({name, type, service}) => {
-  _validateActionBuilderParams({name, type, service});
+    _validateActionBuilderParams({name, type, service});
   //Case transformation
-  const UPPER_TYPE = toUpper(type);
-  const UPPER_NAME = toUpper(name);
-  const CAPITALIZE_TYPE = capitalize(type);
-  const CAPITALIZE_NAME = capitalize(name);
+    const UPPER_TYPE = toUpper(type);
+    const UPPER_NAME = toUpper(name);
+    const CAPITALIZE_TYPE = capitalize(type);
+    const CAPITALIZE_NAME = capitalize(name);
 
-  const constants =  {
-    request: `REQUEST_${UPPER_TYPE}_${UPPER_NAME}`,
-    receive: `RECEIVE_${UPPER_TYPE}_${UPPER_NAME}`,
-    error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
+    const constants = {
+      request: `REQUEST_${UPPER_TYPE}_${UPPER_NAME}`,
+      receive: `RECEIVE_${UPPER_TYPE}_${UPPER_NAME}`,
+      error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
   }
-  const creators = {
-    request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request)},
-    receive: {name: `receive${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.receive)},
-    error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error)}
+    const creators = {
+      request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request)},
+      receive: {name: `receive${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.receive)},
+      error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error)}
   }
 
 
-  const action = _asyncActionCreator({service, creators});
-  return {
-    types: {
-      [constants.request]: constants.request,
-      [constants.receive]: constants.receive,
-      [constants.error]: constants.error
+    const action = _asyncActionCreator({service, creators});
+    return {
+      types: {
+        [constants.request]: constants.request,
+        [constants.receive]: constants.receive,
+        [constants.error]: constants.error
     },
-    creators: {
-      [creators.request.name]: creators.request.value,
-      [creators.receive.name]: creators.receive.value,
-      [creators.error.name]: creators.error.value
+      creators: {
+        [creators.request.name]: creators.request.value,
+        [creators.receive.name]: creators.receive.value,
+        [creators.error.name]: creators.error.value
     },
-    action
+      action
   }
 }
 
