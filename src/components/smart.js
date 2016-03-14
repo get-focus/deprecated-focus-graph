@@ -10,39 +10,39 @@ import Button from './button';
 import Code from './code';
 
 
-class SmartExampleComponent extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {fields: props.fields};
+class SmartExampleComponent extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {fields: props.fields};
   }
-  componentWillMount(){
+    componentWillMount() {
     //this.props.loadEntity(this.props.id);
   }
-  componentWillReceiveProps({fields}){
-    if(!fields){
-      return;
+    componentWillReceiveProps({fields}) {
+      if(!fields) {
+        return;
     }
-    const newFields = Object.keys(fields).reduce((res, fieldName)=>{
-      res[fieldName] = {name: fieldName, value: fields[fieldName]};
-      return res;
+      const newFields = Object.keys(fields).reduce((res, fieldName) => {
+        res[fieldName] = {name: fieldName, value: fields[fieldName]};
+        return res;
     }, {});
-    return this.setState({fields: newFields});
+      return this.setState({fields: newFields});
   }
-  render(){
-    const {onSubmit, onChange, fieldFor} = this.props;
-    const {fields} = this.state;
-    const _onSubmit = (e) => {
-      e.preventDefault();
-      onSubmit(fields);
+    render() {
+      const {onSubmit, onChange, fieldFor} = this.props;
+      const {fields} = this.state;
+      const _onSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(fields);
     }
-    return (
+      return (
       <Form onSubmit={_onSubmit}>
         {/* Fields auto rendering to test onChange without definitions and redux */}
         <h3>{'Plain react stateless component'}</h3>
         {
-          fields && Object.keys(fields).reduce((res, fieldName)=>{
-            res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
-            return res;
+          fields && Object.keys(fields).reduce((res, fieldName) => {
+              res.push(<Field key={fieldName} onChange={onChange.bind(this)} {...fields[fieldName]} />);
+              return res;
           }, [])
         }
         {/*Field for as props i have to find a way to bind on this without use call*/}
@@ -61,14 +61,14 @@ class SmartExampleComponent extends Component{
 
 SmartExampleComponent.displayName = SmartExampleComponent;
 SmartExampleComponent.defaultProps = {
-  onSubmit(data){
-    console.log('submit', data);
+    onSubmit(data) {
+      console.log('submit', data);
   },
-  onChange({name, value}){
+    onChange({name, value}) {
       const {fields} = this.state;
-      if(fields[name] !== value){
-        fields[name] = {name, value, error};
-        this.setState({fields});
+      if(fields[name] !== value) {
+          fields[name] = {name, value, error};
+          this.setState({fields});
       }
   }
 }
@@ -78,12 +78,12 @@ const FieldConnectedSmartExampleComponent = connectToFieldHelpers(SmartExampleCo
 const ReduxAndFieldConnectedSmartExampleComponent = connectToReduxStore(
   ({entity:{data, isLoading}}) => ({fields: data, isLoading}),
   (dispatch) => ({
-    loadEntity: (id) => {
-      dispatch(loadEntity({id}));
+      loadEntity: (id) => {
+        dispatch(loadEntity({id}));
     }
   })
 )(FieldConnectedSmartExampleComponent);
 
-const ConnectedSmartExampleComponent =  connectToDefinitions('user')(ReduxAndFieldConnectedSmartExampleComponent);
+const ConnectedSmartExampleComponent = connectToDefinitions('user')(ReduxAndFieldConnectedSmartExampleComponent);
 
 export default ConnectedSmartExampleComponent;

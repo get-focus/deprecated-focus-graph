@@ -1,8 +1,8 @@
 import React, {PropTypes} from 'react';
 
-function Button({onClick, children, options}){
-  const optionsClassName = options.map(opt => `mdl-button--${opt}`).join(' ');
-  return (
+function Button({onClick, children, options}) {
+    const optionsClassName = options.map(opt => `mdl-button--${opt}`).join(' ');
+    return (
     <button className={`mdl-button mdl-js-button ${optionsClassName}`} onClick={onClick}>
       {children}
     </button>
@@ -12,10 +12,10 @@ function Button({onClick, children, options}){
 
 Button.displayName = 'Button';
 Button.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string)
+    onClick: PropTypes.func.isRequired,
+    options: PropTypes.arrayOf(PropTypes.string)
 };
 Button.defaultProps = {
-  options: []
+    options: []
 }
 export default Button;

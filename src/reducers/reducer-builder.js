@@ -35,19 +35,19 @@
 //  }
 // }
 // ```
-export const reducerBuilder = ({types, defaultState})=>((state = defaultState, {type, payload})=>{
+export const reducerBuilder = ({types, defaultState}) => ((state = defaultState, {type, payload}) => {
   //todo: add some validation and check here
-  const {load, save} = types;
-  const {data} = state;
-  switch(type){
-    case load.request:
-    case save.request:
-     return {data, isLoading: true};
-   case load.receive:
-   case save.receive:
-      return {data: payload, isLoading: false};
+    const {load, save} = types;
+    const {data} = state;
+    switch(type) {
+      case load.request:
+      case save.request:
+          return {data, isLoading: true};
+      case load.receive:
+      case save.receive:
+          return {data: payload, isLoading: false};
   // todo: error case
-   default:
-     return state;
+      default:
+          return state;
   }
 });

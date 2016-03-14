@@ -11,17 +11,17 @@ const REQUEST_SAVE_USER= 'requestSaveUser', RECEIVE_SAVE_USER = 'receiveSaveUser
 // default state
 const DEFAULT_STATE = {
     data:{
-      firstName:'UserYolo'
+        firstName:'UserYolo'
     }
 };
 
 // Reducer for the user entity with a state modification on load and save.
 const userReducer = reducerBuilder({
-  types: {
-    load: {request: REQUEST_LOAD_USER, receive: RECEIVE_LOAD_USER},
-    save: {request: REQUEST_SAVE_USER, receive: RECEIVE_SAVE_USER}
+    types: {
+      load: {request: REQUEST_LOAD_USER, receive: RECEIVE_LOAD_USER},
+      save: {request: REQUEST_SAVE_USER, receive: RECEIVE_SAVE_USER}
   },
-  defaultState: DEFAULT_STATE
+    defaultState: DEFAULT_STATE
 });
 
 export default userReducer;

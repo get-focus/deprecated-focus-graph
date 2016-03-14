@@ -10,14 +10,14 @@ import UserDumbComponent from './components/user-dumb';
 import store from './store';
 
 const definitions = {
-  user:{
-    firstName: { domain: 'DO_RODRIGO', isRequired: false},
-    lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
+    user:{
+      firstName: { domain: 'DO_RODRIGO', isRequired: false},
+      lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
   }
 }
 
-export default function App(){
-  return (
+export default function App() {
+    return (
     <DefinitionsProvider definitions={definitions}>
       <StoreProvider store={store}>
         <FieldHelpersProvider>

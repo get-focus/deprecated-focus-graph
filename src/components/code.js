@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 
-function Code(props){
-  return (
+function Code(props) {
+    return (
     <pre>
       <h4>Your props</h4>
       <code>
