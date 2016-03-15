@@ -5,11 +5,9 @@ import 'babel-polyfill';
 
 import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider as StoreProvider} from 'react-redux';
+import {Provider as StoreProvider} from 'react-redux';
 import {Provider as DefinitionsProvider} from '../behaviours/definitions';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
-import ConnectedSmartComponentExample from './components/smart';
-import ConnectedDumbComponentExample from './components/dumb';
 import UserDumbComponent from './components/user-dumb';
 
 
@@ -28,8 +26,6 @@ const App = () => {
             <StoreProvider store={store}>
                 <FieldHelpersProvider>
                     <div>
-                        <h1>Example Dumb</h1>
-                        <ConnectedDumbComponentExample id={1234} />
                         <h1>User Dumb</h1>
                         <UserDumbComponent id={1234} />
                     </div>
@@ -57,18 +53,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         <a className='mdl-navigation__link' href=''>Link</a>
                         <a className='mdl-navigation__link' href=''>Link</a>
                     </nav>
-
                 </div>
             </header>
-            <div className='mdl-layout__drawer'>
-                <span className='mdl-layout-title'>Notification Center</span>
-                <nav className='mdl-navigation'>
-                    <a className='mdl-navigation__link' href=''>Link</a>
-                    <a className='mdl-navigation__link' href=''>Link</a>
-                    <a className='mdl-navigation__link' href=''>Link</a>
-                    <a className='mdl-navigation__link' href=''>Link</a>
-                </nav>
-            </div>
             <main className='mdl-layout__content'>
                 <App />
             </main>
