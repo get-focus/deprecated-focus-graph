@@ -58,7 +58,7 @@
     "html-webpack-plugin": "^2.8.1",
     "isomorphic-fetch": "^2.2.1",
     "json-loader": "^0.5.4",
-    "lodash": "^4.2.1",
+    "lodash": "^4.6.1",
     "material-design-icons-iconfont": "^2.0.4",
     "material-design-lite": "^1.1.1",
     "mocha": "^2.4.5",

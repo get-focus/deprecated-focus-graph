@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {connect as connectToReduxStore } from 'react-redux';
+import {connect as formConnect } from '../../behaviours/form';
 import {connect as connectToDefinitions} from '../../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectSmartData} from '../../behaviours/smart-data';
@@ -46,15 +46,14 @@ UserDumbComponent.displayName = UserDumbComponent;
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
 const ConnectedUserDumbComponent = compose(
     connectToDefinitions('user'),
-    connectToReduxStore(
-        ({dataset: {user:{data, isLoading}}}) => ({fields: data, isLoading}),
-        dispatch => ({
+    formConnect('userForm', ['user'], {
+        mapDispatchToProps: dispatch => ({
             loadEntity: (id) => dispatch(loadUserAction({id})),
             saveEntity:(id, json) => dispatch(loadUserAction(id, json))
         })
-    ),
+    }),
     connectSmartData(),
-    connectToFieldHelpers
+    connectToFieldHelpers()
 )(UserDumbComponent);
 
 export default ConnectedUserDumbComponent;
