@@ -1,4 +1,4 @@
-import {actionBuilder} from './entity-actions-builder';
+import {actionBuilder} from '../../actions/entity-actions-builder';
 import {loadUserSvc} from '../services/user-service';
 
 const loadAction = actionBuilder({name:'user', type:'load', service:loadUserSvc});

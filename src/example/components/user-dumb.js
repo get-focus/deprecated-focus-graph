@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToReduxStore } from 'react-redux';
-import {connect as connectToDefinitions} from '../behaviours/definitions';
-import {connect as connectToFieldHelpers} from '../behaviours/field';
-import {connect as connectSmartData} from '../behaviours/smart-data';
+import {connect as connectToDefinitions} from '../../behaviours/definitions';
+import {connect as connectToFieldHelpers} from '../../behaviours/field';
+import {connect as connectSmartData} from '../../behaviours/smart-data';
 import {loadUserAction} from '../actions/user-actions';
 // Dumb components
 import Form from './form';
-import Field from './field';
+import Field from '../../components/field';
 import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
