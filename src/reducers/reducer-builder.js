@@ -27,27 +27,27 @@
 // const {data} = state;
 //  switch (type) {
 //   case REQUEST_LOAD_USER:
-//       return {data, isLoading: true};
+//       return {data, loading: true};
 //   case RESPONSE_LOAD_USER:
-//       return {data: payload, isLoading: false};
+//       return {data: payload, loading: false};
 //   default:
 //       return state
 //  }
 // }
 // ```
 export const reducerBuilder = ({types, defaultState}) => ((state = defaultState, {type, payload}) => {
-  //todo: add some validation and check here
+    //todo: add some validation and check here
     const {load, save} = types;
     const {data} = state;
     switch(type) {
-      case load.request:
-      case save.request:
-          return {data, isLoading: true};
-      case load.response:
-      case save.response:
-          return {data: payload, isLoading: false};
-  // todo: error case
-      default:
-          return state;
-  }
+        case load.request:
+        case save.request:
+            return {data, loading: true};
+        case load.response:
+        case save.response:
+            return {data: payload, loading: false};
+        // todo: error case
+        default:
+            return state;
+    }
 });
