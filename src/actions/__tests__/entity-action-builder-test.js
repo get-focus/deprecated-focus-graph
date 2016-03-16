@@ -48,26 +48,26 @@ describe('The actionBuilder', () => {
             expect(actionBuilded).to.include.keys('types', 'creators', 'action');
         });
         describe('The types part of the result', () => {
-            it('should return an object with three types with REQUEST, RECEIVE and ERROR', () => {
+            it('should return an object with three types with REQUEST, RESPONSE and ERROR', () => {
               const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
               expect(actionBuildedTypes).to.be.an('object');
-              expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RECEIVE_LOAD_TEST', 'ERROR_LOAD_TEST');
+              expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RESPONSE_LOAD_TEST', 'ERROR_LOAD_TEST');
           });
         });
         describe('The creators part of the result', () => {
             const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_BUILDER_PARAMS_RESOLVE);
-            it('should return an object with three keys with request, receive, error', () => {
+            it('should return an object with three keys with request, response, error', () => {
               expect(actionBuildedCreators).to.be.an('object');
-              expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'receiveLoadTest', 'errorLoadTest');
+              expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'responseLoadTest', 'errorLoadTest');
           });
-            it('should return an object with three values with request, receive, error', () => {
-              const {requestLoadTest: requestActionCreator, receiveLoadTest: receiveActionCreator, errorLoadTest: errorActionCreator} = actionBuildedCreators;
+            it('should return an object with three values with request, response, error', () => {
+              const {requestLoadTest: requestActionCreator, responseLoadTest: responseActionCreator, errorLoadTest: errorActionCreator} = actionBuildedCreators;
               expect(requestActionCreator).to.be.a.function;
-              expect(receiveActionCreator).to.be.a.function;
+              expect(responseActionCreator).to.be.a.function;
               expect(errorActionCreator).to.be.a.function;
               const PAYLOAD = {test: 'test'};
               expect(requestActionCreator(PAYLOAD)).to.deep.equal({type: 'REQUEST_LOAD_TEST', payload: PAYLOAD});
-              expect(receiveActionCreator(PAYLOAD)).to.deep.equal({type: 'RECEIVE_LOAD_TEST', payload: PAYLOAD});
+              expect(responseActionCreator(PAYLOAD)).to.deep.equal({type: 'RESPONSE_LOAD_TEST', payload: PAYLOAD});
               expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD});
           });
         });
@@ -79,13 +79,13 @@ describe('The actionBuilder', () => {
               expect(actionBuildedResolveAsync).to.be.a.function;
               expect(actionBuildedRejectAsync).to.be.a.function;
           });
-            it('when called with a successfull service should call the receive and request action creators', async done => {
+            it('when called with a successfull service should call the response and request action creators', async done => {
               const dispatchSpy = sinon.spy();
               await actionBuildedResolveAsync()(dispatchSpy);
               expect(dispatchSpy).to.have.been.called.twice;
               expect(dispatchSpy).to.have.callCount(2);
               expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST'});
-              expect(dispatchSpy).to.have.been.called.calledWith({type: 'RECEIVE_LOAD_TEST', payload: RESOLVE_VALUE});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE});
               done();
           });
             it('when called with an unsuccessfull service should call the error action creator', async done => {
