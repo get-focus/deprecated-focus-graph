@@ -66,9 +66,9 @@ describe('The actionBuilder', () => {
               expect(responseActionCreator).to.be.a.function;
               expect(errorActionCreator).to.be.a.function;
               const PAYLOAD = {test: 'test'};
-              expect(requestActionCreator(PAYLOAD)).to.deep.equal({type: 'REQUEST_LOAD_TEST', payload: PAYLOAD});
-              expect(responseActionCreator(PAYLOAD)).to.deep.equal({type: 'RESPONSE_LOAD_TEST', payload: PAYLOAD});
-              expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD});
+              expect(requestActionCreator(PAYLOAD)).to.deep.equal({type: 'REQUEST_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test'});
+              expect(responseActionCreator(PAYLOAD)).to.deep.equal({type: 'RESPONSE_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test'});
+              expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test'});
           });
         });
         describe('The action part of the result', () => {
@@ -84,15 +84,15 @@ describe('The actionBuilder', () => {
               await actionBuildedResolveAsync()(dispatchSpy);
               expect(dispatchSpy).to.have.been.called.twice;
               expect(dispatchSpy).to.have.callCount(2);
-              expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST'});
-              expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncForm: true, entityPath: 'test'});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE, syncForm: true, entityPath: 'test'});
               done();
           });
             it('when called with an unsuccessfull service should call the error action creator', async done => {
               const dispatchSpy = sinon.spy();
               await actionBuildedRejectAsync()(dispatchSpy);
               expect(dispatchSpy).to.have.been.called.once;
-              expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_LOAD_TEST', payload: REJECT_VALUE});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_LOAD_TEST', payload: REJECT_VALUE, syncForm: true, entityPath: 'test'});
               done();
           });
         });

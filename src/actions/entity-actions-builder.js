@@ -6,7 +6,7 @@ const STRING_EMPTY = '';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = type => (payload => (payload ? {type, payload}: {type}));
+const _actionCreatorBuilder = (type, name) => payload => payload ? {type, payload, entityPath: name, syncForm: true}: {type, entityPath: name, syncForm: true};
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
@@ -82,9 +82,9 @@ export const actionBuilder = ({name, type, service}) => {
       error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
   }
     const creators = {
-      request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request)},
-      response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response)},
-      error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error)}
+      request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name)},
+      response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name)},
+      error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name)}
   }
 
 
