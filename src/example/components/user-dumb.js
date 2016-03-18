@@ -12,32 +12,21 @@ import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
 
-function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, ...otherProps}) {
+function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, loadEntity, id, ...otherProps}) {
     //console.log('dubm props', onChange, onSubmit)
     const _onSubmit = (e) => {
         e.preventDefault();
         onSubmit(fields);
     }
     return (
-        <Form onSubmit={_onSubmit}>
+        <div>
             {/* Fields auto rendering to test direct rendering without helpers*/}
-            <h3>{'Use field helper and definition behaviour'}</h3>
+            <Button onClick={() => {loadEntity(id)}}>Load entity from server</Button>
             {fieldFor('uuid')}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
             <Button onClick={_onSubmit}>{'Save'}</Button>
-            <hr />
-            <h3>{'Plain react stateless component'}</h3>
-            {
-                fields && Object.keys(fields).reduce((res, fieldName) => {
-                    res.push(<Field key={fieldName} onChange={onChange} {...fields[fieldName]} />);
-                    return res;
-                }, [])
-            }
-            {/*Field for as props i have to find a way to bind on this without use call*/}
-            {/*Debug purpose only show data functions are not displayed*/}
-            <Code {...{fields, ...otherProps}} />
-        </Form>
+        </div>
     );
 }
 
@@ -52,7 +41,6 @@ const ConnectedUserDumbComponent = compose(
             saveEntity:(id, json) => dispatch(loadUserAction(id, json))
         })
     }),
-    connectSmartData(),
     connectToFieldHelpers()
 )(UserDumbComponent);
 

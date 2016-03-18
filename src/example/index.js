@@ -10,11 +10,10 @@ import {Provider as DefinitionsProvider} from '../behaviours/definitions';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import UserDumbComponent from './components/user-dumb';
 
-
 import store from './store';
 
 const definitions = {
-    user:{
+    user: {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
     }
