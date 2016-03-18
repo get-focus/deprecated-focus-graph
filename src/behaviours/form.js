@@ -1,6 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm} from '../actions/form';
+import {createForm, destroyForm, inputChange} from '../actions/form';
+import find from 'lodash/find';
+
+const mapStateToPropsBuilder = key => ({forms}) => {
+    const formCandidate = find(forms, {key});
+    return {fields: formCandidate ? formCandidate.fields : []};
+};
 
 export const connect = (formKey, entityPathArray, storeConnectorOptions) => ComponentToConnect => {
     class FormComponent extends Component {
@@ -14,8 +20,13 @@ export const connect = (formKey, entityPathArray, storeConnectorOptions) => Comp
             dispatch(destroyForm(formKey));
         }
 
+        _onInputChange(name, entityPath, value) {
+            const {store: {dispatch}} = this.context;
+            dispatch(inputChange(formKey, name, entityPath, value));
+        }
+
         render() {
-            return <ComponentToConnect {...this.props}/>;
+            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={entityPathArray}/>;
         }
     }
     FormComponent.contextTypes = {
@@ -25,5 +36,5 @@ export const connect = (formKey, entityPathArray, storeConnectorOptions) => Comp
             getState: PropTypes.func.isRequired
         })
     };
-    return connectToStore(entityPathArray, storeConnectorOptions)(FormComponent);
+    return connectToStore(entityPathArray, {mapStateToProps: mapStateToPropsBuilder(formKey), ...storeConnectorOptions})(FormComponent);
 }

@@ -1,16 +1,22 @@
 import React , {Component, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
+import find from 'lodash/find';
 
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
 };
 
 
-function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, ...options}, {fields, definition, onChange}) {
+function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, entityPath, ...options}, {fields, definition, onInputChange, entityPathArray}) {
     //console.log('FIELD FOR', propertyName, fields, definition)
     //check if this is a component with fields in props
     //check if this has a definition in props
-    const value = (fields && fields[propertyName]) ? fields[propertyName].value : undefined;
+    // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
+    if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
+    entityPath = entityPath ? entityPath : entityPathArray[0];
+    const field = find(fields, {entityPath, name: propertyName});
+    const value = field ? field.inputValue : undefined;
+    const onChange = value => onInputChange(propertyName, entityPath, value);
     return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options}/>;
 }
 
