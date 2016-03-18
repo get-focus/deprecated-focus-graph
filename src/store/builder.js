@@ -6,12 +6,13 @@ import formMiddleware from '../middlewares/form';
 
 const loggerMiddleware = createLogger();
 
-const builder = appReducers => createStore(
+const builder = (appReducers, customMiddlewares = []) => createStore(
     combineReducers({
         dataset: appReducers,
         ...focusReducers
     }),
     applyMiddleware(
+        ...customMiddlewares,
         formMiddleware,
         thunkMiddleware, // lets us dispatch() functions
         loggerMiddleware // neat middleware that logs actions
