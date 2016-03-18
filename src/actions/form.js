@@ -22,3 +22,11 @@ export const syncFormEntity = (entityPath, fields) => ({
     entityPath,
     fields
 });
+
+export const inputChange = (formKey, fieldName, entityPath, value) => ({
+    type: INPUT_CHANGE,
+    formKey,
+    fieldName,
+    entityPath,
+    value
+});
