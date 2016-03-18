@@ -29,7 +29,8 @@ const formMiddleware = store => next => action => {
             name: fieldName,
             entityPath,
             dataSetValue: fieldValue,
-            loading: get(dataset, `${entityPath}.loading`)
+            loading: get(dataset, `${entityPath}.loading`),
+            inputValue: fieldValue
         }));
         // Dispatch the SYNC_FORM_ENTITY action
         store.dispatch(syncFormEntity(entityPath, fields));

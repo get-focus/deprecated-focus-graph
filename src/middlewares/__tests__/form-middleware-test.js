@@ -127,13 +127,15 @@ describe('The form middleware', () => {
                         dataSetValue: 'David',
                         entityPath: 'user',
                         name: 'firstName',
-                        loading: true
+                        loading: true,
+                        inputValue: 'David'
                     },
                     {
                         dataSetValue: 'Lopez',
                         entityPath: 'user',
                         name: 'lastName',
-                        loading: true
+                        loading: true,
+                        inputValue: 'Lopez'
                     }
                 ]
             });
