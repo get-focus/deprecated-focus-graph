@@ -12,6 +12,10 @@ const initializeField = field => ({
     ...field
 });
 
+const findField = (fields, entityPath, name) => find(fields, {entityPath, name});
+const getFieldsOutterJoin = (firstSource, secondSource) => xorWith(firstSource, secondSource, (a, b) => a.name === b.name && a.entityPath === b.entityPath);
+const isNotAFieldFromForm = ({dirty}) => isUndefined(dirty);
+
 const forms = (state = [], action) => {
     switch (action.type) {
         case CREATE_FORM:
@@ -32,13 +36,13 @@ const forms = (state = [], action) => {
                     ...form.fields.map(formField => ({
                         ...formField,
                         // Look into the action's fields to update, if it concerns the current field then merge it
-                        ...find(action.fields, {entityPath: action.entityPath, name: formField.name})
+                        ...findField(action.fields, action.entityPath, formField.name)
                     })),
                     // Get the outter intersection of the action fields and the form fields, meaning the
                     // fields to update that are not in the form, or the form fields that should not be updated
-                    ...xorWith(form.fields, action.fields, (a, b) => a.name === b.name && a.entityPath === b.entityPath)
+                    ...getFieldsOutterJoin(form.fields, action.fields)
                     // then filter it to remove the existing form fields, and create the missing fields
-                    .filter(({dirty}) => isUndefined(dirty))
+                    .filter(isNotAFieldFromForm)
                     .map(initializeField)
                 ]
             } : form));
@@ -61,7 +65,7 @@ const forms = (state = [], action) => {
                                 valid: true,
                                 error: false,
                                 active: true,
-                                dirty: false,
+                                dirty: true,
                                 inputValue: action.value
                             }
                         ]

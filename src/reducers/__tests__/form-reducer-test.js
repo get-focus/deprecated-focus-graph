@@ -1,4 +1,4 @@
-import {createForm, destroyForm} from '../../actions/form';
+import {createForm, destroyForm, SYNC_FORM_ENTITY} from '../../actions/form';
 import formReducer from '../form';
 import isArray from 'lodash/isArray';
 
@@ -39,4 +39,78 @@ describe('The form reducer', () => {
             expect(newState.length).to.equal(0);
         });
     });
+    describe('when receiving a SYNC_FORM_ENTITY action', () => {
+        const state = [{
+            key: 'form1',
+            entityPathArray: ['user'],
+            fields: [
+                {
+                    name: 'firstName',
+                    entityPath: 'user',
+                    inputValue: 'David',
+                    dataSetValue: 'David',
+                    dirty: true
+                },
+                {
+                    name: 'lastName',
+                    entityPath: 'user',
+                    inputValue: 'Lopez',
+                    dataSetValue: 'Lopez',
+                    dirty: false
+                },
+                {
+                    name: 'weapon',
+                    entityPath: 'user',
+                    inputValue: 'shoe',
+                    dataSetValue: 'shoe',
+                    dirty: false
+                }
+            ]
+        }];
+        const action = {
+            type: SYNC_FORM_ENTITY,
+            entityPath: 'user',
+            fields: [
+                {
+                    name: 'firstName',
+                    entityPath: 'user',
+                    dataSetValue: 'Joe'
+                },
+                {
+                    name: 'lastName',
+                    entityPath: 'user',
+                    dataSetValue: 'Lopez'
+                },
+                {
+                    name: 'wife',
+                    entityPath: 'user',
+                    dataSetValue: 'Kevina'
+                }
+            ]
+        };
+        const newState = formReducer(state, action);
+        it('should return an array', () => {
+            expect(isArray(newState)).to.be.true;
+        });
+        it('should have the correct count of fields', () => {
+            expect(newState[0].fields.length).to.equal(4);
+        });
+        it('should update the common fields', () => {
+            const updatedForm = newState[0];
+            expect(updatedForm.fields[0].dataSetValue).to.equal('Joe');
+            expect(updatedForm.fields[1].dataSetValue).to.equal('Lopez');
+        });
+        it('should leave untouched the non-updated fields', () => {
+            const updatedForm = newState[0];
+            expect(updatedForm.fields[2].dataSetValue).to.equal('shoe');
+        });
+        it('should reset the dirty state for all fields', () => {
+            const updatedForm = newState[0];
+            updatedForm.fields.map(field => expect(field.dirty).to.be.false);
+        });
+        it('should create the missing fields', () => {
+            const updatedForm = newState[0];
+            expect(updatedForm.fields[3].dataSetValue).to.equal('Kevina');
+        });
+    })
 });
