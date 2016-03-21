@@ -1,4 +1,4 @@
-import {createForm} from '../../actions/form';
+import {createForm, destroyForm} from '../../actions/form';
 import formReducer from '../form';
 import isArray from 'lodash/isArray';
 
@@ -27,5 +27,16 @@ describe('The form reducer', () => {
                 inputValue: 'fieldValue'
             }]);
         })
+    });
+    describe('when receiving a DESTROY_FORM action', () => {
+        const state = [{key: 'lol'}];
+        const action = destroyForm('lol');
+        const newState = formReducer(state, action);
+        it('should return an array', () => {
+            expect(isArray(newState)).to.be.true;
+        });
+        it('should destroy the target form', () => {
+            expect(newState.length).to.equal(0);
+        });
     });
 });
