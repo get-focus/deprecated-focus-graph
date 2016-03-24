@@ -106,7 +106,10 @@ describe('The form reducer', () => {
         });
         it('should reset the dirty state for all fields', () => {
             const updatedForm = newState[0];
-            updatedForm.fields.map(field => expect(field.dirty).to.be.false);
+            updatedForm.fields.map(field => {
+                
+                expect(field.dirty).to.be.false;
+            });
         });
         it('should create the missing fields', () => {
             const updatedForm = newState[0];

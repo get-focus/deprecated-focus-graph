@@ -33,11 +33,15 @@ const forms = (state = [], action) => {
             return state.map(form => (form.entityPathArray.indexOf(action.entityPath) !== -1 ? {
                 ...form,
                 fields: [
-                    ...form.fields.map(formField => ({
-                        ...formField,
-                        // Look into the action's fields to update, if it concerns the current field then merge it
-                        ...findField(action.fields, action.entityPath, formField.name)
-                    })),
+                    ...form.fields.map(formField => {
+                        const candidateField = findField(action.fields, action.entityPath, formField.name);
+                        if (!candidateField) return formField;
+                        return {
+                            ...formField,
+                            ...candidateField,
+                            dirty: false
+                        };
+                    }),
                     // Get the outter intersection of the action fields and the form fields, meaning the
                     // fields to update that are not in the form, or the form fields that should not be updated
                     ...getFieldsOutterJoin(form.fields, action.fields)
@@ -76,13 +80,15 @@ const forms = (state = [], action) => {
                 return state.map(form => ({
                     ...form,
                     ...(form.key === action.formKey ? {
-                        fields: form.fields.map(field => ({
-                            ...field,
-                            // Test if it's the correct field, identified by the tuple (name, entityPath)
-                            ...(field.name === action.fieldName && field.entityPath === action.entityPath ? {
-                                inputValue: action.value
-                            } : {})
-                        }))
+                        fields: form.fields.map(field => {
+                            const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                            if (!isFieldConcerned) return field;
+                            return {
+                                ...field,
+                                inputValue: action.value,
+                                dirty: true
+                            };
+                        })
                     } : {})
                 }));
             }
