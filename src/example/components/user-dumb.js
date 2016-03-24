@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {connect as formConnect } from '../../behaviours/form';
 import {connect as connectToDefinitions} from '../../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
-import {connect as connectSmartData} from '../../behaviours/smart-data';
 import {loadUserAction} from '../actions/user-actions';
 
 // Dumb components

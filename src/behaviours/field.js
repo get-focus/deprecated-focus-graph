@@ -17,7 +17,7 @@ function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, entityP
     const field = find(fields, {entityPath, name: propertyName});
     const value = field ? field.inputValue : undefined;
     const onChange = value => onInputChange(propertyName, entityPath, value);
-    return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options}/>;
+    return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options} {...field}/>;
 }
 
 export function connect() {

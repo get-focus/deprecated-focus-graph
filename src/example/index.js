@@ -9,6 +9,7 @@ import {Provider as StoreProvider} from 'react-redux';
 import {Provider as DefinitionsProvider} from '../behaviours/definitions';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import UserDumbComponent from './components/user-dumb';
+import DevTools from './containers/dev-tools';
 
 import store from './store';
 
@@ -23,12 +24,15 @@ const App = () => {
     return (
         <DefinitionsProvider definitions={definitions}>
             <StoreProvider store={store}>
-                <FieldHelpersProvider>
-                    <div>
-                        <h1>User Dumb</h1>
-                        <UserDumbComponent id={1234} />
-                    </div>
-                </FieldHelpersProvider>
+                <div>
+                    <DevTools />
+                    <FieldHelpersProvider>
+                        <div>
+                            <h1>User Dumb</h1>
+                            <UserDumbComponent id={1234} />
+                        </div>
+                    </FieldHelpersProvider>
+                </div>
             </StoreProvider>
         </DefinitionsProvider>
     )
@@ -54,7 +58,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     </nav>
                 </div>
             </header>
-            <main className='mdl-layout__content'>
+            <main className='mdl-layout__content' style={{zIndex: 3}}>
                 <App />
             </main>
         </div>,
