@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect as formConnect } from '../../behaviours/form';
 import {connect as connectToDefinitions} from '../../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
-import {loadUserAction} from '../actions/user-actions';
+import {loadUserAction, saveUserAction} from '../actions/user-actions';
 
 // Dumb components
 import Form from './form';
@@ -11,12 +11,9 @@ import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
 
-function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, loadEntity, id, ...otherProps}) {
+function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, loadEntity, saveEntity, id, ...otherProps}) {
     //console.log('dubm props', onChange, onSubmit)
-    const _onSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(fields);
-    }
+    const save = () => saveEntity(fields.reduce((user, field) => ({...user, [field.name]: field.inputValue}), {}));
     return (
         <div>
             {/* Fields auto rendering to test direct rendering without helpers*/}
@@ -24,7 +21,7 @@ function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, lo
             {fieldFor('uuid', {onChange: () => {console.log(fields)}})}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
-            <Button onClick={_onSubmit}>{'Save'}</Button>
+            <Button onClick={save}>{'Save'}</Button>
         </div>
     );
 }
@@ -36,8 +33,8 @@ const ConnectedUserDumbComponent = compose(
     connectToDefinitions('user'),
     formConnect('userForm', ['user'], {
         mapDispatchToProps: dispatch => ({
-            loadEntity: (id) => dispatch(loadUserAction({id})),
-            saveEntity:(id, json) => dispatch(loadUserAction(id, json))
+            loadEntity: id => dispatch(loadUserAction({id})),
+            saveEntity: user => dispatch(saveUserAction(user))
         })
     }),
     connectToFieldHelpers()
