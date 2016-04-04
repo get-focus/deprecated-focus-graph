@@ -46,7 +46,9 @@ export const reducerBuilder = ({types, defaultState}) => ((state = defaultState,
         case load.response:
         case save.response:
             return {data: payload, loading: false};
-        // todo: error case
+        case load.error:
+        case save.error:
+            return {...state, loading: false};
         default:
             return state;
     }
