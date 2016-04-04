@@ -21,7 +21,7 @@ function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, lo
         <div>
             {/* Fields auto rendering to test direct rendering without helpers*/}
             <Button onClick={() => {loadEntity(id)}}>Load entity from server</Button>
-            {fieldFor('uuid')}
+            {fieldFor('uuid', {onChange: () => {console.log(fields)}})}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
             <Button onClick={_onSubmit}>{'Save'}</Button>

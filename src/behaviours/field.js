@@ -6,25 +6,27 @@ const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
 };
 
+const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, ...options} = {}) => {
+    const {fields, definition, onInputChange, entityPathArray} = props;
 
-function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, entityPath, ...options}, {fields, definition, onInputChange, entityPathArray}) {
-    //console.log('FIELD FOR', propertyName, fields, definition)
-    //check if this is a component with fields in props
-    //check if this has a definition in props
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
     entityPath = entityPath ? entityPath : entityPathArray[0];
+
     const field = find(fields, {entityPath, name: propertyName});
     const value = field ? field.inputValue : undefined;
-    const onChange = value => onInputChange(propertyName, entityPath, value);
-    return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options} {...field}/>;
+    const onChange = value => {
+        onInputChange(propertyName, entityPath, value);
+        if (options.onChange) options.onChange(value);
+    }
+
+    return <FieldComponent {...options} {...field} name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} />;
 }
 
 export function connect() {
     return function connectComponent(ComponentToConnect) {
         function FieldConnectedComponent(props, {fieldHelpers}) {
-            const fieldFor = (name, options = {FieldComponent: DefaultFieldComponent}) => fieldHelpers.fieldFor(name, options, props)
-            //console.log('field helpers behaviour', props);
+            const fieldFor = fieldHelpers.fieldForBuilder(props);
             return <ComponentToConnect {...props} hasFieldHelpers fieldFor={fieldFor}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
@@ -36,10 +38,9 @@ export function connect() {
 
 class FieldProvider extends Component {
     getChildContext() {
-        const {FieldComponent} = this.props;
         return {
             fieldHelpers: {
-                fieldFor
+                fieldForBuilder
             }
         }
     }
