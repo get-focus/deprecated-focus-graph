@@ -25,6 +25,11 @@ export const connect = (formKey, entityPathArray, storeConnectorOptions) => Comp
             dispatch(inputChange(formKey, name, entityPath, value));
         }
 
+        _toggleEdit(edit) {
+            const {store: {dispatch}} = this.context;
+            dispatch(toggleFormEdit(formKey, edit));
+        }
+
         render() {
             return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={entityPathArray}/>;
         }

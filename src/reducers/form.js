@@ -1,4 +1,4 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE, TOGGLE_FORM_EDITING, TOGGLE_FORM_SAVING} from '../actions/form';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -23,7 +23,8 @@ const forms = (state = [], action) => {
             return [...state, {
                 key: action.key,
                 entityPathArray: action.entityPathArray,
-                // TODO populate the form
+                editing: false,
+                saving: false,
                 fields: action.fields.map(initializeField)
             }];
         case DESTROY_FORM:
@@ -92,6 +93,16 @@ const forms = (state = [], action) => {
                     } : {})
                 }));
             }
+        case TOGGLE_FORM_EDITING:
+            return state.map(form => ({
+                ...form,
+                editing: form.key === action.formKey ? action.editing : form.editing
+            }));
+        case TOGGLE_FORM_SAVING:
+            return state.map(form => ({
+                ...form,
+                saving: form.key === action.formKey ? action.saving : form.saving
+            }));
         default:
             return state;
     }
