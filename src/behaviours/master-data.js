@@ -9,7 +9,7 @@ class MasterDataProvider extends Component {
   constructor(props) {
     super(props);
     this._loaders = props.configuration.reduce((res, current) => {
-        res[current.name] = () => _loadMasterData(name, current.service, current.cacheDuration);
+        res[current.name] = () => loadMasterData(name, current.service, current.cacheDuration);
         return res;
     });
   }
