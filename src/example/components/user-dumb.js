@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import {connect as connectToReduxStore } from 'react-redux';
+import {connect as formConnect } from '../../behaviours/form';
 import {connect as connectToDefinitions} from '../../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
-import {connect as connectSmartData} from '../../behaviours/smart-data';
-import {loadUserAction} from '../actions/user-actions';
+import {loadUserAction, saveUserAction} from '../actions/user-actions';
+import {toggleFormSaving} from '../../actions/form';
 
 // Dumb components
 import Form from './form';
@@ -12,32 +12,18 @@ import Button from './button';
 import Code from './code';
 import compose from 'lodash/flowRight';
 
-function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, ...otherProps}) {
+function UserDumbComponent({fields, onChange, onSubmit, fieldFor, createForm, loadEntity, saveEntity, id, ...otherProps}) {
     //console.log('dubm props', onChange, onSubmit)
-    const _onSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(fields);
-    }
+    const save = () => saveEntity(fields.reduce((user, field) => ({...user, [field.name]: field.inputValue}), {}));
     return (
-        <Form onSubmit={_onSubmit}>
+        <div>
             {/* Fields auto rendering to test direct rendering without helpers*/}
-            <h3>{'Use field helper and definition behaviour'}</h3>
-            {fieldFor('uuid')}
+            <Button onClick={() => {loadEntity(id)}}>Load entity from server</Button>
+            {fieldFor('uuid', {onChange: () => {console.log(fields)}})}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
-            <Button onClick={_onSubmit}>{'Save'}</Button>
-            <hr />
-            <h3>{'Plain react stateless component'}</h3>
-            {
-                fields && Object.keys(fields).reduce((res, fieldName) => {
-                    res.push(<Field key={fieldName} onChange={onChange} {...fields[fieldName]} />);
-                    return res;
-                }, [])
-            }
-            {/*Field for as props i have to find a way to bind on this without use call*/}
-            {/*Debug purpose only show data functions are not displayed*/}
-            <Code {...{fields, ...otherProps}} />
-        </Form>
+            <Button onClick={save}>{'Save'}</Button>
+        </div>
     );
 }
 
@@ -46,15 +32,16 @@ UserDumbComponent.displayName = UserDumbComponent;
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
 const ConnectedUserDumbComponent = compose(
     connectToDefinitions('user'),
-    connectToReduxStore(
-        ({dataset: {user:{data, isLoading}}}) => ({fields: data, isLoading}),
-        dispatch => ({
-            loadEntity: (id) => dispatch(loadUserAction({id})),
-            saveEntity:(id, json) => dispatch(loadUserAction(id, json))
+    formConnect('userForm', ['user'], {
+        mapDispatchToProps: dispatch => ({
+            loadEntity: id => dispatch(loadUserAction({id})),
+            saveEntity: user => {
+                dispatch(toggleFormSaving('userForm', true));
+                dispatch(saveUserAction(user));
+            }
         })
-    ),
-    connectSmartData(),
-    connectToFieldHelpers
+    }),
+    connectToFieldHelpers()
 )(UserDumbComponent);
 
 export default ConnectedUserDumbComponent;

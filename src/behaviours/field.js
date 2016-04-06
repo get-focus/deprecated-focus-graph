@@ -1,58 +1,52 @@
 import React , {Component, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
+import find from 'lodash/find';
 
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
 };
 
-export function connectWithoutBinding() {
-  //check it is a string or an array;
-    return function connectComponentToFieldHelpers(ComponentToConnect) {
-      class FieldConnectedComponent extends Component {
-        render() {
-          return <ComponentToConnect {...this.props} {...this.context.fieldHelpers}/>;
-      }
+const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, ...options} = {}) => {
+    const {fields, definition, onInputChange, entityPathArray} = props;
+
+    // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
+    if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
+    entityPath = entityPath ? entityPath : entityPathArray[0];
+
+    const field = find(fields, {entityPath, name: propertyName});
+    const value = field ? field.inputValue : undefined;
+    const onChange = value => {
+        onInputChange(propertyName, entityPath, value);
+        if (options.onChange) options.onChange(value);
     }
-      FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
-      FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
-      return FieldConnectedComponent;
-  }
 
+    return <FieldComponent {...options} {...field} name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} />;
 }
 
-
-export function fieldFor(propertyName, {FieldComponent = DefaultFieldComponent, ...options}, {fields, definition, onChange}) {
-  //console.log('FIELD FOR', propertyName, fields, definition)
-  //check if this is a component with fields in props
-  //check if this has a definition in props
-    const value = (fields && fields[propertyName]) ? fields[propertyName].value : undefined;
-    return <FieldComponent name={propertyName} onChange={onChange} value={value} metadata={definition[propertyName]} {...options}/>;
-}
-
-export function connect(ComponentToConnect) {
-    function FieldConnectedComponent(props, {fieldHelpers}) {
-     const fieldFor = (name, options = {FieldComponent: DefaultFieldComponent}) => fieldHelpers.fieldFor(name, options, props)
-     //console.log('field helpers behaviour', props);
-     return <ComponentToConnect {...props} hasFieldHelpers fieldFor={fieldFor}/>;
- }
-    FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
-    FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
-    return FieldConnectedComponent;
+export function connect() {
+    return function connectComponent(ComponentToConnect) {
+        function FieldConnectedComponent(props, {fieldHelpers}) {
+            const fieldFor = fieldHelpers.fieldForBuilder(props);
+            return <ComponentToConnect {...props} hasFieldHelpers fieldFor={fieldFor}/>;
+        }
+        FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
+        FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
+        return FieldConnectedComponent;
+    }
 }
 
 
 class FieldProvider extends Component {
     getChildContext() {
-      const {FieldComponent} = this.props;
-      return {
-        fieldHelpers: {
-          fieldFor
-      }
+        return {
+            fieldHelpers: {
+                fieldForBuilder
+            }
+        }
     }
-  }
     render() {
-      return this.props.children;
-  }
+        return this.props.children;
+    }
 }
 FieldProvider.defaultProps = {
     FieldComponent: DefaultFieldComponent
