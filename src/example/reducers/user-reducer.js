@@ -8,12 +8,9 @@ import {saveUserTypes} from '../actions/user-actions';
 const {REQUEST_LOAD_USER, RESPONSE_LOAD_USER, ERROR_LOAD_USER} = loadUserTypes;
 const {REQUEST_SAVE_USER, RESPONSE_SAVE_USER, ERROR_SAVE_USER} = saveUserTypes;
 
-// default state
-const DEFAULT_STATE = {
-    data:{
-        firstName:'UserYolo'
-    },
-    loading: false
+// default data
+const DEFAULT_DATA = {
+    firstName:'UserYolo'
 };
 
 // Reducer for the user entity with a state modification on load and save.
@@ -22,7 +19,7 @@ const userReducer = reducerBuilder({
         load: {request: REQUEST_LOAD_USER, response: RESPONSE_LOAD_USER, error: ERROR_LOAD_USER},
         save: {request: REQUEST_SAVE_USER, response: RESPONSE_SAVE_USER, error: ERROR_SAVE_USER}
     },
-    defaultState: DEFAULT_STATE
+    defaultData: DEFAULT_DATA
 });
 
 export default userReducer;

@@ -3,7 +3,6 @@ import {connect as formConnect } from '../../behaviours/form';
 import {connect as connectToDefinitions} from '../../behaviours/definitions';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {loadUserAction, saveUserAction} from '../actions/user-actions';
-import {toggleFormSaving} from '../../actions/form';
 
 // Dumb components
 import Form from './form';
@@ -35,10 +34,7 @@ const ConnectedUserDumbComponent = compose(
     formConnect('userForm', ['user'], {
         mapDispatchToProps: dispatch => ({
             loadEntity: id => dispatch(loadUserAction({id})),
-            saveEntity: user => {
-                dispatch(toggleFormSaving('userForm', true));
-                dispatch(saveUserAction(user));
-            }
+            saveEntity: user => dispatch(saveUserAction(user))
         })
     }),
     connectToFieldHelpers()

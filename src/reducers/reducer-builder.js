@@ -27,28 +27,37 @@
 // const {data} = state;
 //  switch (type) {
 //   case REQUEST_LOAD_USER:
-//       return {data, loading: true};
+//       return {data, loading: true, saving: false};
 //   case RESPONSE_LOAD_USER:
-//       return {data: payload, loading: false};
+//       return {data: payload, loading: false, saving: false};
 //   default:
 //       return state
 //  }
 // }
 // ```
-export const reducerBuilder = ({types, defaultState}) => ((state = defaultState, {type, payload}) => {
+
+const getDefaultState = defaultData => ({
+    data: defaultData,
+    loading: false,
+    saving: false
+});
+
+export const reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defaultData), {type, payload}) => {
     //todo: add some validation and check here
     const {load, save} = types;
-    const {data} = state;
     switch(type) {
         case load.request:
+            return {...state, loading: true};
         case save.request:
-            return {data, loading: true};
+            return {...state, saving: true};
         case load.response:
+            return {...state, data: payload, loading: false};
         case save.response:
-            return {data: payload, loading: false};
+            return {...state, data: payload, saving: false};
         case load.error:
-        case save.error:
             return {...state, loading: false};
+        case save.error:
+            return {...state, saving: false};
         default:
             return state;
     }

@@ -6,9 +6,6 @@ export const INPUT_ERROR = 'INPUT_ERROR';
 
 export const SYNC_FORM_ENTITY = 'SYNC_FORM_ENTITY';
 
-export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
-export const TOGGLE_FORM_SAVING = 'TOGGLE_FORM_SAVING';
-
 export const createForm = (key, entityPathArray) => ({
     type: CREATE_FORM,
     key,
@@ -38,10 +35,4 @@ export const toggleFormEditing = (formKey, editing) => ({
     type: TOGGLE_FORM_EDITING,
     formKey,
     editing
-});
-
-export const toggleFormSaving = (formKey, saving) => ({
-    type: TOGGLE_FORM_SAVING,
-    formKey,
-    saving
 });

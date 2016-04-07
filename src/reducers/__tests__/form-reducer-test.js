@@ -24,6 +24,8 @@ describe('The form reducer', () => {
                 dirty: false,
                 error: false,
                 valid: true,
+                loading: false,
+                saving: false,
                 inputValue: 'fieldValue'
             }]);
         })
@@ -107,7 +109,7 @@ describe('The form reducer', () => {
         it('should reset the dirty state for all fields', () => {
             const updatedForm = newState[0];
             updatedForm.fields.map(field => {
-                
+
                 expect(field.dirty).to.be.false;
             });
         });

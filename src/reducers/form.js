@@ -1,4 +1,4 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE, TOGGLE_FORM_EDITING, TOGGLE_FORM_SAVING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE, TOGGLE_FORM_EDITING} from '../actions/form';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -8,6 +8,8 @@ const initializeField = field => ({
     error: false,
     active: true,
     dirty: false,
+    loading: false,
+    saving: false,
     inputValue: field.dataSetValue,
     ...field
 });
@@ -24,6 +26,7 @@ const forms = (state = [], action) => {
                 key: action.key,
                 entityPathArray: action.entityPathArray,
                 editing: false,
+                loading: false,
                 saving: false,
                 fields: action.fields.map(initializeField)
             }];
@@ -31,26 +34,33 @@ const forms = (state = [], action) => {
             return state.filter(({key: candidateKey}) => candidateKey !== action.key);
         case SYNC_FORM_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
-            return state.map(form => (form.entityPathArray.indexOf(action.entityPath) !== -1 ? {
-                ...form,
-                fields: [
-                    ...form.fields.map(formField => {
-                        const candidateField = findField(action.fields, action.entityPath, formField.name);
-                        if (!candidateField) return formField;
-                        return {
-                            ...formField,
-                            ...candidateField,
-                            dirty: false
-                        };
-                    }),
-                    // Get the outter intersection of the action fields and the form fields, meaning the
-                    // fields to update that are not in the form, or the form fields that should not be updated
-                    ...getFieldsOutterJoin(form.fields, action.fields)
-                    // then filter it to remove the existing form fields, and create the missing fields
-                    .filter(isNotAFieldFromForm)
-                    .map(initializeField)
-                ]
-            } : form));
+            return state.map(form => {
+                if (form.entityPathArray.indexOf(action.entityPath) === -1) return form;
+                const newForm = {
+                    ...form,
+                    fields: [
+                        ...form.fields.map(formField => {
+                            const candidateField = findField(action.fields, action.entityPath, formField.name);
+                            if (!candidateField) return formField;
+                            return {
+                                ...formField,
+                                ...candidateField,
+                                dirty: false
+                            };
+                        }),
+                        // Get the outter intersection of the action fields and the form fields, meaning the
+                        // fields to update that are not in the form, or the form fields that should not be updated
+                        ...getFieldsOutterJoin(form.fields, action.fields)
+                        // then filter it to remove the existing form fields, and create the missing fields
+                        .filter(isNotAFieldFromForm)
+                        .map(initializeField)
+                    ]
+                };
+                // Iterate over fiels to check if form is loading or saving
+                newForm.loading = newForm.fields.reduce((acc, {loading}) => acc || loading, false);
+                newForm.saving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
+                return newForm;
+            });
         case INPUT_CHANGE:
             // TODO : do a clean cut of the form array, to avoid form duplication
             // Check if the field to change exists
@@ -97,11 +107,6 @@ const forms = (state = [], action) => {
             return state.map(form => ({
                 ...form,
                 editing: form.key === action.formKey ? action.editing : form.editing
-            }));
-        case TOGGLE_FORM_SAVING:
-            return state.map(form => ({
-                ...form,
-                saving: form.key === action.formKey ? action.saving : form.saving
             }));
         default:
             return state;
