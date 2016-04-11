@@ -93,4 +93,38 @@ describe.only('The master data reducer', () => {
         });
     });
 
+    describe('when receiving an action with ERROR_MASTER_DATA', () => {
+        const ACTION_ERROR_MASTER_DATA = {
+          type: ERROR_MASTER_DATA,
+          error: 'Problem during the list loading',
+          name: 'chiffres'
+        };
+        const updateItem = {
+          name: ACTION_ERROR_MASTER_DATA.name,
+          error: ACTION_ERROR_MASTER_DATA.error,
+          loading: false
+        };
+        describe('when the state does not contain the master data', () => {
+          const INITIAL_STATE = [{name: 'A', value: 'a'}]
+          const newState = masterDataReducer(INITIAL_STATE, ACTION_ERROR_MASTER_DATA);
+          it('shoud return a new array with the new master data in the **loading** state', () => {
+            expect(newState).to.be.an.array;
+            expect(newState.length).to.equal(INITIAL_STATE.length + 1);
+            expect(newState.find(m => m.name === ACTION_ERROR_MASTER_DATA.name))
+            .to.deep.equal(updateItem);
+          });
+        });
+        describe('when the state contains the master data', () => {
+          const INITIAL_STATE = [{name: 'A', value: 'a'}, {name: 'chiffres', value: [{code: 'lol', value: 'lol'}]}];
+          const newState = masterDataReducer(INITIAL_STATE, ACTION_ERROR_MASTER_DATA);
+          it('should return a new array of the same length with an updated master data in the **loading** state', () => {
+            expect(newState).to.be.an.array;
+            expect(newState.length).to.equal(INITIAL_STATE.length);
+            expect(newState.find(m => m.name === ACTION_ERROR_MASTER_DATA.name))
+                .to.deep.equal(updateItem);
+          });
+        });
+    });
+
+
 });
