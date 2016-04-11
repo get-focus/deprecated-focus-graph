@@ -6,7 +6,7 @@ import map from 'lodash/map';
 const formMiddleware = store => next => action => {
     if (action.type === CREATE_FORM) {
         const {dataset} = store.getState();
-        const {entityPathArray, key: formKey} = action;
+        const {entityPathArray, formKey} = action;
         const fields = entityPathArray.reduce((acc, entityPath) => ([
             ...acc,
             ...map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => ({

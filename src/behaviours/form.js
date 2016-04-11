@@ -3,17 +3,18 @@ import {connect as connectToStore} from './store';
 import {createForm, destroyForm, inputChange} from '../actions/form';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
+import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
 
-const internalMapStateToProps = (state, key) => {
-    const formCandidate = find(state.forms, {key});
-    const resultingProps = {};
-    if (formCandidate) {
-        resultingProps.fields = formCandidate.fields;
-        resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.inputValue}), {});
-    } else {
-        resultingProps.fields = [];
-        resultingProps.getUserInput = () => ({});
-    }
+const validateFormOptions = ({formKey, entityPathArray}) => {
+    if (!isString(formKey)) throw new Error('You must provide a "formKey" option as a string to the form connect.');
+    if (!isArray(entityPathArray)) throw new Error('You must provide a "entityPathArray" option as an array to the form connect.');
+}
+
+const internalMapStateToProps = (state, formKey) => {
+    const formCandidate = find(state.forms, {formKey});
+    const resultingProps = {...formCandidate};
+    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.inputValue}), {})
     return resultingProps;
 };
 
@@ -24,30 +25,30 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction) => {
     return resultingActions;
 };
 
-const getExtendedComponent = (ComponentToConnect,formOptions) => {
+const getExtendedComponent = (ComponentToConnect, formOptions) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
-            dispatch(createForm(formOptions.name, formOptions.entityPathArray));
+            dispatch(createForm(formOptions.formKey, formOptions.entityPathArray));
         }
 
         componentWillUnmount() {
             const {store: {dispatch}} = this.context;
-            dispatch(destroyForm(formOptions.name));
+            dispatch(destroyForm(formOptions.formKey));
         }
 
         _onInputChange(name, entityPath, value) {
             const {store: {dispatch}} = this.context;
-            dispatch(inputChange(formOptions.name, name, entityPath, value));
+            dispatch(inputChange(formOptions.formKey, name, entityPath, value));
         }
 
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
-            dispatch(toggleFormEdit(formOptions.name, edit));
+            dispatch(toggleFormEdit(formOptions.formKey, edit));
         }
 
         render() {
-            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={formOptions.entityPathArray}/>;
+            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={formOptions.entityPathArray} />;
         }
     }
     FormComponent.contextTypes = {
@@ -62,13 +63,17 @@ const getExtendedComponent = (ComponentToConnect,formOptions) => {
 
 export const connect = (formOptions) => ComponentToConnect => {
     const {
-        name: formKey,
+        formKey,
         entityPathArray,
         mapStateToProps: userDefinedMapStateToProps = () => ({}),
         mapDispatchToProps: userDefinedMapDispatchToProps = () => ({}),
         loadAction,
         saveAction
     } = formOptions;
+
+    // Validate the provided options
+
+    validateFormOptions(formOptions);
 
     // Extend the component
     const extendedComponent = getExtendedComponent(ComponentToConnect, formOptions);

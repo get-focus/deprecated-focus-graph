@@ -23,7 +23,7 @@ const forms = (state = [], action) => {
         case CREATE_FORM:
             // When creating a form, simply initialize all the fields and pass it to the new form object
             return [...state, {
-                key: action.key,
+                formKey: action.formKey,
                 entityPathArray: action.entityPathArray,
                 editing: false,
                 loading: false,
@@ -31,7 +31,7 @@ const forms = (state = [], action) => {
                 fields: action.fields.map(initializeField)
             }];
         case DESTROY_FORM:
-            return state.filter(({key: candidateKey}) => candidateKey !== action.key);
+            return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
         case SYNC_FORM_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
             return state.map(form => {
@@ -64,12 +64,12 @@ const forms = (state = [], action) => {
         case INPUT_CHANGE:
             // TODO : do a clean cut of the form array, to avoid form duplication
             // Check if the field to change exists
-            const changedFieldExistsInForm = !isUndefined(find(find(state, {key: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
+            const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
             if (!changedFieldExistsInForm) {
                 // It does not exist, so create it
                 return state.map(form => ({
                     ...form,
-                    ...(form.key === action.formKey ? {
+                    ...(form.formKey === action.formKey ? {
                         fields: [
                             // Keep the other fields
                             ...form.fields,
@@ -90,7 +90,7 @@ const forms = (state = [], action) => {
                 // The field exists, so just update the inputValue
                 return state.map(form => ({
                     ...form,
-                    ...(form.key === action.formKey ? {
+                    ...(form.formKey === action.formKey ? {
                         fields: form.fields.map(field => {
                             const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                             if (!isFieldConcerned) return field;
@@ -106,7 +106,7 @@ const forms = (state = [], action) => {
         case TOGGLE_FORM_EDITING:
             return state.map(form => ({
                 ...form,
-                editing: form.key === action.formKey ? action.editing : form.editing
+                editing: form.formKey === action.formKey ? action.editing : form.editing
             }));
         default:
             return state;

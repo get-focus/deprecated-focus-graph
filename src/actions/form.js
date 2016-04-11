@@ -6,15 +6,15 @@ export const INPUT_ERROR = 'INPUT_ERROR';
 
 export const SYNC_FORM_ENTITY = 'SYNC_FORM_ENTITY';
 
-export const createForm = (key, entityPathArray) => ({
+export const createForm = (formKey, entityPathArray) => ({
     type: CREATE_FORM,
-    key,
+    formKey,
     entityPathArray
 });
 
-export const destroyForm = key => ({
+export const destroyForm = formKey => ({
     type: DESTROY_FORM,
-    key
+    formKey
 });
 
 export const syncFormEntity = (entityPath, fields) => ({

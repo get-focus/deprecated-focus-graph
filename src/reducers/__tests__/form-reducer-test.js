@@ -16,7 +16,7 @@ describe('The form reducer', () => {
         it('should create the form object', () => {
             expect(newState.length).to.equal(1);
             const form = newState[0];
-            expect(form.key).to.equal('formKey');
+            expect(form.formKey).to.equal('formKey');
             expect(form.fields).to.deep.equal([{
                 name: 'myField',
                 dataSetValue: 'fieldValue',
@@ -31,7 +31,7 @@ describe('The form reducer', () => {
         })
     });
     describe('when receiving a DESTROY_FORM action', () => {
-        const state = [{key: 'lol'}];
+        const state = [{formKey: 'lol'}];
         const action = destroyForm('lol');
         const newState = formReducer(state, action);
         it('should return an array', () => {

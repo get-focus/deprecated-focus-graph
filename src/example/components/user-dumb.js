@@ -27,7 +27,7 @@ function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, ...o
 UserDumbComponent.displayName = UserDumbComponent;
 
 const formConfig = {
-    name: 'userForm',
+    formKey: 'userForm',
     entityPathArray: ['user'],
     loadAction: loadUserAction,
     saveAction: saveUserAction
