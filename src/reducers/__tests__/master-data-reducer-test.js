@@ -35,7 +35,7 @@ describe.only('The master data reducer', () => {
         const updateItem = {
           name: ACTION_REQUEST_MASTER_DATA.name,
           value: ACTION_REQUEST_MASTER_DATA.value,
-          isLoading: true
+          loading: true
         };
         describe('when the state does not contain the master data', () => {
           const INITIAL_STATE = [{name: 'A', value: 'a'}]
@@ -58,4 +58,39 @@ describe.only('The master data reducer', () => {
           });
         });
     });
+
+
+    describe('when receiving an action with RESPONSE_MASTER_DATA', () => {
+        const ACTION_RESPONSE_MASTER_DATA = {
+          type: RESPONSE_MASTER_DATA,
+          value: MOCK_VALUE_MASTER_DATA,
+          name: 'chiffres'
+        };
+        const updateItem = {
+          name: ACTION_RESPONSE_MASTER_DATA.name,
+          value: ACTION_RESPONSE_MASTER_DATA.value,
+          loading: false
+        };
+        describe('when the state does not contain the master data', () => {
+          const INITIAL_STATE = [{name: 'A', value: 'a'}]
+          const newState = masterDataReducer(INITIAL_STATE, ACTION_RESPONSE_MASTER_DATA);
+          it('shoud return a new array with the new master data in the **loading** state', () => {
+            expect(newState).to.be.an.array;
+            expect(newState.length).to.equal(INITIAL_STATE.length + 1);
+            expect(newState.find(m => m.name === ACTION_RESPONSE_MASTER_DATA.name))
+            .to.deep.equal(updateItem);
+          });
+        });
+        describe('when the state contains the master data', () => {
+          const INITIAL_STATE = [{name: 'A', value: 'a'}, {name: 'chiffres', value: [{code: 'lol', value: 'lol'}]}];
+          const newState = masterDataReducer(INITIAL_STATE, ACTION_RESPONSE_MASTER_DATA);
+          it('should return a new array of the same length with an updated master data in the **loading** state', () => {
+            expect(newState).to.be.an.array;
+            expect(newState.length).to.equal(INITIAL_STATE.length);
+            expect(newState.find(m => m.name === ACTION_RESPONSE_MASTER_DATA.name))
+            .to.deep.equal(updateItem);
+          });
+        });
+    });
+
 });

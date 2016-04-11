@@ -14,13 +14,13 @@ const masterDataReducer = (state = [], action = {}) => {
     const {type} = action;
     switch (type) {
         case REQUEST_MASTER_DATA:
-          const loadingMasterData = {name: action.name, value: action.value, isLoading: true};
+          const loadingMasterData = {name: action.name, value: action.value, loading: true};
           return _updateOrCreateMasterDataWithElement(state, action.name, loadingMasterData);
         case RESPONSE_MASTER_DATA:
-          const responseMasterData = {name: action.name, value: action.value, isLoading: false};
+          const responseMasterData = {name: action.name, value: action.value, loading: false};
           return _updateOrCreateMasterDataWithElement(state, action.name, responseMasterData);
         case ERROR_MASTER_DATA:
-          const errorMasterData = {name: action.name, error: action.error, isLoading: false};
+          const errorMasterData = {name: action.name, error: action.error, loading: false};
           return _updateOrCreateMasterDataWithElement(state, action.name, errorMasterData);
         default:
           return state;
