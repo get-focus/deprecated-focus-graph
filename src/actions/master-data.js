@@ -1,23 +1,18 @@
-import {isObject} from 'lodash/lang';
+import {isObject, isString, isNumber, isFunction} from 'lodash/lang';
 export const REQUEST_MASTER_DATA = 'REQUEST_MASTER_DATA';
 export const RESPONSE_MASTER_DATA = 'RESPONSE_MASTER_DATA';
 export const ERROR_MASTER_DATA = 'ERROR_MASTER_DATA';
-export const SERVE_FROM_CACHE_MASTER_DATA = 'SERVE_FROM_CACHE_MASTER_DATA';
-
-
+const LOAD_MASTER_DATA_ACTION = 'LOAD_MASTER_DATA_ACTION';
 export const requestMasterData = name => {
-  return {type: REQUEST_MASTER_DATA, payload: {name}};
-}
-export const responseMasterData = (name, data)  => {
-  return {type: RESPONSE_MASTER_DATA, payload: {name, data}};
+  return {type: REQUEST_MASTER_DATA, name};
 }
 
-export const servedFromCacheMasterData = (name, data)  => {
-  return {type: RESPONSE_MASTER_DATA, payload: {name, data}};
+export const responseMasterData = (name, data)  => {
+  return {type: RESPONSE_MASTER_DATA, name, value: data};
 }
 
 export const errorMasterData = (name, error) => {
-  return {type: ERROR_MASTER_DATA, payload: {name, error}};
+  return {type: ERROR_MASTER_DATA, name, error};
 }
 const DEFAULT_CACHE_DURATION = 1000 * 60; //1 min
 const _cache = {};
@@ -28,30 +23,47 @@ const _isDataInCache = name => {
   return isObject(cachedData) && _getTimeStamp() - cachedData.timeStamp < cachedData.cacheDuration;
 };
 
-async const _getDataFromCache =  name => {
-  return Promise.resolve(_cache[name].value);
-}
-const _setDataInCache = (name, value, cacheDuration = DEFAULT_CACHE_DURATION) => {
-  _cache[name] = {name, value, cacheDuration, timeStamp: _getTimeStamp()};
-  return value;
-}
+const _setDataInCache = (name, cacheDuration = DEFAULT_CACHE_DURATION) => {
+  _cache[name] = {name, cacheDuration, timeStamp: _getTimeStamp()};
+};
 
-export async const loadMasterData(name, service, cacheDuration = DEFAULT_CACHE_DURATION) => {
-    requestMasterData(name);
-    try {
-      if(_isDataInCache(name)){
+const _validateLoadMasterData = (name, service, cacheDuration) => {
+  if(!isString(name) || '' === name) {
+      throw new Error(`${LOAD_MASTER_DATA_ACTION}: the name parameter should be a string.`);
+  }
+  if(!isFunction(service)) {
+      throw new Error(`${LOAD_MASTER_DATA_ACTION}: the service parameter should be a function.`);
+  }
+  if(!isNumber(cacheDuration)) {
+    throw new Error(`${LOAD_MASTER_DATA_ACTION}: the cacheDuration parameter should be a number.`);
+  }
+};
+
+
+// Load a
+export const loadMasterData = (name, service, cacheDuration = DEFAULT_CACHE_DURATION) => {
+    _validateLoadMasterData(name, service, cacheDuration);
+    return async dispatch => {
+      dispatch(requestMasterData(name));
+      try {
+        if(_isDataInCache(name)){
           //Question is the cache usefull as this data will be in the app state.
           // Maybe we should only keep the timestamp and the name
           // This is usefull only for debug prupose.
-          const cached = await _getDataFromCache(name);
-          servedFromCacheMasterData(name, cached);
+          return;
+          //const cached = await _getDataFromCache(name);
+          //servedFromCacheMasterData(name, cached);
+        }
+        else {
+          const res = await service().then(d => {
+            _setDataInCache(name, cacheDuration)
+            return d;
+          });
+          dispatch(responseMasterData(name, res));
+        }
+      } catch(err){
+        dispatch(errorMasterData(name, err));
       }
-      else {
-        const res = await service().then(d => _setDataInCache(name, d, cacheDuration));
-        responseMasterData(name, res);
-      }
-    } catch(err){
-      errorMasterData(name, err)
     }
 };
 
