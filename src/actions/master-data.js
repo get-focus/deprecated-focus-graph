@@ -44,7 +44,6 @@ const _validateLoadMasterData = (name, service, cacheDuration) => {
 export const loadMasterData = (name, service, cacheDuration = DEFAULT_CACHE_DURATION) => {
     _validateLoadMasterData(name, service, cacheDuration);
     return async dispatch => {
-      dispatch(requestMasterData(name));
       try {
         if(_isDataInCache(name)){
           //Question is the cache usefull as this data will be in the app state.
@@ -55,10 +54,9 @@ export const loadMasterData = (name, service, cacheDuration = DEFAULT_CACHE_DURA
           //servedFromCacheMasterData(name, cached);
         }
         else {
-          const res = await service().then(d => {
-            _setDataInCache(name, cacheDuration)
-            return d;
-          });
+          dispatch(requestMasterData(name));
+          const res = await service()
+          _setDataInCache(name, cacheDuration);
           dispatch(responseMasterData(name, res));
         }
       } catch(err){

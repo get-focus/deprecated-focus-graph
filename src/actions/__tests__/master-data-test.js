@@ -1,10 +1,13 @@
-import {loadMasterData} from '../master-data';
+import {loadMasterData, REQUEST_MASTER_DATA, RESPONSE_MASTER_DATA, ERROR_MASTER_DATA} from '../master-data';
 const NAME_SHOULD_BE_A_STRING = 'LOAD_MASTER_DATA_ACTION: the name parameter should be a string.';
 const SERVICE_SHOULD_BE_A_FUNCTION = 'LOAD_MASTER_DATA_ACTION: the service parameter should be a function.';
 const CACHE_DURATION_SHOULD_BE_A_NUMBER = 'LOAD_MASTER_DATA_ACTION: the cacheDuration parameter should be a number.';
 
 const MOCKED_MASTER_DATA = [{code: 1, value: 'Un'}, {code: 2, value: 'Deux'}];
-const MOCKED_SVC = () => Promise.resolve(MOCKED_MASTER_DATA);
+const MOCKED_SVC = () => {
+            console.log('PROM');
+  return Promise.resolve(MOCKED_MASTER_DATA)
+};
 
 describe('master data actions', () => {
   describe.only('loadMasterData', () => {
@@ -66,30 +69,57 @@ describe('master data actions', () => {
           });
 
         });
+        describe('The builded action part of the result', () => {
+            const NAME = 'chiffres';
+            const ERROR_MASTER_DATA_MOCK = 'No way to load this list';
+            const loadActionWithResolveServiceAsync =  loadMasterData(NAME, d => Promise.resolve(MOCKED_MASTER_DATA), 0);
+            const loadActionWithResolveServiceAsyncWithCache =  loadMasterData(NAME, d => Promise.resolve(MOCKED_MASTER_DATA));
+            const loadActionWithRejectServiceAsync =  loadMasterData(NAME, d => Promise.reject(ERROR_MASTER_DATA_MOCK), 0);
 
-/*        it('should throw an error when called without a string name parameter', () => {
-            const NAME_MESSAGE = 'ACTION_BUILDER: the name parameter should be a string.';
-            expect(() => { loadMasterData({name: undefined})}).to.throw(NAME_MESSAGE);
-            expect(() => { loadMasterData({name: 1})}).to.throw(NAME_MESSAGE);
-            expect(() => { loadMasterData({name: {}})}).to.throw(NAME_MESSAGE);
-            expect(() => { loadMasterData({name: () => {}})}).to.throw(NAME_MESSAGE);
-            expect(() => { loadMasterData({name: ''})}).to.throw(NAME_MESSAGE);
-            expect(() => { loadMasterData({name: 'test'})}).to.not.throw(NAME_MESSAGE);
+            it('should return a function', () => {
+              expect(loadActionWithResolveServiceAsync).to.be.a.function;
+              expect(loadActionWithResolveServiceAsync).to.be.a.function;
+            });
+
+            it('when called with a successfull service should call the response and request action creators', async done => {
+              const dispatchSpy = sinon.spy();
+              await loadActionWithResolveServiceAsync(dispatchSpy);
+              expect(dispatchSpy).to.have.been.called.twice;
+              expect(dispatchSpy).to.have.callCount(2);
+              expect(dispatchSpy).to.have.been.called.calledWith({type: REQUEST_MASTER_DATA, name: NAME});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: RESPONSE_MASTER_DATA, name: NAME,  value: MOCKED_MASTER_DATA});
+              done();
+            });
+
+            it('when called with an unsuccessfull service should call the error action creator', async done => {
+              const dispatchSpy = sinon.spy();
+              await loadActionWithRejectServiceAsync(dispatchSpy);
+              expect(dispatchSpy).to.have.been.called.twice;
+              expect(dispatchSpy).to.have.callCount(2);
+              expect(dispatchSpy).to.have.been.called.calledWith({type: REQUEST_MASTER_DATA, name: NAME});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: ERROR_MASTER_DATA, name: NAME, error: ERROR_MASTER_DATA_MOCK});
+              done();
+            });
+            it('when called with a successfull service should call the response and request action creators without the cache', async done => {
+              const dispatchSpy = sinon.spy();
+              await loadActionWithResolveServiceAsync(dispatchSpy);
+              await loadActionWithResolveServiceAsync(dispatchSpy);
+              expect(dispatchSpy).to.have.callCount(4);
+              expect(dispatchSpy).to.have.been.called.calledWith({type: REQUEST_MASTER_DATA, name: NAME});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: RESPONSE_MASTER_DATA, name: NAME,  value: MOCKED_MASTER_DATA});
+              done();
+            });
+            it('when called with a successfull service should call the response and request action creators without the cache', async done => {
+              const dispatchSpy = sinon.spy();
+              await loadActionWithResolveServiceAsyncWithCache(dispatchSpy);
+              await loadActionWithResolveServiceAsyncWithCache(dispatchSpy);
+              expect(dispatchSpy).to.have.callCount(2);
+              expect(dispatchSpy).to.have.been.called.calledWith({type: REQUEST_MASTER_DATA, name: NAME});
+              expect(dispatchSpy).to.have.been.called.calledWith({type: RESPONSE_MASTER_DATA, name: NAME,  value: MOCKED_MASTER_DATA});
+              done();
+            });
+
         });
-        it('should throw an error when called without a string type parameter : load,save,delete', () => {
-            const TYPE_MESSAGE = 'ACTION_BUILDER: the type parameter should be a string and the value one of these: load,save,delete.';
-            expect(() => { loadMasterData({name: 'test'})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: undefined})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: 1})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: {}})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: () => {}})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: ''})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: 'nimp'})}).to.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: 'load'})}).to.not.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: 'save'})}).to.not.throw(TYPE_MESSAGE);
-            expect(() => { loadMasterData({name: 'test', type: 'delete'})}).to.not.throw(TYPE_MESSAGE);
-        });
-        */
     });
   })
 });
