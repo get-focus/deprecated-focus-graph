@@ -3,7 +3,7 @@ import masterDataReducer from '../master-data';
 import {isArray} from 'lodash/lang'
 const EMPY_INITIAL_STATE  = [];
 const MOCK_VALUE_MASTER_DATA = [{code: 1, label: 'Un'}, {code: 2, label: 'Deux'}];
-describe.only('The master data reducer', () => {
+describe('The master data reducer', () => {
 
     describe('when receiving an unknown action with no initial state', () => {
       const newState = masterDataReducer();

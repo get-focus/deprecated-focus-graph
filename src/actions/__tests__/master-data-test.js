@@ -10,7 +10,7 @@ const MOCKED_SVC = () => {
 };
 
 describe('master data actions', () => {
-  describe.only('loadMasterData', () => {
+  describe('loadMasterData', () => {
     describe('when called with wrong parameters', () => {
         it('should throw a LOAD_MASTER_DATA_ACTION  on the name error when called without all parameters', () => {
             expect(() => { loadMasterData()}).to.throw(Error, NAME_SHOULD_BE_A_STRING);
