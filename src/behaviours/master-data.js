@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {loadMasterData} from '../actions/master-data';
 import {pick} from 'lodash/object';
+import {isArray} from 'lodash/lang';
 import {capitalize} from 'lodash/string';
-
+const MASTER_DATA_CONNECT = 'MASTER_DATA_CONNECT';
 const MASTER_DATA_PROPTYPE = PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -26,6 +27,12 @@ const MASTER_DATA_CONTEXT_TYPE = {
 //const MyMasterDataConnectedComponent =  connectMasterData(['sandwichTypes'])(MyComponentWhichUsesAMasterDataLoader)
 //```
 const connectMasterData = (names = []) => {
+  if(!isArray(names)){
+    throw new Error(`${MASTER_DATA_CONNECT}: the names property must be an array.`);
+  }
+  if(names.length === 0){
+    throw new Error(`${MASTER_DATA_CONNECT}: the names property must contain at least a name.`);
+  }
   return function connectComponent(ComponentToConnect) {
       const MasterDataConnectedComponent = (props, {masterDataLoaders}) => {
           const wantedMasterDataLoaders = masterDataLoaders.reduce((res, current) => {
