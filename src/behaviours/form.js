@@ -7,8 +7,8 @@ import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 
 const validateFormOptions = ({formKey, entityPathArray}) => {
-    if (!isString(formKey)) throw new Error('You must provide a "formKey" option as a string to the form connect.');
-    if (!isArray(entityPathArray)) throw new Error('You must provide a "entityPathArray" option as an array to the form connect.');
+    if (!isString(formKey)) throw new Error('FormConnect: You must provide a "formKey" option as a string to the form connect.');
+    if (!isArray(entityPathArray)) throw new Error('FormConnect: You must provide a "entityPathArray" option as an array to the form connect.');
 }
 
 const internalMapStateToProps = (state, formKey) => {
@@ -25,15 +25,24 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction) => {
     return resultingActions;
 };
 
+/**
+ * Extends the provided component
+ * Creates and destroys the form, binds the inputChange methods to the current form key
+ * @param  {ReactComponent} ComponentToConnect  the component that will be extended
+ * @param  {object} formOptions                 the form options
+ * @return {ReactComponent}                     the extended component
+ */
 const getExtendedComponent = (ComponentToConnect, formOptions) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
+            // On component mounting, create the form in the Redux state
             dispatch(createForm(formOptions.formKey, formOptions.entityPathArray));
         }
 
         componentWillUnmount() {
             const {store: {dispatch}} = this.context;
+            // On component mounting, remove the form from the Redux state
             dispatch(destroyForm(formOptions.formKey));
         }
 
@@ -61,7 +70,21 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
     return FormComponent;
 };
 
-export const connect = (formOptions) => ComponentToConnect => {
+/**
+ * Form connector
+ * Wraps the provided component into a component that will create the form on mounting and destroy it on unmounting.
+ * Exposes an onInputChange prop already filled with the form key
+ * formOptions has the shape {
+ * 		formKey: the form key
+ * 	 	entityPathArray: an array of all the entity paths the form should listen to. An entity path is the path in the dataset to reach the entity
+ *    	mapStateToProps: a function taking the redux state as an argument and returning the props that should be given to the form component
+ *     	mapDispatchToProps:  a function taking the redux dispatch function as an argument and returning the props that should be given to the form component
+ *     	loadAction: the entity load action. If provided, a 'load' function will be provided as a prop, automatically dispatching the loadAction output
+ *     	saveAction: same as loadAction but with the save
+ * }
+ * Usage: const FormComponent = connect({formKey: 'movieForm', entityPathArray: ['movie']})(MyComponent);
+ */
+export const connect = formOptions => ComponentToConnect => {
     const {
         formKey,
         entityPathArray,

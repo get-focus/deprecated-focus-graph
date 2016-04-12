@@ -15,7 +15,7 @@ describe('The form connect', () => {
     describe('when used with no option', () => {
         const formOptions = {};
         it('should throw an error on the formKey option', () => {
-            expect(() => connect(formOptions)(MyComponent)).to.throw('You must provide a "formKey" option as a string to the form connect.');
+            expect(() => connect(formOptions)(MyComponent)).to.throw('FormConnect: You must provide a "formKey" option as a string to the form connect.');
         });
     });
 
@@ -24,7 +24,7 @@ describe('The form connect', () => {
             formKey: 'testForm'
         };
         it('should throw an error on the entityPathArray option', () => {
-            expect(() => connect(formOptions)(MyComponent)).to.throw('You must provide a "entityPathArray" option as an array to the form connect.');
+            expect(() => connect(formOptions)(MyComponent)).to.throw('FormConnect: You must provide a "entityPathArray" option as an array to the form connect.');
         });
     });
 
