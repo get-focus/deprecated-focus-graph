@@ -22,10 +22,9 @@ const MASTER_DATA_CONTEXT_TYPE = {
 // Where name is what you give to the names property of the connector.
 // Example Call
 //```jsx
-//  const MyComponentWhichUsesAMasterDataLoader = (props) => <div><button = >LoadMyList</button>{props.name}</div>;
-// const MyMasterDataConnectedComponent =  connectMasterData(['sandwichTypes'])(MyComponentWhichUsesAMasterDataLoader)
+//const MyComponentWhichUsesAMasterDataLoader = (props) => <div><button = >LoadMyList</button>{props.name}</div>;
+//const MyMasterDataConnectedComponent =  connectMasterData(['sandwichTypes'])(MyComponentWhichUsesAMasterDataLoader)
 //```
-
 const connectMasterData = (names = []) => {
   return function connectComponent(ComponentToConnect) {
       const MasterDataConnectedComponent = (props, {masterDataLoaders}) => {
