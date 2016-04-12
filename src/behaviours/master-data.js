@@ -35,7 +35,7 @@ const connectMasterData = (names = []) => {
               return res;
           }, {});
           if(Object.keys(wantedMasterDataLoaders) === 0){
-            console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDataLoaders ${masterDataLoaders.reduce((res, current) => [...res, current.name]), [])}`)
+            console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDataLoaders ${masterDataLoaders.reduce((res, current) => [...res, current.name], [])}`)
           }
           const {_behaviours, ...otherProps} = props;
           const behaviours = {isConnectedMasterData: true, ..._behaviours}
