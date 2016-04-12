@@ -42,7 +42,7 @@
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.4.5",
-    "babel-eslint": "^4.1.8",
+    "babel-eslint": "^6.0.2",
     "babel-loader": "^6.2.2",
     "babel-polyfill": "^6.5.0",
     "babel-preset-focus": "^0.3.1",
@@ -57,6 +57,7 @@
     "file-loader": "^0.8.5",
     "html-webpack-plugin": "^2.8.1",
     "isomorphic-fetch": "^2.2.1",
+    "jsdom": "^8.3.1",
     "json-loader": "^0.5.4",
     "lodash": "^4.6.1",
     "material-design-icons-iconfont": "^2.0.4",

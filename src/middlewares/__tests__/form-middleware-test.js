@@ -15,7 +15,8 @@ describe('The form middleware', () => {
                             firstName: 'Joe',
                             lastName: 'Lopez'
                         },
-                        loading: true
+                        loading: true,
+                        saving: false
                     }
                 },
                 forms: [{
@@ -25,7 +26,8 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         dataSetValue: 'Joe',
                         entityPath: 'user',
-                        loading: false
+                        loading: false,
+                        saving: false
                     }]
                 }]
             }
@@ -67,13 +69,15 @@ describe('The form middleware', () => {
                         dataSetValue: 'Joe',
                         entityPath: 'user',
                         name: 'firstName',
-                        loading: true
+                        loading: true,
+                        saving: false
                     },
                     {
                         dataSetValue: 'Lopez',
                         entityPath: 'user',
                         name: 'lastName',
-                        loading: true
+                        loading: true,
+                        saving: false
                     }
                 ]
             });
@@ -90,7 +94,8 @@ describe('The form middleware', () => {
                                 firstName: 'David',
                                 lastName: 'Lopez'
                             },
-                            loading: true
+                            loading: true,
+                            saving: true
                         }
                     },
                     forms: [{
@@ -100,7 +105,8 @@ describe('The form middleware', () => {
                             name: 'firstName',
                             dataSetValue: 'Joe',
                             entityPath: 'user',
-                            loading: false
+                            loading: false,
+                            saving: false
                         }]
                     }]
                 }
@@ -128,6 +134,7 @@ describe('The form middleware', () => {
                         entityPath: 'user',
                         name: 'firstName',
                         loading: true,
+                        saving: true,
                         inputValue: 'David'
                     },
                     {
@@ -135,6 +142,7 @@ describe('The form middleware', () => {
                         entityPath: 'user',
                         name: 'lastName',
                         loading: true,
+                        saving: true,
                         inputValue: 'Lopez'
                     }
                 ]

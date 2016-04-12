@@ -6,14 +6,15 @@ import map from 'lodash/map';
 const formMiddleware = store => next => action => {
     if (action.type === CREATE_FORM) {
         const {dataset} = store.getState();
-        const {entityPathArray, key: formKey} = action;
+        const {entityPathArray, formKey} = action;
         const fields = entityPathArray.reduce((acc, entityPath) => ([
             ...acc,
             ...map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => ({
                 name: fieldName,
                 entityPath,
                 dataSetValue: fieldValue,
-                loading: get(dataset, `${entityPath}.loading`)
+                loading: get(dataset, `${entityPath}.loading`),
+                saving: get(dataset, `${entityPath}.saving`)
             }))
         ]), []);
         return next({...action, fields});
@@ -30,6 +31,7 @@ const formMiddleware = store => next => action => {
             entityPath,
             dataSetValue: fieldValue,
             loading: get(dataset, `${entityPath}.loading`),
+            saving: get(dataset, `${entityPath}.saving`),
             inputValue: fieldValue
         }));
         // Dispatch the SYNC_FORM_ENTITY action
