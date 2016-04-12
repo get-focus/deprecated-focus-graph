@@ -8,9 +8,10 @@ import ReactDOM from 'react-dom';
 import {Provider as StoreProvider} from 'react-redux';
 import {Provider as DefinitionsProvider} from '../behaviours/definitions';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
+import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserDumbComponent from './components/user-dumb';
 import DevTools from './containers/dev-tools';
-
+import {loadCivility} from './services/load-civility';
 import store from './store';
 
 const definitions = {
@@ -24,6 +25,7 @@ const App = () => {
     return (
         <DefinitionsProvider definitions={definitions}>
             <StoreProvider store={store}>
+              <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
                 <div>
                     <DevTools />
                     <FieldHelpersProvider>
@@ -33,6 +35,7 @@ const App = () => {
                         </div>
                     </FieldHelpersProvider>
                 </div>
+              </MasterDataProvider>
             </StoreProvider>
         </DefinitionsProvider>
     )
