@@ -1,5 +1,5 @@
 import {CREATE_FORM} from '../actions/form';
-import {syncFormEntity, toggleFormEdit} from '../actions/form';
+import {syncFormEntity} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
 
