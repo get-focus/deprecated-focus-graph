@@ -21,21 +21,42 @@ const definitions = {
     }
 }
 
+const domains = {
+    DO_RODRIGO: {
+        type: 'text',
+        validator: [{
+            type: 'string',
+            options: {
+                maxLength: 50
+            }
+        }]
+    },
+    DO_DON_DIEGO: {
+        type: 'text',
+        validator: [{
+            type: 'string',
+            options: {
+                maxLength: 200
+            }
+        }]
+    }
+}
+
 const App = () => {
     return (
-        <DefinitionsProvider definitions={definitions}>
+        <DefinitionsProvider definitions={definitions} domains={domains}>
             <StoreProvider store={store}>
-              <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
-                <div>
-                    <DevTools />
-                    <FieldHelpersProvider>
-                        <div>
-                            <h1>User Dumb</h1>
-                            <UserDumbComponent id={1234} />
-                        </div>
-                    </FieldHelpersProvider>
-                </div>
-              </MasterDataProvider>
+                <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
+                    <div>
+                        <DevTools />
+                        <FieldHelpersProvider>
+                            <div>
+                                <h1>User Dumb</h1>
+                                <UserDumbComponent id={1234} />
+                            </div>
+                        </FieldHelpersProvider>
+                    </div>
+                </MasterDataProvider>
             </StoreProvider>
         </DefinitionsProvider>
     )
