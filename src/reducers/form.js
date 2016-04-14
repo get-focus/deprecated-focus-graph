@@ -79,6 +79,8 @@ const forms = (state = [], action) => {
                                 entityPath: action.entityPath,
                                 valid: true,
                                 error: false,
+                                loading: false,
+                                saving: false,
                                 active: true,
                                 dirty: true,
                                 inputValue: action.value
