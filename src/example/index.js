@@ -10,12 +10,14 @@ import {Provider as DefinitionsProvider} from '../behaviours/definitions';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserDumbComponent from './components/user-dumb';
+import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
 import store from './store';
 
 const definitions = {
     user: {
+        uuid: { domain: 'DO_RODRIGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
     }
@@ -29,7 +31,8 @@ const domains = {
             options: {
                 maxLength: 50
             }
-        }]
+        }],
+        InputComponent
     },
     DO_DON_DIEGO: {
         type: 'text',
@@ -38,7 +41,8 @@ const domains = {
             options: {
                 maxLength: 200
             }
-        }]
+        }],
+        InputComponent
     }
 }
 

@@ -1,13 +1,17 @@
 import React, {PropTypes} from 'react';
 
-function Field({name, value, error, dirty, onChange, ...otherProps}) {
+function Field({name, value, error, dirty, onChange, metadata, editing, ...otherProps}) {
+    const {InputComponent} = metadata;
+    const renderConsult = () => (
+        <div>{value}</div>
+    );
+    const renderEdit = () => (
+        <InputComponent name={name} value={value} onChange={onChange} {...otherProps}/>
+    );
     return (
-        <div>
-            <div>{name}</div>
-            <div className='mdl-textfield mdl-js-textfield'>
-                <input className='mdl-textfield__input' type='text' id={name} value={value} onChange={({target:{value}}) => onChange(value)} {...otherProps}/>
-                <label className='mdl-textfield__label' htmlFor={name}>{name}</label>
-            </div>
+        <div style={{display: 'flex', padding: 10}}>
+            <div><b>{name}</b></div>
+            {editing ? renderEdit() : renderConsult()}
         </div>
     );
 }
