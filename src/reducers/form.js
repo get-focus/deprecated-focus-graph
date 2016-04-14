@@ -104,10 +104,22 @@ const forms = (state = [], action) => {
                 }));
             }
         case TOGGLE_FORM_EDITING:
-            return state.map(form => ({
-                ...form,
-                editing: form.formKey === action.formKey ? action.editing : form.editing
-            }));
+            return state.map(form => {
+                // Check if form is the action's target form
+                if (form.formKey === action.formKey) {
+                    return {
+                        ...form,
+                        editing: action.editing,
+                        fields: action.editing ? form.fields : form.fields.map(({dataSetValue, ...otherAttributes}) => ({
+                            ...otherAttributes,
+                            inputValue: dataSetValue,
+                            dataSetValue
+                        }))
+                    };
+                } else {
+                    return form;
+                }
+            });
         default:
             return state;
     }
