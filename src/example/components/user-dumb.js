@@ -6,15 +6,28 @@ import {connect as connectToMasterData} from '../../behaviours/master-data';
 import {loadUserAction, saveUserAction} from '../actions/user-actions';
 
 // Dumb components
-import Form from './form';
 import Field from '../../components/field';
 import Button from './button';
-import Code from './code';
 import compose from 'lodash/flowRight';
 
-function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, loadMasterData, ...otherProps}) {
+
+
+
+
+function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, toggleEdit, editing, loadMasterData, ...otherProps}) {
+    const renderEditingButtons = () => (
+        <div>
+            <Button onClick={() => toggleEdit(false)}>Cancel</Button>
+            <Button onClick={() => save(getUserInput())}>{'Save'}</Button>
+        </div>
+    );
+    const renderConsultingButton = () => (
+        <Button onClick={() => toggleEdit(true)}>Edit</Button>
+    );
     return (
         <div>
+            {editing && renderEditingButtons()}
+            {!editing && renderConsultingButton()}
             {/* Fields auto rendering to test direct rendering without helpers*/}
             <Button onClick={() => {load({id})}}>Load entity from server</Button>
             {/* Load the  */}
@@ -22,7 +35,7 @@ function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, load
             {fieldFor('uuid', {onChange: () => {console.log(fields)}})}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
-            <Button onClick={() => save(getUserInput())}>{'Save'}</Button>
+
         </div>
     );
 }
