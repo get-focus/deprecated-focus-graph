@@ -13,7 +13,6 @@ import Code from './code';
 import compose from 'lodash/flowRight';
 
 function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, loadMasterData, ...otherProps}) {
-    console.log('otherProps');
     return (
         <div>
             {/* Fields auto rendering to test direct rendering without helpers*/}

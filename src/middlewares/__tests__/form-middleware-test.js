@@ -47,7 +47,7 @@ describe('The form middleware', () => {
             formMiddleware(null)(nextSpy)(randomAction);
             expect(nextSpy).to.have.been.callCount(1);
             expect(nextSpy).to.have.been.calledWith(randomAction);
-        })
+        });
     });
     describe('when a CREATE_FORM action is passed', () => {
         const creationAction = {
