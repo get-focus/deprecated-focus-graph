@@ -1,5 +1,5 @@
 import formMiddleware from '../form';
-import {CREATE_FORM, SYNC_FORM_ENTITY} from '../../actions/form';
+import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../../actions/form';
 
 describe('The form middleware', () => {
     const getStateSpy = sinon.spy();
@@ -20,7 +20,7 @@ describe('The form middleware', () => {
                     }
                 },
                 forms: [{
-                    key: 'formKey',
+                    formKey: 'formKey',
                     entityPathArray: ['user'],
                     fields: [{
                         name: 'firstName',
@@ -52,7 +52,7 @@ describe('The form middleware', () => {
     describe('when a CREATE_FORM action is passed', () => {
         const creationAction = {
             type: CREATE_FORM,
-            key: 'formKey',
+            formKey: 'formKey',
             entityPathArray: ['user']
         }
         it('should call the store.getState once', () => {
@@ -99,8 +99,9 @@ describe('The form middleware', () => {
                         }
                     },
                     forms: [{
-                        key: 'formKey',
+                        formKey: 'formKey',
                         entityPathArray: ['user'],
+                        saving: true,
                         fields: [{
                             name: 'firstName',
                             dataSetValue: 'Joe',
@@ -116,7 +117,12 @@ describe('The form middleware', () => {
         const myLoadAction = {
             type: 'A_TYPE_THAT_THE_FORM_SHOULD_LOOK_AFTER',
             syncForm: true,
-            entityPath: 'user'
+            entityPath: 'user',
+            _meta: {
+                status: 'success',
+                saving: false,
+                loading: true
+            }
         }
         it('should pass the provided action to next', () => {
             formMiddleware(alteredStore)(nextSpy)(myLoadAction);
@@ -146,6 +152,47 @@ describe('The form middleware', () => {
                         inputValue: 'Lopez'
                     }
                 ]
+            });
+        });
+        it('should dispatch a TOGGLE_FORM_EDITING when a successful save is passed', () => {
+            const mySuccessfulSaveAction = {
+                type: 'A_TYPE_THAT_THE_FORM_SHOULD_LOOK_AFTER',
+                syncForm: true,
+                entityPath: 'user',
+                _meta: {
+                    status: 'success',
+                    saving: true,
+                    loading: false
+                }
+            };
+            formMiddleware(alteredStore)(nextSpy)(mySuccessfulSaveAction);
+            expect(dispatchSpy).to.have.callCount(2);
+            expect(dispatchSpy).to.have.been.calledWith({
+                type: SYNC_FORM_ENTITY,
+                entityPath: 'user',
+                fields: [
+                    {
+                        dataSetValue: 'David',
+                        entityPath: 'user',
+                        name: 'firstName',
+                        loading: true,
+                        saving: true,
+                        inputValue: 'David'
+                    },
+                    {
+                        dataSetValue: 'Lopez',
+                        entityPath: 'user',
+                        name: 'lastName',
+                        loading: true,
+                        saving: true,
+                        inputValue: 'Lopez'
+                    }
+                ]
+            });
+            expect(dispatchSpy).to.have.been.calledWith({
+                type: TOGGLE_FORM_EDITING,
+                formKey: 'formKey',
+                editing: false
             });
         })
     });
