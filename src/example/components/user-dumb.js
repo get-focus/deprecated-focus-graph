@@ -38,7 +38,7 @@ const formConfig = {
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
 const ConnectedUserDumbComponent = compose(
-    connectToDefinitions('user'),
+    connectToDefinitions(['user']),
     connectToMasterData(['civility']),
     formConnect(formConfig),
     connectToFieldHelpers()
