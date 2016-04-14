@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, inputChange} from '../actions/form';
+import {createForm, destroyForm, inputChange, toggleFormEditing} from '../actions/form';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
@@ -53,11 +53,11 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
 
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
-            dispatch(toggleFormEdit(formOptions.formKey, edit));
+            dispatch(toggleFormEditing(formOptions.formKey, edit));
         }
 
         render() {
-            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={formOptions.entityPathArray} />;
+            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
         }
     }
     FormComponent.contextTypes = {
