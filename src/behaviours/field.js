@@ -7,7 +7,7 @@ const FIELD_CONTEXT_TYPE = {
 };
 
 const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, ...options} = {}) => {
-    const {fields, definitions, onInputChange, entityPathArray} = props;
+    const {fields, definitions, onInputChange, entityPathArray, editing} = props;
 
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
@@ -20,7 +20,7 @@ const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldCo
         if (options.onChange) options.onChange(value);
     }
 
-    return <FieldComponent {...options} {...field} name={propertyName} onChange={onChange} value={value} metadata={definitions[propertyName]} />;
+    return <FieldComponent {...options} {...field} editing={editing} name={propertyName} onChange={onChange} value={value} metadata={definitions[propertyName]} />;
 }
 
 export function connect() {
