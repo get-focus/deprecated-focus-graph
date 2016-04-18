@@ -1,4 +1,5 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE, TOGGLE_FORM_EDITING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../actions/form';
+import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -62,7 +63,6 @@ const forms = (state = [], action) => {
                 return newForm;
             });
         case INPUT_CHANGE:
-            // TODO : do a clean cut of the form array, to avoid form duplication
             // Check if the field to change exists
             const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
             if (!changedFieldExistsInForm) {
@@ -99,12 +99,28 @@ const forms = (state = [], action) => {
                             return {
                                 ...field,
                                 inputValue: action.value,
-                                dirty: true
+                                dirty: true,
+                                valid: true
                             };
                         })
                     } : {})
                 }));
             }
+        case INPUT_ERROR:
+            return state.map(form => ({
+                ...form,
+                ...(form.formKey === action.formKey ? {
+                    fields: form.fields.map(field => {
+                        const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                        if (!isFieldConcerned) return field;
+                        return {
+                            ...field,
+                            error: action.error,
+                            valid: false
+                        };
+                    })
+                } : {})
+            }));
         case TOGGLE_FORM_EDITING:
             return state.map(form => {
                 // Check if form is the action's target form
