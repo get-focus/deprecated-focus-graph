@@ -1,8 +1,12 @@
 import {capitalize, toUpper} from 'lodash/string';
 import {isFunction, isString} from 'lodash/lang';
+
 const ACTION_BUILDER = 'ACTION_BUILDER';
 const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
 const STRING_EMPTY = '';
+const LOAD = ALLOW_ACTION_TYPES[0];
+const SAVE = ALLOW_ACTION_TYPES[1];
+
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
@@ -80,8 +84,8 @@ export const actionBuilder = ({name, type, service}) => {
         response: `RESPONSE_${UPPER_TYPE}_${UPPER_NAME}`,
         error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
     }
-    const loading = type === 'load';
-    const saving = type === 'save';
+    const loading = type === LOAD;
+    const saving = type === SAVE;
     const _metas = {
         request: {status: 'pending', loading, saving},
         response: {status: 'success', loading, saving},
