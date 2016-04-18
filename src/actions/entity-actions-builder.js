@@ -7,6 +7,10 @@ const STRING_EMPTY = '';
 const LOAD = ALLOW_ACTION_TYPES[0];
 const SAVE = ALLOW_ACTION_TYPES[1];
 
+export const PENDING = 'PENDING';
+export const SUCCESS = 'SUCCESS';
+export const ERROR = 'ERROR';
+
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
@@ -87,9 +91,9 @@ export const actionBuilder = ({name, type, service}) => {
     const loading = type === LOAD;
     const saving = type === SAVE;
     const _metas = {
-        request: {status: 'pending', loading, saving},
-        response: {status: 'success', loading, saving},
-        error: {status: 'error', loading, saving}
+        request: {status: PENDING, loading, saving},
+        response: {status: SUCCESS, loading, saving},
+        error: {status: ERROR, loading, saving}
     }
     const creators = {
         request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},

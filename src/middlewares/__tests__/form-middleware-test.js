@@ -1,5 +1,5 @@
 import formMiddleware from '../form';
-import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../../actions/form';
+import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING, SUCCESS} from '../../actions/form';
 
 describe('The form middleware', () => {
     const getStateSpy = sinon.spy();
@@ -119,7 +119,7 @@ describe('The form middleware', () => {
             syncForm: true,
             entityPath: 'user',
             _meta: {
-                status: 'success',
+                status: SUCCESS,
                 saving: false,
                 loading: true
             }
@@ -160,7 +160,7 @@ describe('The form middleware', () => {
                 syncForm: true,
                 entityPath: 'user',
                 _meta: {
-                    status: 'success',
+                    status: SUCCESS,
                     saving: true,
                     loading: false
                 }

@@ -1,4 +1,4 @@
-import {CREATE_FORM} from '../actions/form';
+import {CREATE_FORM, SUCCESS} from '../actions/form';
 import {syncFormEntity, toggleFormEditing} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
@@ -39,7 +39,7 @@ const formMiddleware = store => next => action => {
 
         // Treat the _meta
         const {_meta: {status, saving}} = action;
-        if (saving && status === 'success') {
+        if (saving && status === SUCCESS) {
             // Get the target form key by looking for forms in a saving state and containing the concerned entity path
             const formKey = forms.reduce((acc, form) => (form.saving && form.entityPathArray.indexOf(action.entityPath) !== -1) ? form.formKey : acc, null);
             // Toggle the form back to consulting since the save was a success #YOLO
