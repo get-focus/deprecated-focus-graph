@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, toggleFormEditing} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing, validateForm} from '../actions/form';
 import {inputChange, inputBlur} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
@@ -19,10 +19,12 @@ const internalMapStateToProps = (state, formKey) => {
     return resultingProps;
 };
 
-const internalMapDispatchToProps = (dispatch, loadAction, saveAction) => {
+const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields) => {
     const resultingActions = {};
     if (loadAction) resultingActions.load = compose(dispatch, loadAction);
-    if (saveAction) resultingActions.save = compose(dispatch, saveAction);
+    if (saveAction) resultingActions.save = (...saveArgs) => {
+        dispatch(validateForm(formKey, nonValidatedFields, saveAction.call(null, saveArgs)));
+    }
     return resultingActions;
 };
 
@@ -99,7 +101,8 @@ export const connect = formOptions => ComponentToConnect => {
         mapStateToProps: userDefinedMapStateToProps = () => ({}),
         mapDispatchToProps: userDefinedMapDispatchToProps = () => ({}),
         loadAction,
-        saveAction
+        saveAction,
+        nonValidatedFields
     } = formOptions;
 
     // Validate the provided options
@@ -114,7 +117,7 @@ export const connect = formOptions => ComponentToConnect => {
         ...userDefinedMapStateToProps(state)
     });
     const mapDispatchToProps = dispatch => ({
-        ...internalMapDispatchToProps(dispatch, loadAction, saveAction),
+        ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields),
         ...userDefinedMapDispatchToProps(dispatch)
     });
 

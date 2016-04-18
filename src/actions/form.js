@@ -5,6 +5,8 @@ export const SYNC_FORM_ENTITY = 'SYNC_FORM_ENTITY';
 
 export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
 
+export const VALIDATE_FORM = 'VALIDATE_FORM';
+
 /**
  * Form creation action
  * Creates a new form in the 'forms' key in the state.
@@ -57,4 +59,11 @@ export const toggleFormEditing = (formKey, editing) => ({
     type: TOGGLE_FORM_EDITING,
     formKey,
     editing
+});
+
+export const validateForm = (formKey, nonValidatedFields, saveAction) => ({
+    type: VALIDATE_FORM,
+    formKey,
+    nonValidatedFields,
+    saveAction
 });
