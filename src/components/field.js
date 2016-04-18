@@ -1,12 +1,15 @@
 import React, {PropTypes} from 'react';
+import DefaultInputComponent from './input';
 
-function Field({name, value, error, dirty, onChange, metadata, editing, ...otherProps}) {
-    const {InputComponent} = metadata;
+const defaultFormatter = value => value;
+
+function Field({name, value, error, dirty, onChange, onBlur, metadata, editing, ...otherProps}) {
+    const {InputComponent = DefaultInputComponent, formatter = defaultFormatter, validateOnBlur, validator} = metadata;
     const renderConsult = () => (
-        <div>{value}</div>
+        <div>{formatter(value)}</div>
     );
     const renderEdit = () => (
-        <InputComponent name={name} value={value} onChange={onChange} {...otherProps}/>
+        <InputComponent name={name} error={error} value={value} onChange={onChange} onBlur={onBlur} {...otherProps}/>
     );
     return (
         <div style={{display: 'flex', padding: 10}}>
@@ -18,9 +21,8 @@ function Field({name, value, error, dirty, onChange, metadata, editing, ...other
 
 Field.displayName = 'Field';
 Field.propTypes = {
-    error: PropTypes.bool,
-    name: PropTypes.string.isRequired,
-    //  value: PropTypes.object
+    error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+    name: PropTypes.string.isRequired
 };
 
 export default Field;
