@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, inputChange, toggleFormEditing} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing} from '../actions/form';
+import {inputChange, inputBlur} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
@@ -51,13 +52,20 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
             dispatch(inputChange(formOptions.formKey, name, entityPath, value));
         }
 
+        _onInputBlur(name, entityPath, value) {
+            const {store: {dispatch}} = this.context;
+            dispatch(inputBlur(formOptions.formKey, name, entityPath, value));
+        }
+
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
             dispatch(toggleFormEditing(formOptions.formKey, edit));
         }
 
         render() {
-            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
+            const {_behaviours, ...otherProps} = this.props;
+            const behaviours = {connectedToForm: true, ..._behaviours};
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
         }
     }
     FormComponent.contextTypes = {
