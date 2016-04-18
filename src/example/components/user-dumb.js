@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {connect as formConnect } from '../../behaviours/form';
-import {connect as connectToDefinitions} from '../../behaviours/definitions';
+import {connect as connectToForm } from '../../behaviours/form';
+import {connect as connectToMetadata} from '../../behaviours/metadata';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
 import {loadUserAction, saveUserAction} from '../actions/user-actions';
@@ -9,10 +9,6 @@ import {loadUserAction, saveUserAction} from '../actions/user-actions';
 import Field from '../../components/field';
 import Button from './button';
 import compose from 'lodash/flowRight';
-
-
-
-
 
 function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, toggleEdit, editing, loadMasterData, ...otherProps}) {
     const renderEditingButtons = () => (
@@ -35,6 +31,7 @@ function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, togg
             {fieldFor('uuid', {onChange: () => {console.log(fields)}})}
             {fieldFor('firstName')}
             {fieldFor('lastName')}
+            {fieldFor('date')}
 
         </div>
     );
@@ -46,14 +43,15 @@ const formConfig = {
     formKey: 'userForm',
     entityPathArray: ['user'],
     loadAction: loadUserAction,
-    saveAction: saveUserAction
+    saveAction: saveUserAction,
+    nonValidatedFields: ['user.firstName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
 const ConnectedUserDumbComponent = compose(
-    connectToDefinitions(['user']),
+    connectToMetadata(['user']),
     connectToMasterData(['civility']),
-    formConnect(formConfig),
+    connectToForm(formConfig),
     connectToFieldHelpers()
 )(UserDumbComponent);
 

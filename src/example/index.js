@@ -6,7 +6,8 @@ import 'babel-polyfill';
 import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Provider as StoreProvider} from 'react-redux';
-import {Provider as DefinitionsProvider} from '../behaviours/definitions';
+import moment from 'moment';
+import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserDumbComponent from './components/user-dumb';
@@ -20,6 +21,7 @@ const definitions = {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
+        date: { domain: 'DO_DATE', isRequired: false}
     }
 }
 
@@ -43,13 +45,18 @@ const domains = {
             }
         }],
         InputComponent
+    },
+    DO_DATE : {
+        InputComponent,
+        formatter: date => date ? moment(date, moment.ISO_8601).format('DD/MM/YYYY hh:mm a') : '',
+        format: ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY']
     }
 }
 
 const App = () => {
     return (
-        <DefinitionsProvider definitions={definitions} domains={domains}>
-            <StoreProvider store={store}>
+        <StoreProvider store={store}>
+            <MetadataProvider definitions={definitions} domains={domains}>
                 <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
                     <div>
                         <DevTools />
@@ -61,8 +68,8 @@ const App = () => {
                         </FieldHelpersProvider>
                     </div>
                 </MasterDataProvider>
-            </StoreProvider>
-        </DefinitionsProvider>
+            </MetadataProvider>
+        </StoreProvider>
     )
 }
 
