@@ -3,9 +3,6 @@ export const DESTROY_FORM ='DESTROY_FORM';
 
 export const SYNC_FORM_ENTITY = 'SYNC_FORM_ENTITY';
 
-export const INPUT_CHANGE = 'INPUT_CHANGE';
-export const INPUT_ERROR = 'INPUT_ERROR';
-
 export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
 
 /**
@@ -46,24 +43,6 @@ export const syncFormEntity = (entityPath, fields) => ({
     type: SYNC_FORM_ENTITY,
     entityPath,
     fields
-});
-
-/**
- * Input change action
- * Triggers a change on the input value
- * Usage: inputChange('movieForm', 'title', 'movie', 'Chicken run');
- * @param  {string} formKey    the target form key
- * @param  {string} fieldName  the field name
- * @param  {string} entityPath  the field entity path
- * @param  {object} value      the new value
- * @return {object}            the action
- */
-export const inputChange = (formKey, fieldName, entityPath, value) => ({
-    type: INPUT_CHANGE,
-    formKey,
-    fieldName,
-    entityPath,
-    value
 });
 
 /**
