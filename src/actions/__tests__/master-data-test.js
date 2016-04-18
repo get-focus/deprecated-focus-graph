@@ -69,7 +69,7 @@ describe('master data actions', () => {
           });
 
         });
-        describe('The builded action part of the result', () => {
+        describe('The built action part of the result', () => {
             const NAME = 'chiffres';
             const ERROR_MASTER_DATA_MOCK = 'No way to load this list';
             const loadActionWithResolveServiceAsync =  loadMasterData(NAME, d => Promise.resolve(MOCKED_MASTER_DATA), 0);
