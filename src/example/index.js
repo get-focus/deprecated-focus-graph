@@ -34,6 +34,7 @@ const domains = {
                 maxLength: 50
             }
         }],
+        formatter: value => 'LOL MOUSTACHE' + value,
         InputComponent
     },
     DO_DON_DIEGO: {

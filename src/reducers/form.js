@@ -83,7 +83,8 @@ const forms = (state = [], action) => {
                                 saving: false,
                                 active: true,
                                 dirty: true,
-                                rawInputValue: action.rawValue
+                                rawInputValue: action.rawValue,
+                                formattedInputValue: action.formattedValue
                             }
                         ]
                     } : {})
@@ -99,6 +100,7 @@ const forms = (state = [], action) => {
                             return {
                                 ...field,
                                 rawInputValue: action.rawValue,
+                                formattedInputValue: action.formattedValue,
                                 dirty: true,
                                 valid: true
                             };
