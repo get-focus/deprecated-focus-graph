@@ -1,5 +1,5 @@
 import {capitalize, toUpper} from 'lodash/string';
-import {isFunction, isString} from 'lodash/lang';
+import {isArray, isFunction,isString} from 'lodash/lang';
 
 const ACTION_BUILDER = 'ACTION_BUILDER';
 const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
@@ -20,29 +20,47 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 // You have to provide a object with the following properties
 // {
 //   service: A `Promise base service` which take one argument (the service entry data) an optional second the options
-//   creators : {
-//     response:{name, value} where value is the function standing for an action creator
-//     request:{name, value} where value is the function standing for an action creator
-//     error:{name, value} where value is the function standing for an action creator
-//   }
+//   actionCreatorsArray : [{
+//     name: the name of the concerned node.
+//     request: the function standing for an action creator of request
+//     response: the function standing for an action creator of response
+//     error: the function standing for an action creator of error
+//   }]
 // }
-const _asyncActionCreator = ({service: promiseSvc, creators:{response: {value: responseActionCreator}, request: {value: requestActionCreator}, error: {value: errorActionCreator}}}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
     return async dispatch => {
         try {
-            dispatch(requestActionCreator(data));
-            const svcValue = await promiseSvc(data)
-            dispatch(responseActionCreator(svcValue));
+            actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
+            const svcValue = await promiseSvc(data);
+              actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
+                // When there is only one node the complete payload is dispatched.
+                if(actionCreatorsArray.length === 1){
+                  dispatch(responseActionCreator(svcValue));
+                } else {
+                  // Whene there is more node only a part of the payload is dispathed.
+                  svcValue[name] && dispatch(responseActionCreator(svcValue[name]));
+                }
+              });
+
         } catch(err) {
-            dispatch(errorActionCreator(err));
+            // maybe this shoud be formated the same way the payload is.
+            actionCreatorsArray.forEach(({name, error:errorActionCreator}) => dispatch(errorActionCreator(err)));
         }
     }
 });
 
 // Validate the action builder parameters
-const _validateActionBuilderParams = ({name, type, service}) => {
-    if(!isString(name) || STRING_EMPTY === name) {
-        throw new Error(`${ACTION_BUILDER}: the name parameter should be a string.`);
+const _validateActionBuilderParams = ({names, type, service}) => {
+    if(!isArray(names) || names.length === 0) {
+        throw new Error(`${ACTION_BUILDER}: the names parameter should be a non empty array.`);
     }
+
+    names.forEach( (name) => {
+      if(!isString(name) || STRING_EMPTY === name) {
+        throw new Error(`${ACTION_BUILDER}: the names parameter should be made of strings.`);
+      }
+    });
+
     if(!isString(type) || ALLOW_ACTION_TYPES.indexOf(type) === -1) {
         throw new Error(`${ACTION_BUILDER}: the type parameter should be a string and the value one of these: ${ALLOW_ACTION_TYPES.join(',')}.`);
     }
@@ -75,47 +93,67 @@ const _validateActionBuilderParams = ({name, type, service}) => {
 // export const loadUserAction = loadAction.action;
 // //which is a function taking the criteria as param
 // ```
-export const actionBuilder = ({name, type, service}) => {
-    _validateActionBuilderParams({name, type, service});
+export const actionBuilder = ({names, type, service}) => {
+    _validateActionBuilderParams({names, type, service});
     //Case transformation
     const UPPER_TYPE = toUpper(type);
-    const UPPER_NAME = toUpper(name);
     const CAPITALIZE_TYPE = capitalize(type);
-    const CAPITALIZE_NAME = capitalize(name);
-
-    const constants = {
-        request: `REQUEST_${UPPER_TYPE}_${UPPER_NAME}`,
-        response: `RESPONSE_${UPPER_TYPE}_${UPPER_NAME}`,
-        error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
-    }
     const loading = type === LOAD;
     const saving = type === SAVE;
+
     const _metas = {
         request: {status: PENDING, loading, saving},
         response: {status: SUCCESS, loading, saving},
         error: {status: ERROR, loading, saving}
     }
-    const creators = {
-        request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},
-        response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response)},
-        error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error)}
-    }
+    // for each node action types and action creators are made.
+    const _creatorsAndTypes = names.reduce((res, name) => {
+      // commonTreatement
+      const UPPER_NAME = toUpper(name);
+      const CAPITALIZE_NAME = capitalize(name);
 
+      const constants = {
+          request: `REQUEST_${UPPER_TYPE}_${UPPER_NAME}`,
+          response: `RESPONSE_${UPPER_TYPE}_${UPPER_NAME}`,
+          error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
+      }
+      // todo: find another name for name and value // not crystal clear
+      const creators = {
+          request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},
+          response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response)},
+          error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error)}
+      }
 
-    const action = _asyncActionCreator({service, creators});
-    return {
+      return {
         types: {
-            [constants.request]: constants.request,
-            [constants.response]: constants.response,
-            [constants.error]: constants.error
+          ...res.types,
+          [constants.request]: constants.request,
+          [constants.response]: constants.response,
+          [constants.error]: constants.error
         },
         creators: {
-            [creators.request.name]: creators.request.value,
-            [creators.response.name]: creators.response.value,
-            [creators.error.name]: creators.error.value
+          ...res.creators,
+          [creators.request.name]: creators.request.value,
+          [creators.response.name]: creators.response.value,
+          [creators.error.name]: creators.error.value
         },
-        action
-    }
+        actionCreatorsArray: [
+          ...res.actionCreatorsArray, {
+            name,
+            request: creators.request.value,
+            response: creators.response.value,
+            error: creators.error.value
+          }
+        ]
+      };
+    }, {types: {}, creators: {}, actionCreatorsArray: []});
+
+    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray});
+    return {
+        action,
+        types: _creatorsAndTypes.types,
+        creators: _creatorsAndTypes.creators
+    };
 }
 
 /*
