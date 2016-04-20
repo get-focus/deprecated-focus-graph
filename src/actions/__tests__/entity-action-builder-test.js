@@ -4,48 +4,60 @@ import {PENDING, SUCCESS, ERROR} from '../entity-actions-builder';
 describe('The actionBuilder', () => {
     describe('when called with wrong parameters', () => {
         it('should throw a type error when called without all parameters', () => {
-            expect(() => { actionBuilder()}).to.throw(TypeError,'Cannot read property \'name\' of undefined');
+            expect(() => { actionBuilder()}).to.throw(TypeError,'Cannot read property \'names\' of undefined');
         });
         it('should throw an error when called without a string name parameter', () => {
-            const NAME_MESSAGE = 'ACTION_BUILDER: the name parameter should be a string.';
-            expect(() => { actionBuilder({name: undefined})}).to.throw(NAME_MESSAGE);
-            expect(() => { actionBuilder({name: 1})}).to.throw(NAME_MESSAGE);
-            expect(() => { actionBuilder({name: {}})}).to.throw(NAME_MESSAGE);
-            expect(() => { actionBuilder({name: () => {}})}).to.throw(NAME_MESSAGE);
-            expect(() => { actionBuilder({name: ''})}).to.throw(NAME_MESSAGE);
-            expect(() => { actionBuilder({name: 'test'})}).to.not.throw(NAME_MESSAGE);
+            const NAMES_MESSAGE = 'ACTION_BUILDER: the names parameter should be a non empty array.';
+            expect(() => { actionBuilder({names: undefined})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: 1})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: {}})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: () => {}})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: ''})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: []})}).to.throw(NAMES_MESSAGE);
+            expect(() => { actionBuilder({names: ['test']})}).to.not.throw(NAMES_MESSAGE);
         });
+
+        it('should throw an error when called without a string name parameter', () => {
+            const NAME_MESSAGE = 'ACTION_BUILDER: the names parameter should be maid of strings';
+            expect(() => { actionBuilder({names: [undefined]})}).to.throw(NAME_MESSAGE);
+            expect(() => { actionBuilder({names: [1]})}).to.throw(NAME_MESSAGE);
+            expect(() => { actionBuilder({names: [{}]})}).to.throw(NAME_MESSAGE);
+            expect(() => { actionBuilder({names: [() => {}]})}).to.throw(NAME_MESSAGE);
+            expect(() => { actionBuilder({names: ['']})}).to.throw(NAME_MESSAGE);
+            expect(() => { actionBuilder({names: ['test']})}).to.not.throw(NAME_MESSAGE);
+        });
+
         it('should throw an error when called without a string type parameter : load,save,delete', () => {
             const TYPE_MESSAGE = 'ACTION_BUILDER: the type parameter should be a string and the value one of these: load,save,delete.';
-            expect(() => { actionBuilder({name: 'test'})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: undefined})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 1})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: {}})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: () => {}})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: ''})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'nimp'})}).to.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load'})}).to.not.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'save'})}).to.not.throw(TYPE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'delete'})}).to.not.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test']})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: undefined})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 1})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: {}})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: () => {}})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: ''})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'nimp'})}).to.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load'})}).to.not.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'save'})}).to.not.throw(TYPE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'delete'})}).to.not.throw(TYPE_MESSAGE);
         });
         it('should throw an error when called without a function returning a Promise service parameter', () => {
             const SERVICE_MESSAGE = 'ACTION_BUILDER: the service parameter should be a function.';
-            expect(() => { actionBuilder({name: 'test', type: 'load'})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: undefined})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: 1})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: 'nimp'})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: {}})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: null})}).to.throw(SERVICE_MESSAGE);
-            expect(() => { actionBuilder({name: 'test', type: 'load', service: () => Promise.resolve({test: 'test'})})}).to.not.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load'})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: undefined})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: 1})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: 'nimp'})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: {}})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: null})}).to.throw(SERVICE_MESSAGE);
+            expect(() => { actionBuilder({names: ['test'], type: 'load', service: () => Promise.resolve({test: 'test'})})}).to.not.throw(SERVICE_MESSAGE);
         });
     })
     describe('when called with right parameters', () => {
         const RESOLVE_VALUE = {testValue: 'tests'};
         const REJECT_VALUE = {error: 'error'};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {name: 'test', type: 'load', service: () => Promise.resolve(RESOLVE_VALUE)};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {name: 'test', type: 'load', service: () => Promise.reject(REJECT_VALUE)};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {name: 'test', type: 'save', service: () => Promise.resolve(RESOLVE_VALUE)};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {name: 'test', type: 'save', service: () => Promise.reject(REJECT_VALUE)};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'load', service: () => Promise.resolve(RESOLVE_VALUE)};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'load', service: () => Promise.reject(REJECT_VALUE)};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'save', service: () => Promise.resolve(RESOLVE_VALUE)};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'save', service: () => Promise.reject(REJECT_VALUE)};
 
         it('should return an object with types, creators, action', () => {
             const actionBuilded = actionBuilder(TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE);
@@ -57,23 +69,6 @@ describe('The actionBuilder', () => {
                 const {types: actionBuildedTypes} = actionBuilder(TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE);
                 expect(actionBuildedTypes).to.be.an('object');
                 expect(actionBuildedTypes).to.include.keys('REQUEST_LOAD_TEST', 'RESPONSE_LOAD_TEST', 'ERROR_LOAD_TEST');
-            });
-        });
-        describe('The creators part of the result', () => {
-            const {creators: actionBuildedCreators} = actionBuilder(TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE);
-            it('should return an object with three keys with request, response, error', () => {
-                expect(actionBuildedCreators).to.be.an('object');
-                expect(actionBuildedCreators).to.include.keys('requestLoadTest', 'responseLoadTest', 'errorLoadTest');
-            });
-            it('should return an object with three values with request, response, error', () => {
-                const {requestLoadTest: requestActionCreator, responseLoadTest: responseActionCreator, errorLoadTest: errorActionCreator} = actionBuildedCreators;
-                expect(requestActionCreator).to.be.a.function;
-                expect(responseActionCreator).to.be.a.function;
-                expect(errorActionCreator).to.be.a.function;
-                const PAYLOAD = {test: 'test'};
-                expect(requestActionCreator(PAYLOAD)).to.deep.equal({type: 'REQUEST_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false}});
-                expect(responseActionCreator(PAYLOAD)).to.deep.equal({type: 'RESPONSE_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test', _meta: {status: SUCCESS, loading: true, saving: false}});
-                expect(errorActionCreator(PAYLOAD)).to.deep.equal({type: 'ERROR_LOAD_TEST', payload: PAYLOAD, syncForm: true, entityPath: 'test', _meta: {status: ERROR, loading: true, saving: false}});
             });
         });
         describe('The action part of the result', () => {
