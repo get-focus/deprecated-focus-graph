@@ -24,19 +24,20 @@ const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldCo
     const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
 
     const field = find(fields, {entityPath, name: propertyName});
-    const value = field ? field.inputValue : undefined;
-    const onChange = value => {
-        onInputChange(propertyName, entityPath, value);
-        if (options.onChange) options.onChange(value);
+    const {rawInputValue, formattedInputValue} = field || {};
+
+    const onChange = rawValue => {
+        onInputChange(propertyName, entityPath, rawValue);
+        if (options.onChange) options.onChange(rawValue);
     };
 
     // Construct the onBlur, with the validation if validateOnBlur has not been set to false in the domain
     const onBlur = () => {
-        if (definitions[entityPath][propertyName].validateOnBlur !== false) onInputBlur(propertyName, entityPath, value);
+        if (definitions[entityPath][propertyName].validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
 
-    return <FieldComponent {...options} {...field} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} value={value} metadata={metadata} />;
+    return <FieldComponent {...options} {...field} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} rawInputValue={rawInputValue} formattedInputValue={formattedInputValue} metadata={metadata} />;
 }
 
 export function connect() {

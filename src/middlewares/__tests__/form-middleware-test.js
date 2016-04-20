@@ -141,7 +141,7 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         loading: true,
                         saving: true,
-                        inputValue: 'David'
+                        rawInputValue: 'David'
                     },
                     {
                         dataSetValue: 'Lopez',
@@ -149,7 +149,7 @@ describe('The form middleware', () => {
                         name: 'lastName',
                         loading: true,
                         saving: true,
-                        inputValue: 'Lopez'
+                        rawInputValue: 'Lopez'
                     }
                 ]
             });
@@ -177,7 +177,7 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         loading: true,
                         saving: true,
-                        inputValue: 'David'
+                        rawInputValue: 'David'
                     },
                     {
                         dataSetValue: 'Lopez',
@@ -185,7 +185,7 @@ describe('The form middleware', () => {
                         name: 'lastName',
                         loading: true,
                         saving: true,
-                        inputValue: 'Lopez'
+                        rawInputValue: 'Lopez'
                     }
                 ]
             });

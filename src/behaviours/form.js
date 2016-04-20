@@ -15,7 +15,7 @@ const validateFormOptions = ({formKey, entityPathArray}) => {
 const internalMapStateToProps = (state, formKey) => {
     const formCandidate = find(state.forms, {formKey});
     const resultingProps = {...formCandidate};
-    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.inputValue}), {})
+    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.rawInputValue}), {})
     return resultingProps;
 };
 

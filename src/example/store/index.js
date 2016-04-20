@@ -7,7 +7,7 @@ const lastNameMiddleware = store => next => action => {
     if (action.type === INPUT_CHANGE && action.fieldName == 'firstName') {
         const lastNameAction = {...action};
         lastNameAction.fieldName = 'lastName';
-        lastNameAction.value = action.value.toUpperCase();
+        lastNameAction.rawValue = action.rawValue.toUpperCase();
         next(action);
         store.dispatch(lastNameAction);
     } else {

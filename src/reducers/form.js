@@ -11,7 +11,7 @@ const initializeField = field => ({
     dirty: false,
     loading: false,
     saving: false,
-    inputValue: field.dataSetValue,
+    rawInputValue: field.dataSetValue,
     ...field
 });
 
@@ -83,13 +83,13 @@ const forms = (state = [], action) => {
                                 saving: false,
                                 active: true,
                                 dirty: true,
-                                inputValue: action.value
+                                rawInputValue: action.rawValue
                             }
                         ]
                     } : {})
                 }));
             } else {
-                // The field exists, so just update the inputValue
+                // The field exists, so just update the rawInputValue
                 return state.map(form => ({
                     ...form,
                     ...(form.formKey === action.formKey ? {
@@ -98,7 +98,7 @@ const forms = (state = [], action) => {
                             if (!isFieldConcerned) return field;
                             return {
                                 ...field,
-                                inputValue: action.value,
+                                rawInputValue: action.rawValue,
                                 dirty: true,
                                 valid: true
                             };
@@ -130,7 +130,7 @@ const forms = (state = [], action) => {
                         editing: action.editing,
                         fields: action.editing ? form.fields : form.fields.map(({dataSetValue, ...otherAttributes}) => ({
                             ...otherAttributes,
-                            inputValue: dataSetValue,
+                            rawInputValue: dataSetValue,
                             dataSetValue
                         }))
                     };

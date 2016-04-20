@@ -3,13 +3,13 @@ import DefaultInputComponent from './input';
 
 const defaultFormatter = value => value;
 
-function Field({name, value, error, dirty, onChange, onBlur, metadata, editing, ...otherProps}) {
-    const {InputComponent = DefaultInputComponent, formatter = defaultFormatter, validateOnBlur, validator} = metadata;
+function Field({name, rawInputValue, formattedInputValue, error, dirty, onChange, onBlur, metadata, editing, ...otherProps}) {
+    const {InputComponent = DefaultInputComponent} = metadata;
     const renderConsult = () => (
-        <div>{formatter(value)}</div>
+        <div>{formattedInputValue}</div>
     );
     const renderEdit = () => (
-        <InputComponent name={name} error={error} value={value} onChange={onChange} onBlur={onBlur} {...otherProps}/>
+        <InputComponent name={name} error={error} value={rawInputValue} onChange={onChange} onBlur={onBlur} {...otherProps}/>
     );
     return (
         <div style={{display: 'flex', padding: 10}}>

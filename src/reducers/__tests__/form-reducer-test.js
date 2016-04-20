@@ -26,7 +26,7 @@ describe('The form reducer', () => {
                 valid: true,
                 loading: false,
                 saving: false,
-                inputValue: 'fieldValue'
+                rawInputValue: 'fieldValue'
             }]);
         })
     });
@@ -49,21 +49,21 @@ describe('The form reducer', () => {
                 {
                     name: 'firstName',
                     entityPath: 'user',
-                    inputValue: 'David',
+                    rawInputValue: 'David',
                     dataSetValue: 'David',
                     dirty: true
                 },
                 {
                     name: 'lastName',
                     entityPath: 'user',
-                    inputValue: 'Lopez',
+                    rawInputValue: 'Lopez',
                     dataSetValue: 'Lopez',
                     dirty: false
                 },
                 {
                     name: 'weapon',
                     entityPath: 'user',
-                    inputValue: 'shoe',
+                    rawInputValue: 'shoe',
                     dataSetValue: 'shoe',
                     dirty: false
                 }
@@ -127,21 +127,21 @@ describe('The form reducer', () => {
                 {
                     name: 'firstName',
                     entityPath: 'user',
-                    inputValue: 'Davide',
+                    rawInputValue: 'Davide',
                     dataSetValue: 'David',
                     dirty: true
                 },
                 {
                     name: 'lastName',
                     entityPath: 'user',
-                    inputValue: 'Lopez',
+                    rawInputValue: 'Lopez',
                     dataSetValue: 'Lopez',
                     dirty: false
                 },
                 {
                     name: 'weapon',
                     entityPath: 'user',
-                    inputValue: 'shoe',
+                    rawInputValue: 'shoe',
                     dataSetValue: 'shoe',
                     dirty: false
                 }
@@ -157,13 +157,13 @@ describe('The form reducer', () => {
             const newState = formReducer(state, action);
             expect(newState[0].fields).to.deep.equal(state[0].fields);
         });
-        it('should set the fields\' inputValue to their dataSetValue when the form is toggled to consulting', () => {
+        it('should set the fields\' rawInputValue to their dataSetValue when the form is toggled to consulting', () => {
             const modifiedInitialState = [...state];
             modifiedInitialState[0].editing = true;
-            modifiedInitialState[0].fields[0].inputValue = 'LOL';
+            modifiedInitialState[0].fields[0].rawInputValue = 'LOL';
             const action = toggleFormEditing('form1', false);
             const newState = formReducer(modifiedInitialState, action);
-            expect(newState[0].fields[0].inputValue).to.equal(newState[0].fields[0].dataSetValue);
+            expect(newState[0].fields[0].rawInputValue).to.equal(newState[0].fields[0].dataSetValue);
         });
     });
 });

@@ -9,15 +9,15 @@ export const INPUT_ERROR = 'INPUT_ERROR';
  * @param  {string} formKey    the target form key
  * @param  {string} fieldName  the field name
  * @param  {string} entityPath  the field entity path
- * @param  {object} value      the new value
+ * @param  {object} rawValue    the new value
  * @return {object}            the action
  */
-export const inputChange = (formKey, fieldName, entityPath, value) => ({
+export const inputChange = (formKey, fieldName, entityPath, rawValue) => ({
     type: INPUT_CHANGE,
     formKey,
     fieldName,
     entityPath,
-    value
+    rawValue
 });
 
 /**
@@ -26,15 +26,15 @@ export const inputChange = (formKey, fieldName, entityPath, value) => ({
  * @param  {string} formKey    the target form key
  * @param  {string} fieldName  the field name
  * @param  {string} entityPath  the field entity path
- * @param  {object} value      the new value
+ * @param  {object} rawValue    the new value
  * @return {object}            the action
  */
-export const inputBlur = (formKey, fieldName, entityPath, value) => ({
+export const inputBlur = (formKey, fieldName, entityPath, rawValue) => ({
     type: INPUT_BLUR,
     formKey,
     fieldName,
     entityPath,
-    value
+    rawValue
 });
 
 /**

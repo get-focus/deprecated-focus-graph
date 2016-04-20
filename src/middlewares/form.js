@@ -32,7 +32,7 @@ const formMiddleware = store => next => action => {
             dataSetValue: fieldValue,
             loading: get(dataset, `${entityPath}.loading`),
             saving: get(dataset, `${entityPath}.saving`),
-            inputValue: fieldValue
+            rawInputValue: fieldValue
         }));
         // Dispatch the SYNC_FORM_ENTITY action
         store.dispatch(syncFormEntity(entityPath, fields));

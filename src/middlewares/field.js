@@ -1,4 +1,4 @@
-import {INPUT_BLUR} from '../actions/input';
+import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
 import {inputError} from '../actions/input';
 import {VALIDATE_FORM} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
@@ -9,13 +9,13 @@ import isEmpty from 'lodash/isEmpty';
 
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
 // TODO : replace this with the focus core function
-const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, value) => {
+const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
     const rand = Math.random();
     const isValid = rand > 5;
-    const error = isRequired && (isUndefined(value) || isNull(value) || isEmpty(value)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
+    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
     return {
         name,
-        value,
+        value: rawValue,
         isValid,
         error
     }
@@ -52,7 +52,7 @@ const fieldMiddleware = store => next => action => {
     const {forms, definitions, domains} = store.getState();
     if (action.type === INPUT_BLUR) {
         // On input blur action, validate the provided field
-        validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.value, store.dispatch);
+        validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, store.dispatch);
     } else if (action.type === VALIDATE_FORM) {
         const {formKey, nonValidatedFields} = action;
         const {fields} = find(forms, {formKey});
@@ -62,7 +62,7 @@ const fieldMiddleware = store => next => action => {
 
         // Validate every field, and if one is invalid, then the form is invalid
         const formValid = fieldsToValidate.reduce((formValid, field) => {
-            const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.inputValue, store.dispatch);
+            const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
             if (!fieldValid) formValid = false;
         }, true);
 
