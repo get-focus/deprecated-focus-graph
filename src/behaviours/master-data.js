@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {loadMasterData} from '../actions/master-data';
+import {loadMasterDatum} from '../actions/master-data';
 import {pick} from 'lodash/object';
 import {isArray} from 'lodash/lang';
 import {capitalize} from 'lodash/string';
@@ -13,7 +13,7 @@ const MASTER_DATA_PROPTYPE = PropTypes.arrayOf(
 ).isRequired;
 
 const MASTER_DATA_CONTEXT_TYPE = {
-    masterDataLoaders: MASTER_DATA_PROPTYPE
+    masterDatumLoaders: MASTER_DATA_PROPTYPE
 };
 
 
@@ -35,21 +35,21 @@ const connectMasterData = (names = []) => {
         throw new Error(`${MASTER_DATA_CONNECT}: the names property must contain at least a name.`);
     }
     return function connectComponent(ComponentToConnect) {
-        const MasterDataConnectedComponent = (props, {masterDataLoaders, store: {dispatch}}) => {
-            const _loadAddMasterDataContainer = masterDataLoaders.reduce((res, current) => {
+        const MasterDataConnectedComponent = (props, {masterDatumLoaders, store: {dispatch}}) => {
+            const _loadAddMasterDatumContainer = masterDatumLoaders.reduce((res, current) => {
                 if(names.indexOf(current.name) !== -1){
-                    const dispatchLoader = () => dispatch(loadMasterData(current.name, current.service, current.cacheDuration));
+                    const dispatchLoader = () => dispatch(loadMasterDatum(current.name, current.service, current.cacheDuration));
                     return [...res, dispatchLoader];
                 }
                 return res;
             }, []);
-            if(_loadAddMasterDataContainer === 0){
-                console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDataLoaders ${masterDataLoaders.reduce((res, current) => [...res, current.name], [])}`)
+            if(_loadAddMasterDatumContainer === 0){
+                console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDatumLoaders ${masterDatumLoaders.reduce((res, current) => [...res, current.name], [])}`)
             }
-            const loadMasterDatum = () => _loadAddMasterDataContainer.forEach(loader => loader());
+            const loadMasterData = () => _loadAddMasterDatumContainer.forEach(loader => loader());
             const {_behaviours, ...otherProps} = props;
             const behaviours = {connectedToMasterData: true, ..._behaviours}
-            return <ComponentToConnect {...otherProps}  loadMasterDatum={loadMasterDatum} _behaviours={behaviours} />;
+            return <ComponentToConnect {...otherProps}  loadMasterData={loadMasterData} _behaviours={behaviours} />;
         }
         MasterDataConnectedComponent.displayName = `${ComponentToConnect.displayName}MasterDataConnectedComponent`;
         //Connect to the redux store
@@ -69,10 +69,10 @@ export const connect = connectMasterData;
 
 // MasterDataProvider.
 // Add behaviour to set the master data config: `MasterDataProvider`,
-// the provider put in the context the array which is named `masterDataLoaders`,
+// the provider put in the context the array which is named `masterDatumLoaders`,
 // you have to pass to the provider the following configuration:
 //`configuration = [{name, service, cacheDuration}]`
-// which will be passed in the `masterDataLoaders`
+// which will be passed in the `masterDatumLoaders`
 // Example Call
 //```jsx
 //<MasterDataProvider config={[{name: 'sandwichType', service: loadSandwichType}, {name: 'civility', service: loadChiffres}]}>
@@ -82,7 +82,7 @@ export const connect = connectMasterData;
 class MasterDataProvider extends Component {
     getChildContext() {
         return {
-            masterDataLoaders: this.props.configuration
+            masterDatumLoaders: this.props.configuration
         }
     }
     render() {
