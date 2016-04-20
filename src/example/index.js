@@ -16,6 +16,9 @@ import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
 import store from './store';
 
+moment.locale('fr');
+const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
+
 const definitions = {
     user: {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
@@ -34,7 +37,6 @@ const domains = {
                 maxLength: 50
             }
         }],
-        formatter: value => 'LOL MOUSTACHE' + value,
         InputComponent
     },
     DO_DON_DIEGO: {
@@ -45,12 +47,12 @@ const domains = {
                 maxLength: 200
             }
         }],
+        formatter: value => value + ' - formaté',
         InputComponent
     },
     DO_DATE : {
         InputComponent,
-        formatter: date => date ? moment(date, moment.ISO_8601).format('DD/MM/YYYY hh:mm a') : '',
-        format: ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY']
+        formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
     }
 }
 

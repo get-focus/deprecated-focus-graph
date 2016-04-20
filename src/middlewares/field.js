@@ -12,7 +12,7 @@ import identity from 'lodash/identity';
 // TODO : replace this with the focus core function
 const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
     const rand = Math.random();
-    const isValid = rand > 5;
+    const isValid = rand > 0;
     const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
     return {
         name,
@@ -96,8 +96,9 @@ const fieldMiddleware = store => next => action => {
             const formValid = fieldsToValidate.reduce((formValid, field) => {
                 const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
                 if (!fieldValid) formValid = false;
+                return fieldValid;
             }, true);
-
+            
             // If the form is valid, then dispatch the save action
             if (formValid) store.dispatch(action.saveAction);
             break;

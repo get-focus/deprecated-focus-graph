@@ -3,13 +3,13 @@ import React, {Component} from 'react';
 const InputBehaviour = InputComponent => class WrappedInputComponent extends Component {
     state = {typing: false};
 
-    onTypingBeginning() {
+    onTypingBeginning = () => {
         this.setState({typing: true});
-    }
+    };
 
-    onTypingEnd() {
+    onTypingEnd = () => {
         this.setState({typing: false});
-    }
+    };
 
     render() {
         const {onTypingBeginning, onTypingEnd} = this;

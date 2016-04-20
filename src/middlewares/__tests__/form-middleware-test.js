@@ -1,5 +1,6 @@
 import formMiddleware from '../form';
-import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING, SUCCESS} from '../../actions/form';
+import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../../actions/form';
+import {SUCCESS} from '../../actions/entity-actions-builder';
 
 describe('The form middleware', () => {
     const getStateSpy = sinon.spy();

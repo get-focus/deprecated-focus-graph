@@ -1,4 +1,5 @@
-import {CREATE_FORM, SUCCESS} from '../actions/form';
+import {CREATE_FORM} from '../actions/form';
+import {SUCCESS} from '../actions/entity-actions-builder';
 import {syncFormEntity, toggleFormEditing} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';

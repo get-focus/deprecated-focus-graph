@@ -1,11 +1,33 @@
 import React from 'react';
+import InputBehaviour from '../behaviours/input';
 
-const InputComponent = ({name, rawInputValue, onChange, onBlur, error, valid, ...otherProps}) => (
-    <div className='mdl-textfield mdl-js-textfield'>
-        <input className='mdl-textfield__input' type='text' id={name} rawInputValue={rawInputValue} onChange={({target:{value}}) => onChange(value)} onBlur={onBlur} {...otherProps}/>
-        <label className='mdl-textfield__label' htmlFor={name}>{name}</label>
-        {!valid && <b style={{color: 'red'}}>{error}</b>}
-    </div>
-);
+const InputComponent = ({
+    name,
+    rawInputValue,
+    formattedInputValue,
+    onChange,
+    onBlur,
+    error,
+    valid,
+    typing,
+    onTypingBeginning,
+    onTypingEnd,
+    ...otherProps
+}) => {
+    const wrappedOnFocus = () => {
+        onTypingBeginning();
+    }
+    const wrappedOnBlur = () => {
+        onBlur();
+        onTypingEnd();
+    }
+    return (
+        <div className='mdl-textfield mdl-js-textfield'>
+            <input className='mdl-textfield__input' type='text' id={name} value={typing ? rawInputValue : formattedInputValue} onChange={({target:{value}}) => onChange(value)} onFocus={wrappedOnFocus} onBlur={wrappedOnBlur}/>
+            <label className='mdl-textfield__label' htmlFor={name}>{name}</label>
+            {!valid && <b style={{color: 'red'}}>{error}</b>}
+        </div>
+    );
+};
 
-export default InputComponent;
+export default InputBehaviour(InputComponent);

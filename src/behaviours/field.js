@@ -24,8 +24,7 @@ const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldCo
     const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
 
     const field = find(fields, {entityPath, name: propertyName});
-    const {rawInputValue, formattedInputValue} = field || {};
-
+    const {rawInputValue} = field || {};
     const onChange = rawValue => {
         onInputChange(propertyName, entityPath, rawValue);
         if (options.onChange) options.onChange(rawValue);
@@ -37,7 +36,7 @@ const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldCo
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
 
-    return <FieldComponent {...options} {...field} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} rawInputValue={rawInputValue} formattedInputValue={formattedInputValue} metadata={metadata} />;
+    return <FieldComponent {...options} {...field} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
 }
 
 export function connect() {
