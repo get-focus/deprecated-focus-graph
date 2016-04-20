@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, inputChange} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing, validateForm} from '../actions/form';
+import {inputChange, inputBlur} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
@@ -14,14 +15,16 @@ const validateFormOptions = ({formKey, entityPathArray}) => {
 const internalMapStateToProps = (state, formKey) => {
     const formCandidate = find(state.forms, {formKey});
     const resultingProps = {...formCandidate};
-    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.inputValue}), {})
+    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.rawInputValue}), {})
     return resultingProps;
 };
 
-const internalMapDispatchToProps = (dispatch, loadAction, saveAction) => {
+const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields) => {
     const resultingActions = {};
     if (loadAction) resultingActions.load = compose(dispatch, loadAction);
-    if (saveAction) resultingActions.save = compose(dispatch, saveAction);
+    if (saveAction) resultingActions.save = (...saveArgs) => {
+        dispatch(validateForm(formKey, nonValidatedFields, saveAction.call(null, ...saveArgs)));
+    }
     return resultingActions;
 };
 
@@ -51,13 +54,20 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
             dispatch(inputChange(formOptions.formKey, name, entityPath, value));
         }
 
+        _onInputBlur(name, entityPath, value) {
+            const {store: {dispatch}} = this.context;
+            dispatch(inputBlur(formOptions.formKey, name, entityPath, value));
+        }
+
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
-            dispatch(toggleFormEdit(formOptions.formKey, edit));
+            dispatch(toggleFormEditing(formOptions.formKey, edit));
         }
 
         render() {
-            return <ComponentToConnect {...this.props} onInputChange={::this._onInputChange} entityPathArray={formOptions.entityPathArray} />;
+            const {_behaviours, ...otherProps} = this.props;
+            const behaviours = {connectedToForm: true, ..._behaviours};
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
         }
     }
     FormComponent.contextTypes = {
@@ -91,7 +101,8 @@ export const connect = formOptions => ComponentToConnect => {
         mapStateToProps: userDefinedMapStateToProps = () => ({}),
         mapDispatchToProps: userDefinedMapDispatchToProps = () => ({}),
         loadAction,
-        saveAction
+        saveAction,
+        nonValidatedFields
     } = formOptions;
 
     // Validate the provided options
@@ -106,7 +117,7 @@ export const connect = formOptions => ComponentToConnect => {
         ...userDefinedMapStateToProps(state)
     });
     const mapDispatchToProps = dispatch => ({
-        ...internalMapDispatchToProps(dispatch, loadAction, saveAction),
+        ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields),
         ...userDefinedMapDispatchToProps(dispatch)
     });
 

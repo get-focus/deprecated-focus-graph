@@ -1,4 +1,5 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, INPUT_CHANGE, TOGGLE_FORM_EDITING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../actions/form';
+import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -10,7 +11,7 @@ const initializeField = field => ({
     dirty: false,
     loading: false,
     saving: false,
-    inputValue: field.dataSetValue,
+    rawInputValue: field.dataSetValue,
     ...field
 });
 
@@ -62,7 +63,6 @@ const forms = (state = [], action) => {
                 return newForm;
             });
         case INPUT_CHANGE:
-            // TODO : do a clean cut of the form array, to avoid form duplication
             // Check if the field to change exists
             const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
             if (!changedFieldExistsInForm) {
@@ -79,15 +79,18 @@ const forms = (state = [], action) => {
                                 entityPath: action.entityPath,
                                 valid: true,
                                 error: false,
+                                loading: false,
+                                saving: false,
                                 active: true,
                                 dirty: true,
-                                inputValue: action.value
+                                rawInputValue: action.rawValue,
+                                formattedInputValue: action.formattedValue
                             }
                         ]
                     } : {})
                 }));
             } else {
-                // The field exists, so just update the inputValue
+                // The field exists, so just update the rawInputValue
                 return state.map(form => ({
                     ...form,
                     ...(form.formKey === action.formKey ? {
@@ -96,18 +99,47 @@ const forms = (state = [], action) => {
                             if (!isFieldConcerned) return field;
                             return {
                                 ...field,
-                                inputValue: action.value,
-                                dirty: true
+                                rawInputValue: action.rawValue,
+                                formattedInputValue: action.formattedValue,
+                                dirty: true,
+                                valid: true
                             };
                         })
                     } : {})
                 }));
             }
-        case TOGGLE_FORM_EDITING:
+        case INPUT_ERROR:
             return state.map(form => ({
                 ...form,
-                editing: form.formKey === action.formKey ? action.editing : form.editing
+                ...(form.formKey === action.formKey ? {
+                    fields: form.fields.map(field => {
+                        const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                        if (!isFieldConcerned) return field;
+                        return {
+                            ...field,
+                            error: action.error,
+                            valid: false
+                        };
+                    })
+                } : {})
             }));
+        case TOGGLE_FORM_EDITING:
+            return state.map(form => {
+                // Check if form is the action's target form
+                if (form.formKey === action.formKey) {
+                    return {
+                        ...form,
+                        editing: action.editing,
+                        fields: action.editing ? form.fields : form.fields.map(({dataSetValue, ...otherAttributes}) => ({
+                            ...otherAttributes,
+                            rawInputValue: dataSetValue,
+                            dataSetValue
+                        }))
+                    };
+                } else {
+                    return form;
+                }
+            });
         default:
             return state;
     }

@@ -6,38 +6,73 @@ import 'babel-polyfill';
 import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Provider as StoreProvider} from 'react-redux';
-import {Provider as DefinitionsProvider} from '../behaviours/definitions';
+import moment from 'moment';
+import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserDumbComponent from './components/user-dumb';
+import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
 import store from './store';
 
+moment.locale('fr');
+const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
+
 const definitions = {
     user: {
+        uuid: { domain: 'DO_RODRIGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
+        date: { domain: 'DO_DATE', isRequired: false}
+    }
+}
+
+const domains = {
+    DO_RODRIGO: {
+        type: 'text',
+        validator: [{
+            type: 'string',
+            options: {
+                maxLength: 50
+            }
+        }],
+        InputComponent
+    },
+    DO_DON_DIEGO: {
+        type: 'text',
+        validator: [{
+            type: 'string',
+            options: {
+                maxLength: 200
+            }
+        }],
+        formatter: value => value + ' - formaté',
+        InputComponent
+    },
+    DO_DATE : {
+        InputComponent,
+        formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
     }
 }
 
 const App = () => {
     return (
-        <DefinitionsProvider definitions={definitions}>
-            <StoreProvider store={store}>
-              <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
-                <div>
-                    <DevTools />
-                    <FieldHelpersProvider>
-                        <div>
-                            <h1>User Dumb</h1>
-                            <UserDumbComponent id={1234} />
-                        </div>
-                    </FieldHelpersProvider>
-                </div>
-              </MasterDataProvider>
-            </StoreProvider>
-        </DefinitionsProvider>
+        <StoreProvider store={store}>
+            <MetadataProvider definitions={definitions} domains={domains}>
+                <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
+                    <div>
+                        <DevTools />
+                        <FieldHelpersProvider>
+                            <div>
+                                <h1>User Dumb</h1>
+                                <UserDumbComponent id={1234} />
+                            </div>
+                        </FieldHelpersProvider>
+                    </div>
+                </MasterDataProvider>
+            </MetadataProvider>
+        </StoreProvider>
     )
 }
 

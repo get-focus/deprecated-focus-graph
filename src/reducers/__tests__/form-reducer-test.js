@@ -1,4 +1,4 @@
-import {createForm, destroyForm, SYNC_FORM_ENTITY} from '../../actions/form';
+import {createForm, destroyForm, SYNC_FORM_ENTITY, toggleFormEditing} from '../../actions/form';
 import formReducer from '../form';
 import isArray from 'lodash/isArray';
 
@@ -26,7 +26,7 @@ describe('The form reducer', () => {
                 valid: true,
                 loading: false,
                 saving: false,
-                inputValue: 'fieldValue'
+                rawInputValue: 'fieldValue'
             }]);
         })
     });
@@ -43,27 +43,27 @@ describe('The form reducer', () => {
     });
     describe('when receiving a SYNC_FORM_ENTITY action', () => {
         const state = [{
-            key: 'form1',
+            formKey: 'form1',
             entityPathArray: ['user'],
             fields: [
                 {
                     name: 'firstName',
                     entityPath: 'user',
-                    inputValue: 'David',
+                    rawInputValue: 'David',
                     dataSetValue: 'David',
                     dirty: true
                 },
                 {
                     name: 'lastName',
                     entityPath: 'user',
-                    inputValue: 'Lopez',
+                    rawInputValue: 'Lopez',
                     dataSetValue: 'Lopez',
                     dirty: false
                 },
                 {
                     name: 'weapon',
                     entityPath: 'user',
-                    inputValue: 'shoe',
+                    rawInputValue: 'shoe',
                     dataSetValue: 'shoe',
                     dirty: false
                 }
@@ -117,5 +117,53 @@ describe('The form reducer', () => {
             const updatedForm = newState[0];
             expect(updatedForm.fields[3].dataSetValue).to.equal('Kevina');
         });
-    })
+    });
+    describe('when receiving a TOGGLE_FORM_EDITING action', () => {
+        const state = [{
+            formKey: 'form1',
+            entityPathArray: ['user'],
+            editing: false,
+            fields: [
+                {
+                    name: 'firstName',
+                    entityPath: 'user',
+                    rawInputValue: 'Davide',
+                    dataSetValue: 'David',
+                    dirty: true
+                },
+                {
+                    name: 'lastName',
+                    entityPath: 'user',
+                    rawInputValue: 'Lopez',
+                    dataSetValue: 'Lopez',
+                    dirty: false
+                },
+                {
+                    name: 'weapon',
+                    entityPath: 'user',
+                    rawInputValue: 'shoe',
+                    dataSetValue: 'shoe',
+                    dirty: false
+                }
+            ]
+        }];
+        it('should toggle the form editing attribute', () => {
+            const action = toggleFormEditing('form1', true);
+            const newState = formReducer(state, action);
+            expect(newState[0].editing).to.be.true;
+        });
+        it('should leave untouched the fields when the form is toggled to editing', () => {
+            const action = toggleFormEditing('form1', true);
+            const newState = formReducer(state, action);
+            expect(newState[0].fields).to.deep.equal(state[0].fields);
+        });
+        it('should set the fields\' rawInputValue to their dataSetValue when the form is toggled to consulting', () => {
+            const modifiedInitialState = [...state];
+            modifiedInitialState[0].editing = true;
+            modifiedInitialState[0].fields[0].rawInputValue = 'LOL';
+            const action = toggleFormEditing('form1', false);
+            const newState = formReducer(modifiedInitialState, action);
+            expect(newState[0].fields[0].rawInputValue).to.equal(newState[0].fields[0].dataSetValue);
+        });
+    });
 });

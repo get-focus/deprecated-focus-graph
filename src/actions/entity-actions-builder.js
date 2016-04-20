@@ -1,12 +1,20 @@
 import {capitalize, toUpper} from 'lodash/string';
 import {isFunction, isString} from 'lodash/lang';
+
 const ACTION_BUILDER = 'ACTION_BUILDER';
 const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
 const STRING_EMPTY = '';
+const LOAD = ALLOW_ACTION_TYPES[0];
+const SAVE = ALLOW_ACTION_TYPES[1];
+
+export const PENDING = 'PENDING';
+export const SUCCESS = 'SUCCESS';
+export const ERROR = 'ERROR';
+
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = (type, name) => payload => ({...{type, entityPath: name, syncForm: true}, ...(payload ? {payload} : {})});
+const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {})});
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
@@ -80,10 +88,17 @@ export const actionBuilder = ({name, type, service}) => {
         response: `RESPONSE_${UPPER_TYPE}_${UPPER_NAME}`,
         error: `ERROR_${UPPER_TYPE}_${UPPER_NAME}`
     }
+    const loading = type === LOAD;
+    const saving = type === SAVE;
+    const _metas = {
+        request: {status: PENDING, loading, saving},
+        response: {status: SUCCESS, loading, saving},
+        error: {status: ERROR, loading, saving}
+    }
     const creators = {
-        request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name)},
-        response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name)},
-        error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name)}
+        request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},
+        response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response)},
+        error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error)}
     }
 
 

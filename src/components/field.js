@@ -1,22 +1,26 @@
 import React, {PropTypes} from 'react';
+import DefaultInputComponent from './input';
 
-function Field({name, value, error, dirty, onChange, ...otherProps}) {
+function Field(props) {
+    const {InputComponent = DefaultInputComponent} = props.metadata;
+    const renderConsult = () => (
+        <div>{props.formattedInputValue}</div>
+    );
+    const renderEdit = () => (
+        <InputComponent {...props} />
+    );
     return (
-        <div>
-            <div>{name}</div>
-            <div className='mdl-textfield mdl-js-textfield'>
-                <input className='mdl-textfield__input' type='text' id={name} value={value} onChange={({target:{value}}) => onChange(value)} {...otherProps}/>
-                <label className='mdl-textfield__label' htmlFor={name}>{name}</label>
-            </div>
+        <div style={{display: 'flex', padding: 10}}>
+            <div><b>{props.name}</b></div>
+            {props.editing ? renderEdit() : renderConsult()}
         </div>
     );
 }
 
 Field.displayName = 'Field';
 Field.propTypes = {
-    error: PropTypes.bool,
-    name: PropTypes.string.isRequired,
-    //  value: PropTypes.object
+    error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+    name: PropTypes.string.isRequired
 };
 
 export default Field;

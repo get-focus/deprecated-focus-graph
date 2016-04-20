@@ -81,12 +81,12 @@ describe('The form connect', () => {
                 formKey: 'testForm',
                 fieldName: 'uuid',
                 entityPath: 'user',
-                value: 'new value'
+                rawValue: 'new value'
             });
         });
         it('should update the state', () => {
             const uuidField = find(capturedProps.fields, field => field.name === 'uuid');
-            expect(uuidField.inputValue).to.equal('new value');
+            expect(uuidField.rawInputValue).to.equal('new value');
         });
         it('should reflect the change in the getUserInput method', () => {
             expect(capturedProps.getUserInput().uuid).to.equal('new value');
