@@ -30,7 +30,6 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
     return async dispatch => {
         try {
-            console.log(actionCreatorsArray);
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
             const svcValue = await promiseSvc(data);
               actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
@@ -51,14 +50,14 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
 });
 
 // Validate the action builder parameters
-const _validateActionBuilderParams = ({names = [], type, service}) => {
+const _validateActionBuilderParams = ({names, type, service}) => {
     if(!isArray(names) || names.length === 0) {
         throw new Error(`${ACTION_BUILDER}: the names parameter should be a non empty array.`);
     }
 
     names.forEach( (name) => {
       if(!isString(name) || STRING_EMPTY === name) {
-        throw new Error(`${ACTION_BUILDER}: the names parameter should be maid of strings.`);
+        throw new Error(`${ACTION_BUILDER}: the names parameter should be made of strings.`);
       }
     });
 
@@ -107,7 +106,7 @@ export const actionBuilder = ({names, type, service}) => {
         response: {status: SUCCESS, loading, saving},
         error: {status: ERROR, loading, saving}
     }
-    // for each node action types and action creators are maid.
+    // for each node action types and action creators are made.
     const _creatorsAndTypes = names.reduce((res, name) => {
       // commonTreatement
       const UPPER_NAME = toUpper(name);

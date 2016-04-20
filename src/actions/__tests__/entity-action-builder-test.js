@@ -18,7 +18,7 @@ describe('The actionBuilder', () => {
         });
 
         it('should throw an error when called without a string name parameter', () => {
-            const NAME_MESSAGE = 'ACTION_BUILDER: the names parameter should be maid of strings';
+            const NAME_MESSAGE = 'ACTION_BUILDER: the names parameter should be made of strings';
             expect(() => { actionBuilder({names: [undefined]})}).to.throw(NAME_MESSAGE);
             expect(() => { actionBuilder({names: [1]})}).to.throw(NAME_MESSAGE);
             expect(() => { actionBuilder({names: [{}]})}).to.throw(NAME_MESSAGE);
