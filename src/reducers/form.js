@@ -41,7 +41,7 @@ const forms = (state = [], action) => {
                     ...form,
                     fields: [
                         ...form.fields.map(formField => {
-                            const candidateField = findField(action.fields, action.entityPath, formField.name);
+                            const candidateField = findField(action.fields, formField.entityPath, formField.name);
                             if (!candidateField) return formField;
                             return {
                                 ...formField,
