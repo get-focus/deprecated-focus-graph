@@ -11,11 +11,16 @@ let entityJSON = [{
   lastName: 'De Libercourt'
 }];//require('./api-mock/notifs.json');
 
+let adressJSON = [{
+    uuid: '1234',
+    city: faker.address.city()
+  }
+];
 function createEntity(){
   return        {
           uuid: faker.random.uuid(),
           firstName: faker.name.firstName(),
-          lastName: faker.name.lastName()
+          lastName: faker.name.lastName(),
         };
 
 }
@@ -63,6 +68,14 @@ app.get(API_ROOT  + '/entity', function getAllNotifications(req, res) {
 
 app.get(API_ROOT  + '/entity/:id', function getSingleEntity(req, res) {
     res.json(entityJSON.find(d => d.uuid === req.params.id));
+  }
+);
+
+app.get(API_ROOT  + '/mixed/:id', function getSingleEntity(req, res) {
+    res.json({
+      user: entityJSON.find(d => d.uuid === req.params.id),
+      address: adressJSON.find(d => d.uuid = req.params.id)
+    });
   }
 );
 
