@@ -11,8 +11,7 @@ export const loadMixedEntities =  async({id}) => {
 }
 
 export const saveUserSvc = async (user) => {
-    // const response = await fetch(`http://localhost:9999/x/entity/${user.id}`)
-    // const data = await response.json();
-    // return data;
-    return {...user, firstName: 'Name changed by the server mwahaha'};
+    const response = await fetch(`http://localhost:9999/x/entity/${user.uuid}`)
+    const data = await response.json();
+    return {...data, firstName: 'Name changed by the server mwahaha'};
 }

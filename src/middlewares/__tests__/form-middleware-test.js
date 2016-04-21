@@ -1,5 +1,5 @@
 import formMiddleware from '../form';
-import {CREATE_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../../actions/form';
+import {CREATE_FORM, SYNC_FORMS_ENTITY, TOGGLE_FORM_EDITING} from '../../actions/form';
 import {SUCCESS} from '../../actions/entity-actions-builder';
 
 describe('The form middleware', () => {
@@ -71,18 +71,33 @@ describe('The form middleware', () => {
                         entityPath: 'user',
                         name: 'firstName',
                         loading: true,
-                        saving: false
+                        saving: false,
+                        rawInputValue: 'Joe'
                     },
                     {
                         dataSetValue: 'Lopez',
                         entityPath: 'user',
                         name: 'lastName',
                         loading: true,
-                        saving: false
+                        saving: false,
+                        rawInputValue: 'Lopez'
                     }
                 ]
             });
         });
+        it('should give an empty array of fields when there is nothing in the dataset', () => {
+            const brokenAction = {
+                type: CREATE_FORM,
+                formKey: 'formKey',
+                entityPathArray: ['nonExistingEntity']
+            }
+            formMiddleware(store)(nextSpy)(brokenAction);
+            expect(nextSpy).to.have.been.callCount(1);
+            expect(nextSpy).to.have.been.calledWith({
+                ...brokenAction,
+                fields: []
+            });
+        })
     });
     describe('when an action that should sync the form is passed', () => {
         const alteredStore = {
@@ -129,11 +144,11 @@ describe('The form middleware', () => {
             formMiddleware(alteredStore)(nextSpy)(myLoadAction);
             expect(nextSpy).to.have.callCount(1);
         })
-        it('should dispatch several SYNC_FORM_ENTITY actions', () => {
+        it('should dispatch several SYNC_FORMS_ENTITY actions', () => {
             formMiddleware(alteredStore)(nextSpy)(myLoadAction);
             expect(dispatchSpy).to.have.callCount(1);
             expect(dispatchSpy).to.have.been.calledWith({
-                type: SYNC_FORM_ENTITY,
+                type: SYNC_FORMS_ENTITY,
                 entityPath: 'user',
                 fields: [
                     {
@@ -169,7 +184,7 @@ describe('The form middleware', () => {
             formMiddleware(alteredStore)(nextSpy)(mySuccessfulSaveAction);
             expect(dispatchSpy).to.have.callCount(2);
             expect(dispatchSpy).to.have.been.calledWith({
-                type: SYNC_FORM_ENTITY,
+                type: SYNC_FORMS_ENTITY,
                 entityPath: 'user',
                 fields: [
                     {

@@ -21,10 +21,8 @@ const internalMapStateToProps = (state, formKey) => {
 
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields) => {
     const resultingActions = {};
-    if (loadAction) resultingActions.load = compose(dispatch, loadAction);
-    if (saveAction) resultingActions.save = (...saveArgs) => {
-        dispatch(validateForm(formKey, nonValidatedFields, saveAction.call(null, ...saveArgs)));
-    }
+    if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction(...loadArgs));
+    if (saveAction) resultingActions.save = (...saveArgs) => dispatch(validateForm(formKey, nonValidatedFields, saveAction(...saveArgs)));
     return resultingActions;
 };
 

@@ -1,0 +1,13 @@
+.field {
+    display: flex;
+    padding: 10px;
+    height: 20px;
+
+    div:nth-child(1) {
+        margin-right: 15px;
+    }
+
+    div:nth-child(2) {
+        padding: 0;
+    }
+}

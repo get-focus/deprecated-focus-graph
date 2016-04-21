@@ -10,7 +10,7 @@ function Field(props) {
         <InputComponent {...props} />
     );
     return (
-        <div style={{display: 'flex', padding: 10}}>
+        <div className='field'>
             <div><b>{props.name}</b></div>
             {props.editing ? renderEdit() : renderConsult()}
         </div>

@@ -8,6 +8,7 @@ const FIELD_CONTEXT_TYPE = {
 
 const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
     const propertyDefinition = definitions[entityPath][propertyName];
+    if (!propertyDefinition) throw new Error(`Property ${propertyName} does not exist in definition ${entityPath}`);
     return {
         isRequired: propertyDefinition.isRequired,
         ...domains[propertyDefinition.domain]

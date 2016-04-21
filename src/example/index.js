@@ -2,6 +2,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'material-design-lite/material.css';
 import 'material-design-lite/material.min';
 import 'babel-polyfill';
+import './style.scss';
 
 import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
@@ -10,8 +11,8 @@ import moment from 'moment';
 import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
-import UserDumbComponent from './components/user-dumb';
 import UserAndAddressDumbComponent from './components/user-and-address-dumb';
+import UserForm from './components/user-form';
 import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
@@ -70,10 +71,10 @@ const App = () => {
                         <DevTools />
                         <FieldHelpersProvider>
                             <div>
-                                <h1>User Dumb</h1>
-                                <UserDumbComponent id={1234} />
-                              <h1>User and address Dumb</h1>
-                              <UserAndAddressDumbComponent id={1234}/>
+                                <h1>User and address Dumb</h1>
+                                <UserAndAddressDumbComponent id={1234}/>
+                                <h1>Single entity form</h1>
+                                <UserForm id={1234} />
                             </div>
                         </FieldHelpersProvider>
                     </div>

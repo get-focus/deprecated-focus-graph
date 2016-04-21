@@ -1,5 +1,5 @@
 import React from 'react';
-import InputBehaviour from '../behaviours/input';
+import TypingBehaviour from '../behaviours/typing';
 
 const InputComponent = ({
     name,
@@ -30,4 +30,4 @@ const InputComponent = ({
     );
 };
 
-export default InputBehaviour(InputComponent);
+export default TypingBehaviour(InputComponent);

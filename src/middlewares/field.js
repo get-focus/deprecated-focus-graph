@@ -1,6 +1,6 @@
 import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
 import {inputError} from '../actions/input';
-import {CREATE_FORM, VALIDATE_FORM, SYNC_FORM_ENTITY} from '../actions/form';
+import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
 import isUndefined from 'lodash/isUndefined';
@@ -12,7 +12,7 @@ import identity from 'lodash/identity';
 // TODO : replace this with the focus core function
 const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
     const rand = Math.random();
-    const isValid = rand > 0;
+    const isValid = rand > 0.2;
     const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
     return {
         name,
@@ -98,7 +98,7 @@ const fieldMiddleware = store => next => action => {
                 if (!fieldValid) formValid = false;
                 return fieldValid;
             }, true);
-            
+
             // If the form is valid, then dispatch the save action
             if (formValid) store.dispatch(action.saveAction);
             break;
@@ -108,14 +108,21 @@ const fieldMiddleware = store => next => action => {
                 formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
             break;
-        case SYNC_FORM_ENTITY:
+        case SYNC_FORMS_ENTITY:
         case CREATE_FORM:
             next({
                 ...action,
-                fields: action.fields.map(field => ({
-                    ...field,
-                    formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains)
-                }))
+                fields: action.fields.map(field => {
+                    // Check if field has a rawInputValue, if yes, format it
+                    if (field.rawInputValue !== undefined) {
+                        return ({
+                            ...field,
+                            formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains)
+                        });
+                    } else {
+                        return field;
+                    }
+                })
             });
             break;
         default:

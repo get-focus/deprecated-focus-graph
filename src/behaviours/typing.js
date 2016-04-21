@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import isEqual from 'lodash/isEqual';
 
-const InputBehaviour = InputComponent => class WrappedInputComponent extends Component {
+const TypingBehaviour = InputComponent => class WrappedInputComponent extends Component {
     state = {typing: false};
 
     onTypingBeginning = () => {
@@ -11,6 +12,10 @@ const InputBehaviour = InputComponent => class WrappedInputComponent extends Com
         this.setState({typing: false});
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return (!isEqual(this.props, nextProps) || (!isEqual(this.state, nextState)));
+    }
+
     render() {
         const {onTypingBeginning, onTypingEnd} = this;
         const {typing} = this.state;
@@ -18,4 +23,4 @@ const InputBehaviour = InputComponent => class WrappedInputComponent extends Com
     }
 };
 
-export default InputBehaviour;
+export default TypingBehaviour;

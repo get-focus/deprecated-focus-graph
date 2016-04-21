@@ -1,7 +1,8 @@
 export const CREATE_FORM = 'CREATE_FORM';
 export const DESTROY_FORM ='DESTROY_FORM';
 
-export const SYNC_FORM_ENTITY = 'SYNC_FORM_ENTITY';
+export const SYNC_FORMS_ENTITY = 'SYNC_FORMS_ENTITY';
+export const SYNC_FORM_ENTITIES = 'SYNC_FORM_ENTITIES';
 
 export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
 
@@ -34,16 +35,30 @@ export const destroyForm = formKey => ({
 });
 
 /**
- * Sync form action
- * Synchronises the form's state with the dataset state
+ * Sync multiple forms with a single entity
+ * Synchronises the forms state with the dataset state
  * No usage example since it's not called by the user itself but only by the form middleware
  * @param  {string} entityPath the target entity path. All forms listening to this entity path will be updated
  * @param  {array} fields      the updated fields objects
  * @return {object}            the action
  */
-export const syncFormEntity = (entityPath, fields) => ({
-    type: SYNC_FORM_ENTITY,
+export const syncFormsEntity = (entityPath, fields) => ({
+    type: SYNC_FORMS_ENTITY,
     entityPath,
+    fields
+});
+
+/**
+ * Sync a single form with multiple entities
+ * Synchronises the forms state with the dataset state
+ * No usage example since it's not called by the user itself but only by the form middleware
+ * @param  {string} formKey    the target form
+ * @param  {array} fields      the updated fields objects
+ * @return {object}            the action
+ */
+export const syncFormEntities = (formKey, fields) => ({
+    type: SYNC_FORM_ENTITIES,
+    formKey,
     fields
 });
 
