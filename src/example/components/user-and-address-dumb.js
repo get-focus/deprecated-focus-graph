@@ -41,7 +41,8 @@ function UserDumbComponent({fields, fieldFor, load, save, id, getUserInput, togg
 UserDumbComponent.displayName = UserDumbComponent;
 
 const formConfig = {
-    formKey: 'userForm',
+    //todo: it should raise an error if i use the same formKey.
+    formKey: 'userAndAddressForm',
     entityPathArray: ['user', 'address'],
     loadAction: loadMixedAction,
     saveAction: saveUserAction,
