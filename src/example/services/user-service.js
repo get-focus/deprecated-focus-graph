@@ -4,6 +4,12 @@ export const loadUserSvc = async ({id}) => {
     return data;
 }
 
+export const loadMixedEntities =  async({id}) => {
+  const response = await fetch(`http://localhost:9999/x/mixed/${id}`);
+  const data = await response.json();
+  return data;
+}
+
 export const saveUserSvc = async (user) => {
     // const response = await fetch(`http://localhost:9999/x/entity/${user.id}`)
     // const data = await response.json();
