@@ -1,8 +1,9 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, TOGGLE_FORM_EDITING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING} from '../actions/form';
 import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
+import findIndex from 'lodash/findIndex';
 
 const initializeField = field => ({
     valid: true,
@@ -61,6 +62,16 @@ const forms = (state = [], action) => {
                 newForm.saving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
                 return newForm;
             });
+        case SYNC_FORM_ENTITIES:
+            const formIndex = findIndex(state, {formKey: action.formKey});
+            return [
+                ...state.slice(0, formIndex),
+                {
+                    ...state[formIndex],
+                    fields: action.fields
+                },
+                ...state.slice(formIndex + 1)
+            ];
         case INPUT_CHANGE:
             // Check if the field to change exists
             const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));

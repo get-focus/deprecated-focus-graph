@@ -1,8 +1,9 @@
-import {CREATE_FORM} from '../actions/form';
+import {CREATE_FORM, SYNC_FORM_ENTITIES} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
 import {syncFormsEntity, toggleFormEditing} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
+import find from 'lodash/find';
 
 const formMiddleware = store => next => action => {
     if (action.type === CREATE_FORM) {
@@ -20,6 +21,14 @@ const formMiddleware = store => next => action => {
             }))
         ]), []);
         return next({...action, fields});
+    } else if(action.type === SYNC_FORM_ENTITIES) {
+        const {dataset, forms} = store.getState();
+        const form = find(forms, {formKey: action.formKey});
+        action.fields = form.fields.map(field => ({
+            ...field,
+            rawInputValue: field.dataSetValue
+        }));
+        next(action);
     } else if (action.syncForm) {
         // The action requires the forms to sync themselves with the dataset, let's do it
         // Grab the new state, to have the updates on the dataset

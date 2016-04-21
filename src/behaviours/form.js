@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, toggleFormEditing, validateForm} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities} from '../actions/form';
 import {inputChange, inputBlur} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
@@ -59,6 +59,10 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
 
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
+            if (!edit) {
+                // Edit is set to false, this means the user cancelled the edition, so dispatch a syncFormEntities action
+                dispatch(syncFormEntities(formOptions.formKey));
+            }
             dispatch(toggleFormEditing(formOptions.formKey, edit));
         }
 

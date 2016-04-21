@@ -53,13 +53,11 @@ export const syncFormsEntity = (entityPath, fields) => ({
  * Synchronises the forms state with the dataset state
  * No usage example since it's not called by the user itself but only by the form middleware
  * @param  {string} formKey    the target form
- * @param  {array} fields      the updated fields objects
  * @return {object}            the action
  */
-export const syncFormEntities = (formKey, fields) => ({
+export const syncFormEntities = formKey => ({
     type: SYNC_FORM_ENTITIES,
-    formKey,
-    fields
+    formKey
 });
 
 /**

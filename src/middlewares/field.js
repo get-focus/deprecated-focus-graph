@@ -1,6 +1,6 @@
 import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
 import {inputError} from '../actions/input';
-import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY} from '../actions/form';
+import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
 import isUndefined from 'lodash/isUndefined';
@@ -108,21 +108,15 @@ const fieldMiddleware = store => next => action => {
                 formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
             break;
+        case SYNC_FORM_ENTITIES:
         case SYNC_FORMS_ENTITY:
         case CREATE_FORM:
             next({
                 ...action,
-                fields: action.fields.map(field => {
-                    // Check if field has a rawInputValue, if yes, format it
-                    if (field.rawInputValue !== undefined) {
-                        return ({
-                            ...field,
-                            formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains)
-                        });
-                    } else {
-                        return field;
-                    }
-                })
+                fields: action.fields.map(field => ({
+                    ...field,
+                    formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains)
+                }))
             });
             break;
         default:
