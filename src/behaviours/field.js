@@ -18,6 +18,8 @@ const fieldForBuilder = props => (propertyName, {FieldComponent = DefaultFieldCo
     const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
 
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
+    // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
+    // Maybe the cost is too high.
     if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
     entityPath = entityPath ? entityPath : entityPathArray[0];
 

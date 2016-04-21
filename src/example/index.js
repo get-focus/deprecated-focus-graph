@@ -11,6 +11,7 @@ import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserDumbComponent from './components/user-dumb';
+import UserAndAddressDumbComponent from './components/user-and-address-dumb';
 import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
@@ -25,6 +26,10 @@ const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false}
+    },
+    address: {
+        uuid: { domain: 'DO_RODRIGO', isRequired: false},
+        city: { domain: 'DO_DON_DIEGO', isRequired: true}
     }
 }
 
@@ -67,6 +72,8 @@ const App = () => {
                             <div>
                                 <h1>User Dumb</h1>
                                 <UserDumbComponent id={1234} />
+                              <h1>User and address Dumb</h1>
+                              <UserAndAddressDumbComponent id={1234}/>
                             </div>
                         </FieldHelpersProvider>
                     </div>
