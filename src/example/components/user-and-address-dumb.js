@@ -3,7 +3,7 @@ import {connect as connectToForm } from '../../behaviours/form';
 import {connect as connectToMetadata} from '../../behaviours/metadata';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
-import {loadMixedAction, saveUserAction} from '../actions/user-actions';
+import {loadMixedAction, saveMixedAction} from '../actions/mixed-actions';
 
 // Dumb components
 import Field from '../../components/field';
@@ -45,7 +45,7 @@ const formConfig = {
     formKey: 'userAndAddressForm',
     entityPathArray: ['user', 'address'],
     loadAction: loadMixedAction,
-    saveAction: saveUserAction,
+    saveAction: saveMixedAction,
     nonValidatedFields: ['user.firstName']
 };
 

@@ -1,5 +1,5 @@
 import {reducerBuilder} from '../../reducers/reducer-builder';
-import {loadMixedTypes} from '../actions/user-actions';
+import {loadMixedTypes} from '../actions/mixed-actions';
 
 //types to use
 // question here is should loadUserTypes be more like {request, receive} instead of {REQUEST_LOAD_USER, RESPONSE_LOAD_USER}
