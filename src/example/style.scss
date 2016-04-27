@@ -32,4 +32,12 @@
             }
         }
     }
+
+    &[data-loading='true'] {
+        background-color: #AAA;
+    }
+
+    &[data-saving='true'] {
+        background-color: green;
+    }
 }

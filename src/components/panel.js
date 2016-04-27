@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Button from './button';
 
-const FakePanelComponent = ({title, editing, toggleEdit, save, getUserInput, children}) => {
+const FakePanelComponent = ({title, editing, toggleEdit, save, getUserInput, loading, saving, children}) => {
     const renderEditingButtons = () => (
         <div className='buttons'>
             <Button onClick={() => toggleEdit(false)}>Cancel</Button>
@@ -14,7 +14,7 @@ const FakePanelComponent = ({title, editing, toggleEdit, save, getUserInput, chi
         </div>
     );
     return (
-        <div className='fake-panel'>
+        <div className='fake-panel' data-loading={loading} data-saving={saving}>
             <div className='head'>
                 <div className='title'>{title}</div>
                 {editing ? renderEditingButtons() : renderConsultingButton()}
