@@ -11,7 +11,7 @@ import moment from 'moment';
 import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
-import UserAndAddressDumbComponent from './components/user-and-address-dumb';
+import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
 import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
@@ -71,9 +71,7 @@ const App = () => {
                         <DevTools />
                         <FieldHelpersProvider>
                             <div>
-                                <h1>User and address Dumb</h1>
-                                <UserAndAddressDumbComponent id={1234}/>
-                                <h1>Single entity form</h1>
+                                <UserAddressForm id={1234}/>
                                 <UserForm id={1234} />
                             </div>
                         </FieldHelpersProvider>

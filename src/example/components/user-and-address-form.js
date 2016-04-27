@@ -3,12 +3,12 @@ import {connect as connectToForm } from '../../behaviours/form';
 import {connect as connectToMetadata} from '../../behaviours/metadata';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
-import {loadUserAction, saveUserAction} from '../actions/user-actions';
+import {loadMixedAction, saveMixedAction} from '../actions/mixed-actions';
 
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
-class UserForm extends Component {
+class UserAddressForm extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
         load({id});
@@ -18,32 +18,34 @@ class UserForm extends Component {
     render() {
         const {editing, fields, fieldFor, loading, saving} = this.props;
         return (
-            <Panel title='User' {...this.props}>
-                {fieldFor('uuid', {entityPath: 'user', onChange: () => {console.log(fields)}})}
+            <Panel title='User and address' {...this.props}>
+                {fieldFor('uuid', {onChange: () => {console.log(fields)}, entityPath: 'user'})}
                 {fieldFor('firstName', {entityPath: 'user'})}
                 {fieldFor('lastName', {entityPath: 'user'})}
                 {fieldFor('date', {entityPath: 'user'})}
+                {fieldFor('city', {entityPath: 'address'})}
             </Panel>
-        )
+        );
     }
 };
 
-UserForm.displayName = 'UserForm';
+UserAddressForm.displayName = 'UserAddressForm';
 
 const formConfig = {
-    formKey: 'userForm',
+    //todo: it should raise an error if i use the same formKey.
+    formKey: 'userAndAddressForm',
     entityPathArray: ['user', 'address'],
-    loadAction: loadUserAction,
-    saveAction: saveUserAction,
+    loadAction: loadMixedAction,
+    saveAction: saveMixedAction,
     nonValidatedFields: ['user.firstName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
-const ConnectedUserForm = compose(
-    connectToMetadata(['user']),
+const ConnectedUserAddressForm = compose(
+    connectToMetadata(['user', 'address']),
     connectToMasterData(['civility']),
     connectToForm(formConfig),
     connectToFieldHelpers()
-)(UserForm);
+)(UserAddressForm);
 
-export default ConnectedUserForm;
+export default ConnectedUserAddressForm;
