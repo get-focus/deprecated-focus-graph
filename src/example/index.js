@@ -8,11 +8,15 @@ import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Provider as StoreProvider} from 'react-redux';
 import moment from 'moment';
+
 import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
+
 import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
+import CustomUserForm from './components/custom-user-form';
+
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
 import store from './store';
@@ -79,6 +83,7 @@ const App = () => {
                             <div>
                                 <UserAddressForm id={1234}/>
                                 <UserForm id={1234} />
+                                <CustomUserForm id={1234} />
                             </div>
                         </FieldHelpersProvider>
                     </div>
