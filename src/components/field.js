@@ -1,18 +1,17 @@
 import React, {PropTypes} from 'react';
 import DefaultInputComponent from './input';
+import DefaultSelectComponent from './select';
 
-function Field(props) {
-    const {InputComponent = DefaultInputComponent} = props.metadata;
+function Field({multiple, ...otherProps}) {
+    const {InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent} = otherProps.metadata;
     const renderConsult = () => (
-        <div>{props.formattedInputValue}</div>
+        <div>{otherProps.formattedInputValue}</div>
     );
-    const renderEdit = () => (
-        <InputComponent {...props} />
-    );
+    const renderEdit = () => multiple ? <SelectComponent {...otherProps}/> : <InputComponent {...otherProps}/>;
     return (
         <div className='field'>
-            <div><b>{props.name}</b></div>
-            {props.editing ? renderEdit() : renderConsult()}
+            <div><b>{otherProps.name}</b></div>
+            {otherProps.editing ? renderEdit() : renderConsult()}
         </div>
     );
 }

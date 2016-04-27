@@ -13,7 +13,6 @@ import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
-import InputComponent from '../components/input';
 import DevTools from './containers/dev-tools';
 import {loadCivility} from './services/load-civility';
 import store from './store';
@@ -26,7 +25,8 @@ const definitions = {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
-        date: { domain: 'DO_DATE', isRequired: false}
+        date: { domain: 'DO_DATE', isRequired: false},
+        civility: { domain: 'DO_CIVILITE', isRequired: true}
     },
     address: {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
@@ -42,8 +42,7 @@ const domains = {
             options: {
                 maxLength: 50
             }
-        }],
-        InputComponent
+        }]
     },
     DO_DON_DIEGO: {
         type: 'text',
@@ -53,12 +52,19 @@ const domains = {
                 maxLength: 200
             }
         }],
-        formatter: value => value + ' - formaté',
-        InputComponent
+        formatter: value => value + ' - formaté'
     },
     DO_DATE : {
-        InputComponent,
         formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
+    },
+    DO_CIVILITE: {
+        type: 'text',
+        validator: [{
+            type: 'string',
+            options: {
+                maxLength: 200
+            }
+        }]
     }
 }
 

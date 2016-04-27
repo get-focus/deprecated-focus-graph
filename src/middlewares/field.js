@@ -18,7 +18,7 @@ const __fake_focus_core_validation_function__ = (isRequired = false, validators 
     return {
         name,
         value: rawValue,
-        isValid,
+        isValid: !error,
         error
     }
 }
