@@ -5,6 +5,7 @@ export const SYNC_FORMS_ENTITY = 'SYNC_FORMS_ENTITY';
 export const SYNC_FORM_ENTITIES = 'SYNC_FORM_ENTITIES';
 
 export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
+export const SET_FORM_TO_SAVING = 'SET_FORM_TO_SAVING';
 
 export const VALIDATE_FORM = 'VALIDATE_FORM';
 
@@ -72,6 +73,17 @@ export const toggleFormEditing = (formKey, editing) => ({
     type: TOGGLE_FORM_EDITING,
     formKey,
     editing
+});
+
+/**
+ * Set form to saving state
+ * Usage: setFormToSaving('movieForm');
+ * @param  {string} formKey    the target form key
+ * @return {object}            the action
+ */
+export const setFormToSaving = formKey => ({
+    type: SET_FORM_TO_SAVING,
+    formKey
 });
 
 export const validateForm = (formKey, nonValidatedFields, saveAction) => ({

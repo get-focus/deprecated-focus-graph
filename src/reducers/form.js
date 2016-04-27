@@ -1,4 +1,4 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING} from '../actions/form';
 import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
@@ -57,9 +57,14 @@ const forms = (state = [], action) => {
                         .map(initializeField)
                     ]
                 };
-                // Iterate over fiels to check if form is loading or saving
+                // Iterate over fields to check if form is loading
                 newForm.loading = newForm.fields.reduce((acc, {loading}) => acc || loading, false);
-                newForm.saving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
+                // Iterate over fields to check if the form was saving and that all fields have saved.
+                // If that's the case, then the form has finished saving, so toggle it.
+                if (newForm.saving) {
+                    const areFieldsStillSaving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
+                    newForm.saving = areFieldsStillSaving;
+                }
                 return newForm;
             });
         case SYNC_FORM_ENTITIES:
@@ -145,6 +150,18 @@ const forms = (state = [], action) => {
                             rawInputValue: dataSetValue,
                             dataSetValue
                         }))
+                    };
+                } else {
+                    return form;
+                }
+            });
+        case SET_FORM_TO_SAVING:
+            return state.map(form => {
+                // Check if form is the action's target form
+                if (form.formKey === action.formKey) {
+                    return {
+                        ...form,
+                        saving: true
                     };
                 } else {
                     return form;

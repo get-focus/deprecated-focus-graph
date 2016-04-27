@@ -1,6 +1,7 @@
 import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
 import {inputError} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
+import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
 import isUndefined from 'lodash/isUndefined';
@@ -100,7 +101,10 @@ const fieldMiddleware = store => next => action => {
             }, true);
 
             // If the form is valid, then dispatch the save action
-            if (formValid) store.dispatch(action.saveAction);
+            if (formValid) {
+                store.dispatch(setFormToSaving(formKey));
+                store.dispatch(action.saveAction);
+            }
             break;
         case INPUT_CHANGE:
             next({
