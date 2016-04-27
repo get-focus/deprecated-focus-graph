@@ -161,6 +161,11 @@ const forms = (state = [], action) => {
                 if (form.formKey === action.formKey) {
                     return {
                         ...form,
+                        fields: form.fields.map(({valid, error, ...restOfField}) => ({
+                            valid: true,
+                            error: null,
+                            ...restOfField
+                        })),
                         saving: true
                     };
                 } else {
