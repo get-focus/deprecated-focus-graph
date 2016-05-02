@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import DefaultInputComponent from './input';
 import DefaultDisplay from './display';
 import DefaultSelectComponent from './select';
+import DefaultListComponent from './list';
 
 //Field component
 // It is a wrapper around the component which will be rendered givent the options and the domain informations provided to it.

@@ -15,7 +15,7 @@ const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
     }
 }
 
-const fieldForBuilder = (props, multiple = false) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
+const fieldForBuilder = (props, multiple = false, list = false) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
     const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
 
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
@@ -38,8 +38,7 @@ const fieldForBuilder = (props, multiple = false) => (propertyName, {FieldCompon
         if (definitions[entityPath][propertyName].validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
-
-    return <FieldComponent {...options} {...field} multiple={multiple} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
+    return <FieldComponent {...options} {...field} multiple={multiple} list= {list} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
 }
 
 export function connect() {
@@ -47,8 +46,9 @@ export function connect() {
         function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers}) {
             const fieldFor = fieldHelpers.fieldForBuilder(otherProps);
             const selectFor = fieldHelpers.fieldForBuilder(otherProps, true);
+            const list = fieldHelpers.fieldForBuilder( otherProps, false, true);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor}/>;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} list={list}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;

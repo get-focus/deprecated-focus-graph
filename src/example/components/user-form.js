@@ -15,13 +15,14 @@ class UserForm extends Component {
     }
 
     render() {
-        const {editing, fields, fieldFor, loading, saving} = this.props;
+        const {editing, fields, fieldFor,  loading, saving, list} = this.props;
         return (
             <Panel title='User' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user', onChange: () => {console.log(fields)}})}
                 {fieldFor('firstName', {entityPath: 'user'})}
                 {fieldFor('lastName', {entityPath: 'user'})}
                 {fieldFor('date', {entityPath: 'user'})}
+
             </Panel>
         );
     }
