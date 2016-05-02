@@ -16,15 +16,11 @@ class UserAddressForm extends Component {
     }
 
     render() {
-        const {editing, fields, fieldFor, selectFor} = this.props;
+        const {editing, fields, fieldFor, list, selectFor} = this.props;
         return (
             <Panel title='User and address' {...this.props}>
                 {fieldFor('uuid', {onChange: () => {console.log(fields)}, entityPath: 'user'})}
-                {fieldFor('firstName', {entityPath: 'user'})}
-                {fieldFor('lastName', {entityPath: 'user'})}
-                {selectFor('civility', {entityPath: 'user', masterDatum: 'civility'})}
-                {fieldFor('date', {entityPath: 'user'})}
-                {fieldFor('city', {entityPath: 'address'})}
+                {list('childs', {entityPath : 'user'})}
             </Panel>
         );
     }

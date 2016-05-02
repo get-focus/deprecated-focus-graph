@@ -30,7 +30,13 @@ const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
-        civility: { domain: 'DO_CIVILITE', isRequired: true}
+        civility: { domain: 'DO_CIVILITE', isRequired: true},
+        childs : {redirect: 'child'}
+    },
+    child : {
+      firstName : { domain: 'DO_RODRIGO', isRequired: false},
+      lastName : { domain: 'DO_RODRIGO', isRequired: false}
+
     },
     address: {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
@@ -82,8 +88,7 @@ const App = () => {
                         <FieldHelpersProvider>
                             <div>
                                 <UserAddressForm id={1234}/>
-                                <UserForm id={1234} />
-                                <CustomUserForm id={1234} />
+
                             </div>
                         </FieldHelpersProvider>
                     </div>
