@@ -1,1 +1,1 @@
-export const loadCivility = () => Promise.resolve([{code: 'MR', label: 'Mr'}, {code: 'Mme', label: 'Mme'}]);
+export const loadCivility = () => Promise.resolve([{code: 'MR', label: 'M.'}, {code: 'MRS', label: 'Mme'}]);

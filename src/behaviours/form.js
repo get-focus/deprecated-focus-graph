@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, toggleFormEditing, validateForm} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities} from '../actions/form';
 import {inputChange, inputBlur} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
@@ -15,16 +15,14 @@ const validateFormOptions = ({formKey, entityPathArray}) => {
 const internalMapStateToProps = (state, formKey) => {
     const formCandidate = find(state.forms, {formKey});
     const resultingProps = {...formCandidate};
-    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entity, field) => ({...entity, [field.name]: field.rawInputValue}), {})
+    if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entities, field) => ({...entities, [field.entityPath]: {...entities[field.entityPath], [field.name]: field.rawInputValue}}), {})
     return resultingProps;
 };
 
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields) => {
     const resultingActions = {};
-    if (loadAction) resultingActions.load = compose(dispatch, loadAction);
-    if (saveAction) resultingActions.save = (...saveArgs) => {
-        dispatch(validateForm(formKey, nonValidatedFields, saveAction.call(null, ...saveArgs)));
-    }
+    if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction(...loadArgs));
+    if (saveAction) resultingActions.save = (...saveArgs) => dispatch(validateForm(formKey, nonValidatedFields, saveAction(...saveArgs)));
     return resultingActions;
 };
 
@@ -61,6 +59,10 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
 
         _toggleEdit(edit) {
             const {store: {dispatch}} = this.context;
+            if (!edit) {
+                // Edit is set to false, this means the user cancelled the edition, so dispatch a syncFormEntities action
+                dispatch(syncFormEntities(formOptions.formKey));
+            }
             dispatch(toggleFormEditing(formOptions.formKey, edit));
         }
 

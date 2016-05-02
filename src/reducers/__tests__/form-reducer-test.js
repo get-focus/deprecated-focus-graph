@@ -1,4 +1,4 @@
-import {createForm, destroyForm, SYNC_FORM_ENTITY, toggleFormEditing} from '../../actions/form';
+import {createForm, destroyForm, SYNC_FORMS_ENTITY, toggleFormEditing} from '../../actions/form';
 import formReducer from '../form';
 import isArray from 'lodash/isArray';
 
@@ -7,7 +7,7 @@ describe('The form reducer', () => {
         // Create the action
         const action = createForm('formKey', ['user', 'movie']);
         // Simulate the middleware effect
-        action.fields = [{name: 'myField', dataSetValue: 'fieldValue'}];
+        action.fields = [{name: 'myField', dataSetValue: 'fieldValue', rawInputValue: 'fieldValue'}];
         const state = [];
         const newState = formReducer(state, action);
         it('should return an array', () => {
@@ -41,7 +41,7 @@ describe('The form reducer', () => {
             expect(newState.length).to.equal(0);
         });
     });
-    describe('when receiving a SYNC_FORM_ENTITY action', () => {
+    describe('when receiving a SYNC_FORMS_ENTITY action', () => {
         const state = [{
             formKey: 'form1',
             entityPathArray: ['user'],
@@ -70,7 +70,7 @@ describe('The form reducer', () => {
             ]
         }];
         const action = {
-            type: SYNC_FORM_ENTITY,
+            type: SYNC_FORMS_ENTITY,
             entityPath: 'user',
             fields: [
                 {

@@ -1,0 +1,43 @@
+.field {
+    display: flex;
+    padding: 10px;
+    height: 20px;
+
+    div:nth-child(1) {
+        margin-right: 15px;
+    }
+
+    div:nth-child(2) {
+        padding: 0;
+    }
+}
+
+.fake-panel {
+    margin: 10px;
+    padding: 5px;
+    box-shadow: 1px 1px 2px 2px #cfcfcf;
+    .head {
+        display: flex;
+        .title {
+            font-weight: bold;
+            font-size: 1.3em;
+            padding: 8px;
+        }
+        .buttons {
+            opacity: 0;
+            flex: 1;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    &[data-loading='true'] {
+        background-color: #AAA;
+    }
+
+    &[data-saving='true'] {
+        background-color: green;
+    }
+}

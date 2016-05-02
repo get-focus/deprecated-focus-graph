@@ -1,8 +1,9 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORM_ENTITY, TOGGLE_FORM_EDITING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING} from '../actions/form';
 import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
+import findIndex from 'lodash/findIndex';
 
 const initializeField = field => ({
     valid: true,
@@ -11,7 +12,6 @@ const initializeField = field => ({
     dirty: false,
     loading: false,
     saving: false,
-    rawInputValue: field.dataSetValue,
     ...field
 });
 
@@ -33,7 +33,7 @@ const forms = (state = [], action) => {
             }];
         case DESTROY_FORM:
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
-        case SYNC_FORM_ENTITY:
+        case SYNC_FORMS_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
             return state.map(form => {
                 if (form.entityPathArray.indexOf(action.entityPath) === -1) return form;
@@ -41,7 +41,7 @@ const forms = (state = [], action) => {
                     ...form,
                     fields: [
                         ...form.fields.map(formField => {
-                            const candidateField = findField(action.fields, action.entityPath, formField.name);
+                            const candidateField = findField(action.fields, formField.entityPath, formField.name);
                             if (!candidateField) return formField;
                             return {
                                 ...formField,
@@ -57,11 +57,26 @@ const forms = (state = [], action) => {
                         .map(initializeField)
                     ]
                 };
-                // Iterate over fiels to check if form is loading or saving
+                // Iterate over fields to check if form is loading
                 newForm.loading = newForm.fields.reduce((acc, {loading}) => acc || loading, false);
-                newForm.saving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
+                // Iterate over fields to check if the form was saving and that all fields have saved.
+                // If that's the case, then the form has finished saving, so toggle it.
+                if (newForm.saving) {
+                    const areFieldsStillSaving = newForm.fields.reduce((acc, {saving}) => acc || saving, false);
+                    newForm.saving = areFieldsStillSaving;
+                }
                 return newForm;
             });
+        case SYNC_FORM_ENTITIES:
+            const formIndex = findIndex(state, {formKey: action.formKey});
+            return [
+                ...state.slice(0, formIndex),
+                {
+                    ...state[formIndex],
+                    fields: action.fields
+                },
+                ...state.slice(formIndex + 1)
+            ];
         case INPUT_CHANGE:
             // Check if the field to change exists
             const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
@@ -135,6 +150,23 @@ const forms = (state = [], action) => {
                             rawInputValue: dataSetValue,
                             dataSetValue
                         }))
+                    };
+                } else {
+                    return form;
+                }
+            });
+        case SET_FORM_TO_SAVING:
+            return state.map(form => {
+                // Check if form is the action's target form
+                if (form.formKey === action.formKey) {
+                    return {
+                        ...form,
+                        fields: form.fields.map(({valid, error, ...restOfField}) => ({
+                            valid: true,
+                            error: null,
+                            ...restOfField
+                        })),
+                        saving: true
                     };
                 } else {
                     return form;

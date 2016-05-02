@@ -1,6 +1,7 @@
 import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
 import {inputError} from '../actions/input';
-import {CREATE_FORM, VALIDATE_FORM, SYNC_FORM_ENTITY} from '../actions/form';
+import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
+import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
 import isUndefined from 'lodash/isUndefined';
@@ -12,12 +13,12 @@ import identity from 'lodash/identity';
 // TODO : replace this with the focus core function
 const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
     const rand = Math.random();
-    const isValid = rand > 0;
+    const isValid = rand > 0.2;
     const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
     return {
         name,
         value: rawValue,
-        isValid,
+        isValid: !error,
         error
     }
 }
@@ -98,9 +99,12 @@ const fieldMiddleware = store => next => action => {
                 if (!fieldValid) formValid = false;
                 return fieldValid;
             }, true);
-            
+
             // If the form is valid, then dispatch the save action
-            if (formValid) store.dispatch(action.saveAction);
+            if (formValid) {
+                store.dispatch(setFormToSaving(formKey));
+                store.dispatch(action.saveAction);
+            }
             break;
         case INPUT_CHANGE:
             next({
@@ -108,7 +112,8 @@ const fieldMiddleware = store => next => action => {
                 formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
             break;
-        case SYNC_FORM_ENTITY:
+        case SYNC_FORM_ENTITIES:
+        case SYNC_FORMS_ENTITY:
         case CREATE_FORM:
             next({
                 ...action,

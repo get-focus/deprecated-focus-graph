@@ -89,7 +89,7 @@ describe('The form connect', () => {
             expect(uuidField.rawInputValue).to.equal('new value');
         });
         it('should reflect the change in the getUserInput method', () => {
-            expect(capturedProps.getUserInput().uuid).to.equal('new value');
+            expect(capturedProps.getUserInput().user.uuid).to.equal('new value');
         });
     })
 })

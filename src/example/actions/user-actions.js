@@ -1,15 +1,10 @@
 import {actionBuilder} from '../../actions/entity-actions-builder';
-import {loadUserSvc, saveUserSvc, loadMixedEntities} from '../services/user-service';
+import {loadUser, saveUser} from '../services/user-service';
 
-const loadAction = actionBuilder({names: ['user'], type: 'load', service: loadUserSvc});
-export const loadUserTypes = loadAction.types;
-export const loadUserAction = loadAction.action;
+const _loadUserAction = actionBuilder({names: ['user'], type: 'load', service: loadUser});
+export const loadUserTypes = _loadUserAction.types;
+export const loadUserAction = _loadUserAction.action;
 
-const _loadMixedAction = actionBuilder({names: ['user', 'address'], type: 'load', service: loadMixedEntities});
-export const loadMixedTypes = _loadMixedAction.types;
-export const loadMixedAction = _loadMixedAction.action;
-
-
-const saveAction = actionBuilder({names: ['user'], type: 'save', service: saveUserSvc});
-export const saveUserTypes = saveAction.types;
-export const saveUserAction = saveAction.action;
+const _saveUserAction = actionBuilder({names: ['user'], type: 'save', service: saveUser});
+export const saveUserTypes = _saveUserAction.types;
+export const saveUserAction = _saveUserAction.action;
