@@ -51,7 +51,7 @@ const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuil
 
 const fieldForListBuilder = (entityPathList, propertyNameList) => {
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
-      const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = connectedComponentProps;
+      const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const fieldTab = find(fields, {name: propertyNameList});
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
@@ -66,7 +66,8 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
         if (options.onChange) options.onChange(rawValue);
       }
       const onBlur = () => {
-        console.log('je suis dans le onBlur !')
+        if (definitions[entityPathList][propertyNameList].validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName] );
+        if (userDefinedOnBlur) userDefinedOnBlur();
       }
       return <FieldComponent {...options} {...field} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
   }

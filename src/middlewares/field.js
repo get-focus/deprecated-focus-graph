@@ -1,4 +1,4 @@
-import {INPUT_CHANGE, INPUT_BLUR} from '../actions/input';
+import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST} from '../actions/input';
 import {inputError} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
 import {setFormToSaving} from '../actions/form';
@@ -8,6 +8,7 @@ import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import identity from 'lodash/identity';
+import isArray from 'lodash/lang';
 
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
 // TODO : replace this with the focus core function
@@ -52,7 +53,7 @@ const validateField = (definitions, domains, formKey, entityPath, fieldName, val
       domainName = definitions[redirect]
       const domain = domains[domainName];
       //To do map
-      validationResult = {isValid: true};
+     validationResult = {isValid: true}
     }else {
       const domain = domains[domainName];
       validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
@@ -101,9 +102,14 @@ const fieldMiddleware = store => next => action => {
     const {forms, definitions, domains} = store.getState();
     switch(action.type) {
         case INPUT_BLUR:
+            console.log(action);
             // On input blur action, validate the provided field
             validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, store.dispatch);
             break;
+        case INPUT_BLUR_LIST:
+            validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, store.dispatch);
+            break;
+
         case VALIDATE_FORM:
             const {formKey, nonValidatedFields} = action;
             const {fields} = find(forms, {formKey});

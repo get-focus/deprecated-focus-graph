@@ -1,6 +1,21 @@
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 export const INPUT_BLUR = 'INPUT_BLUR';
 export const INPUT_ERROR = 'INPUT_ERROR';
+export const INPUT_BLUR_LIST = 'INPUT_BLUR_LIST';
+
+
+
+export const inputBlurList = (formKey, fieldName, entityPath, rawValue, propertyNameLine, index) => ({
+    type: INPUT_BLUR_LIST,
+    formKey,
+    fieldName,
+    entityPath,
+    rawValue,
+    propertyNameLine,
+    index
+
+
+})
 
 /**
  * Input change action

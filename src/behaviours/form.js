@@ -2,7 +2,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
 import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities} from '../actions/form';
-import {inputChange, inputBlur} from '../actions/input';
+import {inputChange, inputBlur, inputBlurList} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
@@ -52,6 +52,10 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
             const {store: {dispatch}} = this.context;
             dispatch(inputChange(formOptions.formKey, name, entityPath, value));
         }
+        _onInputBlurList(name, entityPath, value, propertyNameLine, index){
+          const {store: {dispatch}} = this.context;
+          dispatch(inputBlurList(formOptions.formKey, name, entityPath, value, propertyNameLine, index));
+        }
 
         _onInputBlur(name, entityPath, value) {
             const {store: {dispatch}} = this.context;
@@ -70,7 +74,7 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
         render() {
             const {_behaviours, ...otherProps} = this.props;
             const behaviours = {connectedToForm: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} onInputBlurList={::this._onInputBlurList} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
         }
     }
     // Extract the redux methods without a connector
