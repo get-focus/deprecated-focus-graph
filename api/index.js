@@ -6,15 +6,15 @@ const isEmpty = require('lodash/isEmpty');
 
 const NB_GENERATED_ENTITY = 10;
 
-let childOneJSON = [{
+let childOneJSON = {
     firstName : 'FirstChildOne',
     lastName: 'LastChildOne'
-}]
+}
 
-let childTwoJSON = [{
+let childTwoJSON = {
     firstName : 'FirstChildTwo',
     lastName: 'LastChildTwo'
-}]
+}
 
 let entityJSON = [{
   uuid: '1234',

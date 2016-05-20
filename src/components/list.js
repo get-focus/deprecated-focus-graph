@@ -1,7 +1,9 @@
 import React, {PropTypes} from 'react';
+import DefaultLineComponent from './line'
 
-function List({onClick, lineComponent, children, options}) {
-    const renderLine = () => {
+
+function List({onClick, fieldForLine, lineComponent, children, options, values, ...otherProps}) {
+    const renderEditLine = () => {
          return (
            <div>
              <div>Bonjour ! </div>
@@ -9,6 +11,11 @@ function List({onClick, lineComponent, children, options}) {
            </div>
 
          )
+    }
+    const renderLine = () => {
+    return (values ? values.map((element, index) => {
+            return <DefaultLineComponent value={element} fieldForLine={fieldForLine} index={index}/>
+         }): <div></div>)
     }
     return (
       <div className='list'> {renderLine()}</div>

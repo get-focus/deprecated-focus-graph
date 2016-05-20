@@ -35,6 +35,7 @@ const forms = (state = [], action) => {
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
         case SYNC_FORMS_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
+
             return state.map(form => {
                 if (form.entityPathArray.indexOf(action.entityPath) === -1) return form;
                 const newForm = {

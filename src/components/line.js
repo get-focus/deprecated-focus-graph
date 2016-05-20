@@ -1,9 +1,10 @@
 import React, {PropTypes} from 'react';
 
-function Line({onClick, children, options}) {
+function Line({onClick, children, fieldForLine, options,index, value, ...otherProps}) {
     return (
     <div>
-      Je suis une ligne et cest vraiment trop ouf!
+        <div>  {fieldForLine('firstName', {entityPath: 'child'}, index)}</div>
+        <div>  {fieldForLine('lastName', {entityPath: 'child'}, index)} </div>
     </div>
   );
 }

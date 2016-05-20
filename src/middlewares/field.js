@@ -46,9 +46,18 @@ const filterNonValidatedFields = (fields, nonValidatedFields) => fields.filter((
  * @return {boolean}            the field validation status
  */
 const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch) => {
-    const {isRequired, domain: domainName} = definitions[entityPath][fieldName];
-    const domain = domains[domainName];
-    const validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+    let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
+    let validationResult= {};
+    if(redirect){
+      domainName = definitions[redirect]
+      const domain = domains[domainName];
+      //To do map
+      validationResult = {isValid: true};
+    }else {
+      const domain = domains[domainName];
+      validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+    }
+
     if (!validationResult.isValid) {
         dispatch(inputError(formKey, fieldName, entityPath, validationResult.error));
         return false;
@@ -73,11 +82,20 @@ const defaultFormatter = identity;
  * @return {object}               the formatted value
  */
 const formatValue = (value, entityPath, fieldName, definitions, domains) => {
+    //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
     const entityDefinition = definitions[entityPath] || {};
     const {domain: domainName = {}} = entityDefinition[fieldName] || {};
     const {formatter = defaultFormatter} = domains[domainName] || {};
     return formatter(value);
 };
+
+const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
+  if(fieldName == 'childs'){
+    return 'child'
+  }else {
+    return 'wait'
+  }
+}
 
 const fieldMiddleware = store => next => action => {
     const {forms, definitions, domains} = store.getState();
@@ -109,7 +127,8 @@ const fieldMiddleware = store => next => action => {
         case INPUT_CHANGE:
             next({
                 ...action,
-                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
+                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains),
+                redirectEntityPath : 'child'
             });
             break;
         case SYNC_FORM_ENTITIES:
@@ -119,7 +138,8 @@ const fieldMiddleware = store => next => action => {
                 ...action,
                 fields: action.fields.map(field => ({
                     ...field,
-                    formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains)
+                    formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
+                    redirectEntityPath : getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains)
                 }))
             });
             break;

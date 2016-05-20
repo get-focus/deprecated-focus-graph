@@ -19,7 +19,7 @@ export function connect(definitionNameArray : Array<string> = []) {
             if(isEmpty(definitions) || isEmpty(domains)) {
                 throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You must provide definitions and domains to the Provider, check your **MetadataProvider**`)
             }
-
+            // todo: verif child presence (list)
             const builtDefinitions = definitionNameArray.reduce((builtDefinitions, definitionName) => {
                 const candidateDefinition = definitions[definitionName];
                 if (!candidateDefinition) throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You asked for the definition '${definitionName}', but it is not present in the definitions you provided to the **MetadataProvider**`);

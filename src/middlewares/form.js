@@ -52,6 +52,7 @@ const formMiddleware = store => next => action => {
             if (status === SUCCESS) field.rawInputValue = fieldValue;
             return field;
         });
+
         // Dispatch the SYNC_FORMS_ENTITY action
         store.dispatch(syncFormsEntity(entityPath, fields));
 
