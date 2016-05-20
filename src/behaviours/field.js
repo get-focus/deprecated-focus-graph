@@ -23,7 +23,7 @@ const getTestFieldMetadata = (propertyName, entityPath = {}, definitions, domain
   };
 }
 
-const fieldForBuilder = (props, multiple = false, list = false, fieldForLine) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
+const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
     const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
@@ -44,20 +44,34 @@ const fieldForBuilder = (props, multiple = false, list = false, fieldForLine) =>
         if (definitions[entityPath][propertyName].validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
-
+    const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
     return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list= {list} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
 }
 
 
-const fieldForLineBuilder = (props) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
-    const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
-    const fieldTab = find(fields, {name: 'childs'});
-    const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
-    const field = {
-      rawInputValue : fieldTab.dataSetValue[index][propertyName],
-      formattedInputValue: fieldTab.dataSetValue[index][propertyName]
-    }
-    return <FieldComponent {...options} {...field} test='yolo' editing={editing} name={propertyName} metadata={metadata}/>;
+const fieldForListBuilder = (entityPathList, propertyNameList) => {
+  const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
+      const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = connectedComponentProps;
+      const fieldTab = find(fields, {name: propertyNameList});
+      const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
+      const field = {
+        rawInputValue : fieldTab.dataSetValue[index][propertyName],
+        formattedInputValue: fieldTab.dataSetValue[index][propertyName]
+      }
+      const onChange = rawValue => {
+        const _fieldTab = fieldTab;
+        let test = _fieldTab.rawInputValue;
+        test[index][propertyName] = rawValue;
+        onInputChange(propertyNameList, entityPathList, test);
+        if (options.onChange) options.onChange(rawValue);
+      }
+      const onBlur = () => {
+        console.log('je suis dans le onBlur !')
+      }
+      return <FieldComponent {...options} {...field} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
+  }
+  return fieldForLineBuilder;
+
 }
 
 export function connect() {
@@ -65,8 +79,7 @@ export function connect() {
         function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers}) {
             const fieldFor = fieldHelpers.fieldForBuilder(otherProps);
             const selectFor = fieldHelpers.fieldForBuilder(otherProps, true);
-            const test = fieldHelpers.fieldForLineBuilder(otherProps);
-            const list = fieldHelpers.fieldForBuilder( otherProps, false, true, test);
+            const list = fieldHelpers.fieldForBuilder( otherProps, false, true, fieldHelpers.fieldForListBuilder);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
             return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} list={list}/>;
         }
@@ -82,7 +95,7 @@ class FieldProvider extends Component {
         return {
             fieldHelpers: {
                 fieldForBuilder,
-                fieldForLineBuilder
+                fieldForListBuilder
             }
         }
     }
