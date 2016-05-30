@@ -66,7 +66,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
         if (options.onChange) options.onChange(rawValue);
       }
       const onBlur = () => {
-        if (definitions[entityPathList][propertyNameList].validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName] );
+        if (definitions[entityPathList][propertyNameList].validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
       return <FieldComponent {...options} {...field} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;

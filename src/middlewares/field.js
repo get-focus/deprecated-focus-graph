@@ -1,5 +1,5 @@
 import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST} from '../actions/input';
-import {inputError} from '../actions/input';
+import {inputError, inputErrorList} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
 import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
@@ -67,6 +67,26 @@ const validateField = (definitions, domains, formKey, entityPath, fieldName, val
     }
 }
 
+const validateFieldArray = (definitions, domains, formKey, entityPath, fieldName, value,propertyNameLine, index, dispatch ) => {
+  console.log("validation de la gloire ! ")
+  let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
+  let validationResult= {};
+
+  if(redirect){
+    domainName = definitions[redirect][propertyNameLine].domain;
+    const domain = domains[domainName];
+    //To do map
+    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
+  }
+
+  if (!validationResult.isValid) {
+      dispatch(inputErrorList(formKey, fieldName, entityPath, validationResult.error, propertyNameLine, index));
+      return false;
+  } else {
+      return true;
+  }
+}
+
 /**
  * Default field formatter. Defaults to the identity function
  * @type {function}
@@ -104,10 +124,11 @@ const fieldMiddleware = store => next => action => {
         case INPUT_BLUR:
             console.log(action);
             // On input blur action, validate the provided field
-            validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, store.dispatch);
+            validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
             break;
         case INPUT_BLUR_LIST:
-            validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, store.dispatch);
+            console.log(action);
+            validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
             break;
 
         case VALIDATE_FORM:

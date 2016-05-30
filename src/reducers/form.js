@@ -1,5 +1,5 @@
 import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING} from '../actions/form';
-import {INPUT_CHANGE, INPUT_ERROR} from '../actions/input';
+import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -139,6 +139,25 @@ const forms = (state = [], action) => {
                     })
                 } : {})
             }));
+      case INPUT_ERROR_LIST:
+          return state.map(form => ({
+              ...form,
+              ...(form.formKey === action.formKey ? {
+                  fields: form.fields.map(field => {
+                      const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                      if (!isFieldConcerned) return field;
+                      return {
+                          ...field,
+                          error: {
+                            error: action.error,
+                            propertyNameLine: action.propertyNameLine,
+                            index: action.index
+                          },
+                          valid: false
+                      };
+                  })
+              } : {})
+          }));
         case TOGGLE_FORM_EDITING:
             return state.map(form => {
                 // Check if form is the action's target form
