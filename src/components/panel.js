@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import Button from './button';
 
 const FakePanelComponent = ({title, editing, toggleEdit, save, getUserInput, loading, saving, children}) => {
@@ -27,5 +27,14 @@ const FakePanelComponent = ({title, editing, toggleEdit, save, getUserInput, loa
 }
 
 FakePanelComponent.displayName = 'FakePanelComponent';
+FakePanelComponent.propTypes = {
+  title: PropTypes.string,
+  editing: PropTypes.bool,
+  toggleEdit: PropTypes.func,
+  save: PropTypes.func,
+  getUserInput: PropTypes.func,
+  loading: PropTypes.bool,
+  saving: PropTypes.bool
+};
 
 export default FakePanelComponent;
