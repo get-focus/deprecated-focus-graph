@@ -1,90 +1,50 @@
+//Style
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'material-design-lite/material.css';
 import 'material-design-lite/material.min';
-import 'babel-polyfill';
 import './style.scss';
 
+//Browser polyfill
+import 'babel-polyfill';
+
+// libs
 import React , { Component , PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import {Provider as StoreProvider} from 'react-redux';
+import { Router,IndexRoute, Route, Link, hashHistory } from 'react-router'
 import moment from 'moment';
 
+//Provider to set config
+import {Provider as StoreProvider} from 'react-redux';
 import {Provider as MetadataProvider} from '../behaviours/metadata';
 import {Provider as FieldHelpersProvider} from '../behaviours/field';
 import {Provider as MasterDataProvider} from '../behaviours/master-data';
 
+import DevTools from './containers/dev-tools';
+
+//Components
 import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
 import CustomUserForm from './components/custom-user-form';
-
-import DevTools from './containers/dev-tools';
-import {loadCivility} from './services/load-civility';
+import paramExtractor from './components/param-extractor';
+//configuration
 import store from './store';
-
+import {definitions, domains, masterDataConfig} from './config';
 moment.locale('fr');
-const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
 
-const definitions = {
-    user: {
-        uuid: { domain: 'DO_RODRIGO', isRequired: false},
-        firstName: { domain: 'DO_RODRIGO', isRequired: false},
-        lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
-        date: { domain: 'DO_DATE', isRequired: false},
-        civility: { domain: 'DO_CIVILITE', isRequired: true}
-    },
-    address: {
-        uuid: { domain: 'DO_RODRIGO', isRequired: false},
-        city: { domain: 'DO_DON_DIEGO', isRequired: true}
-    }
-}
-
-const domains = {
-    DO_RODRIGO: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 50
-            }
-        }]
-    },
-    DO_DON_DIEGO: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 200
-            }
-        }],
-        formatter: value => value + ' - formaté'
-    },
-    DO_DATE : {
-        formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
-    },
-    DO_CIVILITE: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 200
-            }
-        }]
-    }
-}
-
-const App = () => {
+/*
+<UserAddressForm id={1234}/>
+<UserForm id={1234} />
+<CustomUserForm id={1234} />
+**/
+const App = ({children}) => {
     return (
         <StoreProvider store={store}>
             <MetadataProvider definitions={definitions} domains={domains}>
-                <MasterDataProvider configuration={[{name: 'civility', service: loadCivility}]}>
+                <MasterDataProvider configuration={masterDataConfig}>
                     <div>
                         <DevTools />
                         <FieldHelpersProvider>
-                            <div>
-                                <UserAddressForm id={1234}/>
-                                <UserForm id={1234} />
-                                <CustomUserForm id={1234} />
-                            </div>
+                          {children}
                         </FieldHelpersProvider>
                     </div>
                 </MasterDataProvider>
@@ -93,29 +53,67 @@ const App = () => {
     )
 }
 
-// Create the react component when the DOM is loaded.
-document.addEventListener('DOMContentLoaded', (event) => {
+const Layout = (props) => {
+  const PAGE_TITLE = 'Great example page';
+  return (
+    <div className='mdl-layout mdl-js-layout'>
+        <header className='mdl-layout__header'>
+            <div className='mdl-layout__header-row'>
+                <span className='mdl-layout-title'>{PAGE_TITLE}</span>
+                <div className='mdl-layout-spacer'></div>
+                <nav className='mdl-navigation mdl-layout--large-screen-only'>
+                  <Link className='mdl-navigation__link' to='/user/1234/adress'>Adress</Link>
+                  <Link className='mdl-navigation__link'  to='/user/1234/form'>form</Link>
+                  <Link className='mdl-navigation__link'  to='/user/1234/custom'>custom</Link>
+                </nav>
+            </div>
+        </header>
+        <div className="mdl-layout__drawer">
+          <span className="mdl-layout-title">Title</span>
+          <nav className="mdl-navigation">
+            <Link className='mdl-navigation__link' to='/user/1234/adress'>Adress</Link>
+            <Link className='mdl-navigation__link'  to='/user/1234/form'>form</Link>
+            <Link className='mdl-navigation__link'  to='/user/1234/custom'>custom</Link>
+          </nav>
+        </div>
+        <main className='mdl-layout__content' style={{zIndex: 3}}>
+            <App {...props}/>
+        </main>
+      <footer className='mdl-mini-footer'>
+        <div className="mdl-mini-footer__left-section">
+          <div className="mdl-logo">In order to display the devtools press `ctrl-h`</div>
+        </div>
 
+      </footer>
+    </div>
+  );
+}
+
+const Home = (props) => <div>
+Hello!!!!!!
+<ul><li><Link to='/user/1234/adress'>Adress</Link></li><li><Link to='/user/1234/form'>form</Link></li><li><Link to='/user/1234/custom'>custom</Link></li></ul>
+</div>;
+
+
+const NoMatch = (props) => <div>NoMatch!!!!!!</div>;
+
+
+// Create the react component when the DOM is loaded.
+document.addEventListener('DOMContentLoaded', event => {
+    const pe = paramExtractor;
     const rootElement = document.querySelector(`.${__ANCHOR_CLASS__}`);
-    const PAGE_TITLE = 'Great example page';
     // The child must be wrapped in a function
     // to work around an issue in React 0.13.
     ReactDOM.render(
-        <div className='mdl-layout  mdl-layout--fixed-header'>
-            <header className='mdl-layout__header'>
-                <div className='mdl-layout__header-row'>
-                    <span className='mdl-layout-title'>{PAGE_TITLE}</span>
-                    <div className='mdl-layout-spacer'></div>
-                    <nav className='mdl-navigation mdl-layout--large-screen-only'>
-                        <a className='mdl-navigation__link' href=''>Link</a>
-                        <a className='mdl-navigation__link' href=''>Link</a>
-                        <a className='mdl-navigation__link' href=''>Link</a>
-                    </nav>
-                </div>
-            </header>
-            <main className='mdl-layout__content' style={{zIndex: 3}}>
-                <App />
-            </main>
-        </div>,
+      <Router history={hashHistory}>
+        <Route path="/" component={Layout}>
+          <IndexRoute component={Home} />
+          <Route path="user/:id/adress" component={pe(UserAddressForm)} />
+          <Route path="user/:id/form" component={pe(UserForm)} />
+          <Route path="user/:id/custom" component={pe(CustomUserForm)} />
+
+          <Route path="*" component={NoMatch}/>
+        </Route>
+      </Router>,
         rootElement);
     });
