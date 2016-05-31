@@ -26,16 +26,13 @@ import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
 import CustomUserForm from './components/custom-user-form';
 import paramExtractor from './components/param-extractor';
+import NoMatch from './components/no-match';
+import Home from './components/home';
 //configuration
 import store from './store';
 import {definitions, domains, masterDataConfig} from './config';
 moment.locale('fr');
 
-/*
-<UserAddressForm id={1234}/>
-<UserForm id={1234} />
-<CustomUserForm id={1234} />
-**/
 const App = ({children}) => {
     return (
         <StoreProvider store={store}>
@@ -56,7 +53,7 @@ const App = ({children}) => {
 const Layout = (props) => {
   const PAGE_TITLE = 'Great example page';
   return (
-    <div className='mdl-layout mdl-js-layout'>
+    <div className='mdl-layout'>
         <header className='mdl-layout__header'>
             <div className='mdl-layout__header-row'>
                 <span className='mdl-layout-title'>{PAGE_TITLE}</span>
@@ -68,7 +65,8 @@ const Layout = (props) => {
                 </nav>
             </div>
         </header>
-        <div className="mdl-layout__drawer">
+        {/*
+          <div className="mdl-layout__drawer">
           <span className="mdl-layout-title">Title</span>
           <nav className="mdl-navigation">
             <Link className='mdl-navigation__link' to='/user/1234/adress'>Adress</Link>
@@ -76,6 +74,7 @@ const Layout = (props) => {
             <Link className='mdl-navigation__link'  to='/user/1234/custom'>custom</Link>
           </nav>
         </div>
+        */}
         <main className='mdl-layout__content' style={{zIndex: 3}}>
             <App {...props}/>
         </main>
@@ -88,15 +87,6 @@ const Layout = (props) => {
     </div>
   );
 }
-
-const Home = (props) => <div>
-Hello!!!!!!
-<ul><li><Link to='/user/1234/adress'>Adress</Link></li><li><Link to='/user/1234/form'>form</Link></li><li><Link to='/user/1234/custom'>custom</Link></li></ul>
-</div>;
-
-
-const NoMatch = (props) => <div>NoMatch!!!!!!</div>;
-
 
 // Create the react component when the DOM is loaded.
 document.addEventListener('DOMContentLoaded', event => {
