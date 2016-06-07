@@ -68,7 +68,6 @@ const validateField = (definitions, domains, formKey, entityPath, fieldName, val
 }
 
 const validateFieldArray = (definitions, domains, formKey, entityPath, fieldName, value,propertyNameLine, index, dispatch ) => {
-  console.log("validation de la gloire ! ")
   let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
   let validationResult= {};
 
@@ -122,12 +121,10 @@ const fieldMiddleware = store => next => action => {
     const {forms, definitions, domains} = store.getState();
     switch(action.type) {
         case INPUT_BLUR:
-            console.log(action);
             // On input blur action, validate the provided field
             validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
             break;
         case INPUT_BLUR_LIST:
-            console.log(action);
             validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
             break;
 

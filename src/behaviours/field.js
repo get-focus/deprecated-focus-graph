@@ -53,23 +53,22 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const fieldTab = find(fields, {name: propertyNameList});
+      console.log('il me faut lerreur')
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
         rawInputValue : fieldTab.dataSetValue[index][propertyName],
         formattedInputValue: fieldTab.dataSetValue[index][propertyName]
       }
       const onChange = rawValue => {
-        const _fieldTab = fieldTab;
-        let test = _fieldTab.rawInputValue;
-        test[index][propertyName] = rawValue;
-        onInputChange(propertyNameList, entityPathList, test);
+        onInputChange(propertyNameList, entityPathList, fieldTab[index][propertyName]);
         if (options.onChange) options.onChange(rawValue);
       }
+      console.log(fieldTab.error[index] && fieldTab.error[index][propertyName])
       const onBlur = () => {
         if (definitions[entityPathList][propertyNameList].validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
-      return <FieldComponent {...options} {...field} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
+      return <FieldComponent {...options} {...field} error={fieldTab.error[index] && fieldTab.error[index][propertyName]} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
   }
   return fieldForLineBuilder;
 

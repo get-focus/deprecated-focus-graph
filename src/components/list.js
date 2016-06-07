@@ -14,7 +14,7 @@ function List({onClick, fieldForLine, lineComponent, children, options, error, v
     }
     const renderLine = () => {
     return (values ? values.map((element, index) => {
-            return <DefaultLineComponent value={element} error={error ? (error.index === index ? error: ""): ""} fieldForLine={fieldForLine} index={index}/>
+            return <DefaultLineComponent value={element} error={error[index]}  fieldForLine={fieldForLine} index={index}/>
          }): <div></div>)
     }
     return (

@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react';
 
-function Line({onClick, children, fieldForLine, options,index, value,error,  ...otherProps}) {
+function Line({onClick, children, fieldForLine, options,index, value, propertyNameLine,error,  ...otherProps}) {
     return (
     <div>
-        <div>  {fieldForLine('firstName', {entityPath: 'child'}, index)}<span> {error ? (error.propertyNameLine === 'firstName' ? error.error : "") : ""}</span> </div>
-        <div>  {fieldForLine('lastName', {entityPath: 'child'}, index)} <span> {error ? (error.propertyNameLine === 'lastName' ? error.error : "") : ""}</span> </div>
+        <div>  {fieldForLine('firstName', {entityPath: 'child'}, index)} </div>
+        <div>  {fieldForLine('lastName', {entityPath: 'child'}, index)}  </div>
     </div>
   );
 }
