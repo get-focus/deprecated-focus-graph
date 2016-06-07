@@ -1,3 +1,4 @@
+// @flow
 //Style
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'material-design-lite/material.css';
@@ -28,6 +29,8 @@ import CustomUserForm from './components/custom-user-form';
 import paramExtractor from './components/param-extractor';
 import NoMatch from './components/no-match';
 import Home from './components/home';
+import UserDisplayOnly from './components/display-only';
+
 //configuration
 import store from './store';
 import {definitions, domains, masterDataConfig} from './config';
@@ -61,7 +64,8 @@ const Layout = (props) => {
                 <nav className='mdl-navigation mdl-layout--large-screen-only'>
                   <Link className='mdl-navigation__link' to='/user/1234/adress'>Adress</Link>
                   <Link className='mdl-navigation__link'  to='/user/1234/form'>form</Link>
-                  <Link className='mdl-navigation__link'  to='/user/1234/custom'>custom</Link>
+                  <Link className='mdl-navigation__link'  to='/user/1234/custom'>Custom</Link>
+                  <Link className='mdl-navigation__link'  to='/user/1234/display'>Display only</Link>
                 </nav>
             </div>
         </header>
@@ -101,7 +105,7 @@ document.addEventListener('DOMContentLoaded', event => {
           <Route path="user/:id/adress" component={pe(UserAddressForm)} />
           <Route path="user/:id/form" component={pe(UserForm)} />
           <Route path="user/:id/custom" component={pe(CustomUserForm)} />
-
+          <Route path="user/:id/display" component={pe(UserDisplayOnly)} />
           <Route path="*" component={NoMatch}/>
         </Route>
       </Router>,
