@@ -1,3 +1,4 @@
+// @flow
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
 import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities} from '../actions/form';
@@ -33,7 +34,7 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, n
  * @param  {object} formOptions                 the form options
  * @return {ReactComponent}                     the extended component
  */
-const getExtendedComponent = (ComponentToConnect, formOptions) => {
+const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
@@ -72,6 +73,7 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
             return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
         }
     }
+    // Extract the redux methods without a connector
     FormComponent.contextTypes = {
         store: PropTypes.shape({
             subscribe: PropTypes.func.isRequired,
@@ -82,21 +84,33 @@ const getExtendedComponent = (ComponentToConnect, formOptions) => {
     return FormComponent;
 };
 
+
+// FormOptions will be used by the form connector
+type FormOptions = {
+  // the form key will be used to name the associated state node in the form.
+  formKey: string,
+  // an array of all the entity paths the form should listen to. An entity path is the path in the dataset to reach the entity
+  entityPathArray:  Array<string>,
+  // a function taking the redux state as an argument and returning the props that should be given to the form component
+  mapStateToProps: Function,
+  // a function taking the redux dispatch function as an argument and returning the props that should be given to the form component
+  mapDispatchToProps: Function,
+  // the entity load action. If provided, a 'load' function will be provided as a prop, automatically dispatching the loadAction output
+  loadAction: Function,
+  // same as loadAction but with the save
+  saveAction: Function,
+  // The array of fields you don't want to validate.
+  nonValidatedFields: Array<string>
+}
+
 /**
  * Form connector
  * Wraps the provided component into a component that will create the form on mounting and destroy it on unmounting.
  * Exposes an onInputChange prop already filled with the form key
- * formOptions has the shape {
- * 		formKey: the form key
- * 	 	entityPathArray: an array of all the entity paths the form should listen to. An entity path is the path in the dataset to reach the entity
- *    	mapStateToProps: a function taking the redux state as an argument and returning the props that should be given to the form component
- *     	mapDispatchToProps:  a function taking the redux dispatch function as an argument and returning the props that should be given to the form component
- *     	loadAction: the entity load action. If provided, a 'load' function will be provided as a prop, automatically dispatching the loadAction output
- *     	saveAction: same as loadAction but with the save
- * }
+ * FormOptions is describe in the associated type
  * Usage: const FormComponent = connect({formKey: 'movieForm', entityPathArray: ['movie']})(MyComponent);
  */
-export const connect = formOptions => ComponentToConnect => {
+export const connect = (formOptions: FormOptions) => (ComponentToConnect: ReactClass<{}>) => {
     const {
         formKey,
         entityPathArray,
@@ -114,15 +128,16 @@ export const connect = formOptions => ComponentToConnect => {
     // Extend the component
     const extendedComponent = getExtendedComponent(ComponentToConnect, formOptions);
 
-    const mapStateToProps = state => ({
+    const mapStateToProps : Function = state => ({
         ...internalMapStateToProps(state, formKey),
         ...userDefinedMapStateToProps(state)
     });
-    const mapDispatchToProps = dispatch => ({
+    const mapDispatchToProps : Function = (dispatch: Function) => ({
         ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields),
         ...userDefinedMapDispatchToProps(dispatch)
     });
 
+    // Call the redux connector
     return connectToStore(entityPathArray, {
         mapStateToProps,
         mapDispatchToProps}
