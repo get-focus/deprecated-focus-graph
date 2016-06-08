@@ -17,7 +17,7 @@ const DevTools = createDevTools(
     // Monitors are individually adjustable with props.
     // Consult their repositories to learn about those props.
     // Here, we put LogMonitor inside a DockMonitor.
-    <DockMonitor toggleVisibilityKey='ctrl-h' changePositionKey='ctrl-q' defaultSize={0.5}>
+    <DockMonitor toggleVisibilityKey='ctrl-h' changePositionKey='ctrl-q' defaultSize={0.4} defaultIsVisible={false}>
         <MultipleMonitors>
             <Inspector />
             <Dispatcher actionCreators={{...projectActions, ...formActions}} />
