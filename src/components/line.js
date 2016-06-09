@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 
-function Line({onClick, children, fieldForLine, options,index, value, propertyNameLine,error,  ...otherProps}) {
+function Line({onClick, children, fieldForLine, options,index,  ...otherProps}) {
     return (
     <div>
         <div>  {fieldForLine('firstName', {entityPath: 'child'}, index)} </div>

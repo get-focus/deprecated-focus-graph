@@ -8,13 +8,14 @@ import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import identity from 'lodash/identity';
+import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/lang';
 
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
 // TODO : replace this with the focus core function
 const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
     const rand = Math.random();
-    const isValid = rand > 0.2;
+    const isValid = rand > 0.5;
     const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
     return {
         name,
@@ -46,22 +47,31 @@ const filterNonValidatedFields = (fields, nonValidatedFields) => fields.filter((
  * @param  {function} dispatch  redux dispatch function
  * @return {boolean}            the field validation status
  */
-const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch) => {
+const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch, isList, index, test, test2) => {
     let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
     let validationResult= {};
+    // Redirect use to have the information of a list field
     if(redirect){
       domainName = definitions[redirect]
       const domain = domains[domainName];
-      //To do map
-     validationResult = {isValid: true}
+
+      value.map((element, index)=>{
+        mapKeys(element, (value, key) => {
+          const fieldValid = validateField(definitions, domains, formKey, redirect, key, value, dispatch, true, index, entityPath, fieldName );
+        })
+      })
+      validationResult = {isValid : true}
     }else {
       const domain = domains[domainName];
       validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
     }
 
-    if (!validationResult.isValid) {
+    if (validationResult.isValid == false  && !isList) {
         dispatch(inputError(formKey, fieldName, entityPath, validationResult.error));
         return false;
+    } else if (!validationResult.isValid && isList){
+      dispatch(inputErrorList(formKey, test2, test, validationResult.error, fieldName, index));
+      return false;
     } else {
         return true;
     }
@@ -137,6 +147,7 @@ const fieldMiddleware = store => next => action => {
 
             // Validate every field, and if one is invalid, then the form is invalid
             const formValid = fieldsToValidate.reduce((formValid, field) => {
+                console.log(field)
                 const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
                 if (!fieldValid) formValid = false;
                 return fieldValid;

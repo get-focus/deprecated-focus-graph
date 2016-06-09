@@ -148,14 +148,14 @@ const forms = (state = [], action) => {
                       const error=field.error || {}, errorLine ={};
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;
-
                       return {
                           ...field,
                           error: error,
                           valid: false
                       };
                   })
-              } : {})
+
+              }  : {})
           }));
         case TOGGLE_FORM_EDITING:
             return state.map(form => {
