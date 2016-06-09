@@ -120,8 +120,8 @@ const formatValue = (value, entityPath, fieldName, definitions, domains) => {
 };
 
 const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
-  if(fieldName == 'childs'){
-    return 'child'
+  if(definitions[entityPath][fieldName].redirect){
+    return definitions[entityPath][fieldName].redirect;
   }else {
     return 'wait'
   }
