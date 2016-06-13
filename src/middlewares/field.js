@@ -32,7 +32,6 @@ const fieldMiddleware = store => next => action => {
         case SYNC_FORM_ENTITIES:
         case SYNC_FORMS_ENTITY:
         case CREATE_FORM:
-        console.log('yoyoyooyooyo je vais créer un form du fieldMiddleware')
             next({
                 ...action,
                 fields: action.fields.map(field => ({

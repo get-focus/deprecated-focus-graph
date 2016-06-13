@@ -24,7 +24,16 @@ export const inputErrorList = (formKey, fieldName, entityPath, error, propertyNa
     index
 });
 
-
+/**
+ * Input blur of a list field
+ * @param  {string} formKey               the target form key
+ * @param  {string} fieldName             the field name
+ * @param  {string} entityPath            the field entity path
+ * @param  {object} rawValue              the new value
+ * @param  {string} propertyNameLine      the line name
+ * @param  {number} index                 position of the field on the list
+ * @return {object}                       the action
+ */
 export const inputBlurList = (formKey, fieldName, entityPath, rawValue, propertyNameLine, index) => ({
     type: INPUT_BLUR_LIST,
     formKey,

@@ -10,6 +10,8 @@ import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
+import omit from 'lodash/omit';
 
 /**
  * Default field formatter. Defaults to the identity function
@@ -42,7 +44,84 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
  * @param  {array} nonValidatedFields list of paths of fields that must not be validated
  * @return {array}                    array of fields that should be validated
  */
-export const filterNonValidatedFields = (fields, nonValidatedFields) => fields.filter(({name, entityPath}) => nonValidatedFields.indexOf(`${entityPath}.${name}`) === -1);
+export const filterNonValidatedFields = (fields, nonValidatedFields) => {
+  return fields.filter(({name, entityPath}) =>
+    nonValidatedFields.indexOf(`${entityPath}.${name}`) === -1
+  );
+}
+
+
+// export const filterNonValidatedInListField = (fields, nonValidatedFields) => {
+//   console.log('yoyoyooyoyoyooyoyoyoyooyoy')
+//   const yo =  fields.map( (obj) => {
+//     obj.rawInputValue.map((jenpeuxplus) => {
+//         nonValidatedFields
+//     })
+//       console.log(obj);
+//       return obj;
+//   })
+//   console.log(yo);
+//   return yo;
+// }
+
+export const filterNonValidatedInListField = (fields, nonValidatedFields) => {
+  return fields.map( (obj) => {
+       nonValidatedFields.map(element => {
+        if(isString(element)) return;
+        else {
+          if(Object.keys(element)[0].includes(`${obj.entityPath}.${obj.name}`)){
+            const test = element;
+            obj.rawInputValue = obj.rawInputValue.map((value) => {
+
+                return omit(value, test[`${obj.entityPath}.${obj.name}`]);
+
+            })
+
+          }
+        }
+
+      }, [])
+      return obj;
+  })
+}
+
+export const filterF = (fields, nonValidatedFields) => {
+  return fields.reduce((finalFieldsToValidate, currentField) => {
+
+    let potentialCurrentFieldToValidate;
+    // todo: use a superb reduce
+    nonValidatedFields.map(nonValidateField => {
+      const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
+      // nonValidateField is a string we validate the field if the name doesn not match
+      if(isString(nonValidateField)){
+        if(!finalFieldsToValidate.includes(FIELD_FULL_PATH)){
+          potentialCurrentFieldToValidate = currentField;
+          return currentField;
+        }
+      //  console.log('yoooooooooooooooooooooooooooooooooooooooooooooooooooooo')
+        return;
+      }
+      // nonValidateFields is an array we have to iterate through all its sub fields
+      const fieldlistToFilterName = Object.keys(nonValidateField)[0];
+      if(fieldlistToFilterName.includes(FIELD_FULL_PATH)){
+          const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
+              return omit(value, nonValidateField[FIELD_FULL_PATH]);
+          });
+           rawInputValueToValidate.length > 0  && currentField ? (potentialCurrentFieldToValidate = {...currentField, rawInputValue: rawInputValueToValidate}) : undefined;
+           return;
+      }
+    });
+    /*  console.log('--------------------------------------');
+    console.log(finalFieldsToValidate);
+          console.log('--------------------------------------');*/
+    return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;
+
+  }, []);
+}
+
+
+
+
 
 /**
  * Validate a single field.

@@ -1,6 +1,6 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields, filterNonValidatedInListField,validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
@@ -48,8 +48,8 @@ const formMiddleware = store => next => action => {
       const {dataset, forms, definitions, domains} = store.getState();
       const {formKey, nonValidatedFields,entityPathArray } = action;
       switch(action.type) {
+          // The creation's action is also in the middleware for the formated value
           case CREATE_FORM:
-            console.log('yoyoyooyooyo je vais créer un form du formMiddleware')
             const fields = entityPathArray.reduce((acc, entityPath) => ([
                 ...acc,
                 ...map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => ({
@@ -66,7 +66,8 @@ const formMiddleware = store => next => action => {
           case VALIDATE_FORM:
               const {fields : fieldCreated} = find(forms, {formKey});
               // Get the fields to validate
-              const fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
+              let fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
+              fieldsToValidate = filterNonValidatedInListField(fieldsToValidate, nonValidatedFields);
               // Validate every field, and if one is invalid, then the form is invalid
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);

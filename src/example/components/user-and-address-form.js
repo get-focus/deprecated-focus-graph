@@ -31,10 +31,10 @@ UserAddressForm.displayName = 'UserAddressForm';
 const formConfig = {
     //todo: it should raise an error if i use the same formKey.
     formKey: 'userAndAddressForm',
-    entityPathArray: ['user', 'address', 'child'],
+    entityPathArray: ['user', 'address'/*, 'child'*/],
     loadAction: loadMixedAction,
     saveAction: saveMixedAction,
-    nonValidatedFields: ['user.firstName']
+    nonValidatedFields: ['user.firstName', {'user.childs': ['firstName']}    ]
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
