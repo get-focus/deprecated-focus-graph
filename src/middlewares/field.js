@@ -22,23 +22,6 @@ const fieldMiddleware = store => next => action => {
             validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
             break;
 
-        case VALIDATE_FORM:
-            const {formKey, nonValidatedFields} = action;
-            const {fields} = find(forms, {formKey});
-            // Get the fields to validate
-            const fieldsToValidate = filterNonValidatedFields(fields, nonValidatedFields);
-            // Validate every field, and if one is invalid, then the form is invalid
-            const formValid = fieldsToValidate.reduce((formValid, field) => {
-                const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
-                if (!fieldValid) formValid = false;
-                return fieldValid;
-            }, true);
-            // If the form is valid, then dispatch the save action
-            if (formValid) {
-                store.dispatch(setFormToSaving(formKey));
-                store.dispatch(action.saveAction);
-            }
-            break;
         case INPUT_CHANGE:
             next({
                 ...action,
@@ -49,6 +32,7 @@ const fieldMiddleware = store => next => action => {
         case SYNC_FORM_ENTITIES:
         case SYNC_FORMS_ENTITY:
         case CREATE_FORM:
+        console.log('yoyoyooyooyo je vais créer un form du fieldMiddleware')
             next({
                 ...action,
                 fields: action.fields.map(field => ({

@@ -9,12 +9,16 @@ import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import mapKeys from 'lodash/mapKeys';
-import isArray from 'lodash/lang';
+import isArray from 'lodash/isArray';
+
 /**
  * Default field formatter. Defaults to the identity function
  * @type {function}
  */
 const defaultFormatter = identity;
+
+const MIDDLEWARES_FIELD_VALIDATION = 'MIDDLEWARES_FIELD_VALIDATION';
+const MIDDLEWARES_FORM_VALIDATION = 'MIDDLEWARES_FORM_VALIDATION';
 
 
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
@@ -53,17 +57,23 @@ export const filterNonValidatedFields = (fields, nonValidatedFields) => fields.f
  * @param  {function} dispatch  redux dispatch function
  * @return {boolean}            the field validation status
  */
-export const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch, isList, index, test, test2) => {
+export const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch) => {
     let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
     let validationResult= {};
     // Redirect use to have the information of a list field
-    if(redirect){
-      domainName = definitions[redirect]
-      value.map((element, index)=>{
-        mapKeys(element, (value, key) => {
-          const fieldValid = validateFieldForList(definitions, domains[domainName[key].domain] , key, formKey, value, dispatch,index, entityPath, fieldName );
+    if(isArray(value)){
+      if(redirect){
+        domainName = definitions[redirect]
+        value.map((element, index)=>{
+          mapKeys(element, (value, propertyNameLine) => {
+            const domain = domains[domainName[propertyNameLine].domain];
+            const fieldValid = validateFieldForList(definitions, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
+          })
         })
-      })
+      }else {
+        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${fieldName}`)
+      }
+
       validationResult = {isValid : true}
     }else {
       const domain = domains[domainName];
@@ -78,13 +88,25 @@ export const validateField = (definitions, domains, formKey, entityPath, fieldNa
     }
 }
 
-
-export const validateFieldForList = (definitions, domain, key, formKey, value, dispatch,index, entityPath, fieldName ) => {
+/**
+ * Validate a one field in a list object
+ * @param  {object} definitions the application's definitions
+ * @param  {object} domain      the domain of the list field
+ * @param  {string} propertyNameLine         the name in the line field
+ * @param  {string} formKey     the form key
+ * @param  {object} value       the field value
+ * @param  {function} dispatch    redux dispatch function
+ * @param  {number} index       the index of the list field in the list
+ * @param  {string} entityPath  entityPath where is the list
+ * @param  {string} fieldNameList   the name of the field List
+ * @return {boolean}             the field validation status
+ */
+export const validateFieldForList = (definitions, domain, propertyNameLine, formKey, value, dispatch,index, entityPath, fieldNameList ) => {
     let validationResult= {};
-    let {isRequired} = definitions[entityPath][fieldName];
-    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+    let {isRequired} = definitions[entityPath][fieldNameList];
+    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldNameList, value);
     if (!validationResult.isValid ){
-      dispatch(inputErrorList(formKey, key, entityPath, validationResult.error, fieldName, index));
+      dispatch(inputErrorList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
       return false;
     } else {
       return true;
@@ -92,20 +114,33 @@ export const validateFieldForList = (definitions, domain, key, formKey, value, d
 }
 
 
-
-export const validateFieldArray = (definitions, domains, formKey, entityPath, fieldName, value,propertyNameLine, index, dispatch ) => {
-  let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
+/**
+ * [description]
+ * @param  {object} definitions      the application's definitions
+ * @param  {[type]} domains          the application's domains
+ * @param  {string} formKey          the form key
+ * @param  {string} entityPath       entityPath where is the list
+ * @param  {string} fieldNameList         the name of the field List
+ * @param  {object} value            the field value
+ * @param  {string} propertyNameLine the name in the line field
+ * @param  {number} index            the index of the list field in the list
+ * @param  {function} dispatch          redux dispatch function
+ * @return {boolean}                  the field validation status
+ */
+export const validateFieldArray = (definitions, domains, formKey, entityPath, fieldNameList, value,propertyNameLine, index, dispatch ) => {
+  let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldNameList];
   let validationResult= {};
 
   if(redirect){
     domainName = definitions[redirect][propertyNameLine].domain;
     const domain = domains[domainName];
-    //To do map
     validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
+  }else {
+    throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${fieldNameList}`)
   }
 
   if (!validationResult.isValid) {
-      dispatch(inputErrorList(formKey, fieldName, entityPath, validationResult.error, propertyNameLine, index));
+      dispatch(inputErrorList(formKey, fieldNameList, entityPath, validationResult.error, propertyNameLine, index));
       return false;
   } else {
       return true;
@@ -130,10 +165,12 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
     return formatter(value);
 };
 
+
+
+
 export const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
   if(definitions[entityPath][fieldName].redirect){
     return definitions[entityPath][fieldName].redirect;
-  }else {
-    return 'wait'
-  }
+  }else return;
+
 }
