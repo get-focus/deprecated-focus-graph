@@ -59,7 +59,10 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
         formattedInputValue: fieldTab.dataSetValue[index][propertyName]
       }
       const onChange = rawValue => {
-        onInputChange(propertyNameList, entityPathList, fieldTab[index][propertyName]);
+       const _fieldTab = fieldTab;
+       let test = _fieldTab.rawInputValue;
+       test[index][propertyName] = rawValue;
+        onInputChange(propertyNameList, entityPathList, test);
         if (options.onChange) options.onChange(rawValue);
       }
       const onBlur = () => {
