@@ -1,6 +1,6 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, filterNonValidatedInListField,validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
@@ -66,8 +66,8 @@ const formMiddleware = store => next => action => {
           case VALIDATE_FORM:
               const {fields : fieldCreated} = find(forms, {formKey});
               // Get the fields to validate
-              let fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
-              fieldsToValidate = filterNonValidatedInListField(fieldsToValidate, nonValidatedFields);
+              const fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
+              //fieldsToValidate = filterNonValidatedInListField(fieldsToValidate, nonValidatedFields);
               // Validate every field, and if one is invalid, then the form is invalid
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
