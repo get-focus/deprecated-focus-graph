@@ -67,7 +67,6 @@ const formMiddleware = store => next => action => {
               const {fields : fieldCreated} = find(forms, {formKey});
               // Get the fields to validate
               const fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
-              //fieldsToValidate = filterNonValidatedInListField(fieldsToValidate, nonValidatedFields);
               // Validate every field, and if one is invalid, then the form is invalid
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);

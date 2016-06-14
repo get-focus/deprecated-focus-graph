@@ -55,14 +55,12 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
       const fieldTab = find(fields, {name: propertyNameList});
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
-        rawInputValue : fieldTab.dataSetValue[index][propertyName],
-        formattedInputValue: fieldTab.dataSetValue[index][propertyName]
+        rawInputValue : fieldTab.rawInputValue[index][propertyName],
+        formattedInputValue: fieldTab.formattedInputValue[index][propertyName]
       }
       const onChange = rawValue => {
-       const _fieldTab = fieldTab;
-       let test = _fieldTab.rawInputValue;
-       test[index][propertyName] = rawValue;
-        onInputChange(propertyNameList, entityPathList, test);
+       fieldTab.rawInputValue[index][propertyName] = rawValue;
+        onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
         if (options.onChange) options.onChange(rawValue);
       }
       const onBlur = () => {

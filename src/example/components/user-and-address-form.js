@@ -34,7 +34,7 @@ const formConfig = {
     entityPathArray: ['user', 'address'/*, 'child'*/],
     loadAction: loadMixedAction,
     saveAction: saveMixedAction,
-    nonValidatedFields: ['user.firstName', {'user.childs': ['firstName']}    ]
+    nonValidatedFields: ['user.uuid', {'user.childs': ['firstName']}    ]
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)

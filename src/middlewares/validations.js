@@ -12,6 +12,7 @@ import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import omit from 'lodash/omit';
+import map from 'lodash/map';
 
 /**
  * Default field formatter. Defaults to the identity function
@@ -50,6 +51,9 @@ export const filterNonValidatedFields = (fields, nonValidatedFields) => {
       // nonValidateFields is an array we have to iterate through all its sub fields
       const fieldlistToFilterName = Object.keys(nonValidateField)[0];
       if(fieldlistToFilterName.includes(FIELD_FULL_PATH)){
+          if(!isArray(nonValidateField[FIELD_FULL_PATH])){
+            throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide an array when you want to have a non validate field for an element of the list : ${currentField.name}`)
+          }
           const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
               return omit(value, nonValidateField[FIELD_FULL_PATH]);
           });
@@ -181,7 +185,20 @@ export const validateFieldArray = (definitions, domains, formKey, entityPath, fi
 export const formatValue = (value, entityPath, fieldName, definitions, domains) => {
     //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
     const entityDefinition = definitions[entityPath] || {};
-    const {domain: domainName = {}} = entityDefinition[fieldName] || {};
+    const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
+    if(redirect){
+      const domainName = definitions[redirect]
+      value = value.map((element, index)=>{
+        const newElement ={};
+        Object.keys(element).map((propertyNameLine)=> {
+          const domain = domains[domainName[propertyNameLine].domain];
+          const {formatter = defaultFormatter} = domain || {};
+          newElement[propertyNameLine] = formatter(element[propertyNameLine]);
+        })
+        return newElement;
+      })
+      return value;
+    }
     const {formatter = defaultFormatter} = domains[domainName] || {};
     return formatter(value);
 };
