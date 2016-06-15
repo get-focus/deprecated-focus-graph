@@ -15,8 +15,11 @@
 
 > You need to read the awesome [Redux](http://redux.js.org/) documentation. At least the concepts.
 
+## Previous concepts
 
-## Concepts
+A component `Component = f(state, props)`
+
+## New Concepts
 
 ## What we rely on
 

@@ -10,7 +10,7 @@ const METADATA_CONTEXT_TYPE = {
     domains: PropTypes.object
 };
 
-export function connect(definitionNameArray = []) {
+export function connect(definitionNameArray : Array<string> = []) {
     if (!isArray(definitionNameArray)) throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You must provide a definitionNameArray as an array to the metadata connector. Instead, you gave '${definitionNameArray}'`);
     return function getMetadataConnectedComponent(ComponentToConnect) {
         function MetadataConnectedComponent(props, context) {
@@ -38,6 +38,7 @@ export function connect(definitionNameArray = []) {
 
 class MetadataProvider extends Component {
     getChildContext() {
+        // Definitions and domains are also sent to the childre via the context.
         return {
             definitions: this.props.definitions,
             domains: this.props.domains
@@ -46,7 +47,12 @@ class MetadataProvider extends Component {
     componentWillMount() {
         const {store: {dispatch}} = this.context;
         const {definitions, domains} = this.props;
+
+        // Maybe this should be in a separate function.
+
+        // Definitions are sent to redux state.
         dispatch(loadDefinitions(definitions));
+        // Domains are sent into the redux state.
         dispatch(loadDomains(domains));
     }
     render() {

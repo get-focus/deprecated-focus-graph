@@ -27,7 +27,7 @@ const MASTER_DATA_CONTEXT_TYPE = {
 //const MyComponentWhichUsesAMasterDataLoader = (props) => <div><button = >LoadMyList</button>{props.name}</div>;
 //const MyMasterDataConnectedComponent =  connectMasterData(['sandwichTypes'])(MyComponentWhichUsesAMasterDataLoader)
 //```
-const connectMasterData = (names = []) => {
+const connectMasterData = (names : Array<string> = [] ) => {
     if(!isArray(names)){
         throw new Error(`${MASTER_DATA_CONNECT}: the names property must be an array.`);
     }
