@@ -34,11 +34,15 @@ const fieldMiddleware = store => next => action => {
         case CREATE_FORM:
             next({
                 ...action,
-                fields: action.fields.map(field => ({
+                fields: action.fields.map(field => {
+                  const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
+                  const _rentityPath = redirectEntityPath ? {redirectEntityPath} : {};
+                  return {
                     ...field,
                     formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
-                    redirectEntityPath : getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains)
-                }))
+                    ...redirectEntityPath
+                }
+              })
             });
             break;
         default:

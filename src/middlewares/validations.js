@@ -1,8 +1,6 @@
 import identity from 'lodash/identity';
-import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST} from '../actions/input';
-import {inputError, inputErrorList} from '../actions/input';
-import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
-import {setFormToSaving} from '../actions/form';
+import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList} from '../actions/input';
+import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
 import isUndefined from 'lodash/isUndefined';
@@ -207,8 +205,7 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
 
 
 export const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
-  if(definitions[entityPath][fieldName].redirect){
+  if(definitions && definitions[entityPath] && definitions[entityPath][fieldName].redirect){
     return definitions[entityPath][fieldName].redirect;
-  }else return;
-
+  } return;
 }

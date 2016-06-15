@@ -56,3 +56,8 @@ export default connectToDomains(MyChildComponentWhoNeedsInformationsFromTheDomai
 ## Explainations
 
 Provider(informationsToPassToTheComponentsTree) => Tree => connectToInformations(Child) => The child gets this information in its props.
+
+
+// todo:
+
+- [] Check the Provider chain presence (form needs metadata)

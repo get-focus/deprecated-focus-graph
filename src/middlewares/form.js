@@ -1,13 +1,17 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
 import find from 'lodash/find';
-
+const FORM_MIDDLEWARE =  'FORM_MIDDLEWARE';
 const formMiddleware = store => next => action => {
+
+    if(!store || !store.getState){ throw new Error(`${FORM_MIDDLEWARE}: You middleware needs a redux store.`)}
+
     if(action.syncForm) {
+
         // The action requires the forms to sync themselves with the dataset, let's do it
         // Grab the new state, to have the updates on the dataset
         const newState = next(action);
@@ -45,6 +49,9 @@ const formMiddleware = store => next => action => {
         // Continue with the rest of the redux flow
         return newState;
     }else {
+      if(store === null){
+        throw new Error('Store not defined')
+      }
       const {dataset, forms, definitions, domains} = store.getState();
       const {formKey, nonValidatedFields,entityPathArray } = action;
       switch(action.type) {
