@@ -2,20 +2,11 @@ import React, {PropTypes} from 'react';
 import DefaultLineComponent from './line'
 
 
-function List({onClick, fieldForLine, lineComponent, children, options, error, values, ...otherProps}) {
-    const renderEditLine = () => {
-         return (
-           <div>
-             <div>Bonjour ! </div>
-             <div>Bonjour ! </div>
-           </div>
-
-         )
-    }
+function List({onClick, fieldForLine, LineComponent = DefaultLineComponent, children, options, error, values, ...otherProps}) {
     const renderLine = () => {
     return (values ? values.map((element, index) => {
-            return <DefaultLineComponent value={element}   fieldForLine={fieldForLine} index={index}/>
-         }): <div></div>)
+            return <LineComponent value={element}   fieldForLine={fieldForLine} index={index}/>
+         }): <div></div>) // todo: null ?
     }
     return (
       <div className='list'> {renderLine()}</div>
@@ -25,7 +16,8 @@ function List({onClick, fieldForLine, lineComponent, children, options, error, v
 
 List.displayName = 'List';
 List.propTypes = {
-    lineComponent: PropTypes.element,
+    LineComponent: PropTypes.element.isRequired,
+    fieldForLine: PropTypes.func.isRequired,
     onClick: PropTypes.func,
     options: PropTypes.arrayOf(PropTypes.string)
 };
