@@ -36,53 +36,7 @@ import store from './store';
 import {definitions, domains, masterDataConfig} from './config';
 moment.locale('fr');
 
-<<<<<<< 306b0d63d0b8875aa2816bd9f0d6a5bd039a7a22
 const App = ({children}) => {
-=======
-    },
-    address: {
-        uuid: { domain: 'DO_RODRIGO', isRequired: false},
-        city: { domain: 'DO_DON_DIEGO', isRequired: true}
-    }
-}
-
-const domains = {
-    DO_RODRIGO: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 2
-            }
-        }],
-        formatter: value => value + ' - formaté'
-    },
-    DO_DON_DIEGO: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 200
-            }
-        }],
-        formatter: value => value + ' - formaté'
-    },
-    DO_DATE : {
-        formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
-    },
-    DO_CIVILITE: {
-        type: 'text',
-        validator: [{
-            type: 'string',
-            options: {
-                maxLength: 200
-            }
-        }]
-    }
-}
-
-const App = () => {
->>>>>>> Formatted value for the list
     return (
         <StoreProvider store={store}>
             <MetadataProvider definitions={definitions} domains={domains}>
