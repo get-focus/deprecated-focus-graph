@@ -14,7 +14,22 @@
     "build": "npm run build:node",
     "publish": "npm run build"
   },
+
   "betterScripts": {
+    "test": {
+        "command": "mocha src/**/__tests__/**/*.js --watch",
+        "env": {
+          "BABEL_ENV": "test",
+          "DEV": true,
+          "SOURCE_MAPS": false,
+          "ENTRY_FILE_PATH": "./src/example/index",
+          "PAGE_TITLE": "Focus entity dev page",
+          "MINIMIFY": false,
+          "API_PORT": 9999,
+          "PACKAGE_JSON_PATH": "../",
+          "ANCHOR_CLASS": "entity-example"
+        }
+    },
     "dev-server": {
       "command": "node ./server.js",
       "env": {

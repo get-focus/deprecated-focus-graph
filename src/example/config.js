@@ -8,8 +8,14 @@ export const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
-        civility: { domain: 'DO_CIVILITE', isRequired: true}
-    },
+        civility: { domain: 'DO_CIVILITE', isRequired: true},
+        childs : {redirect: 'child'}
+   },
+   child : {
+     firstName : { domain: 'DO_RODRIGO', isRequired: false},
+     lastName : { domain: 'DO_RODRIGO', isRequired: false}
+
+   },
     address: {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
         city: { domain: 'DO_DON_DIEGO', isRequired: true}
@@ -24,7 +30,8 @@ export const domains = {
             options: {
                 maxLength: 50
             }
-        }]
+        }],
+         formatter: value => value + ' - formaté rodrigo'
     },
     DO_DON_DIEGO: {
         type: 'text',
