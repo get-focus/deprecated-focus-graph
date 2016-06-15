@@ -19,7 +19,9 @@
 
 A component `Component = f(state, props)`
 
-## New Concepts
+
+## Concepts
+
 
 ## What we rely on
 
