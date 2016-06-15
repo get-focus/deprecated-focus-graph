@@ -1,12 +1,13 @@
 import React, {PropTypes} from 'react';
 import DefaultInputComponent from './input';
+import DefaultDisplay from './display';
 import DefaultSelectComponent from './select';
 
+//Field component
+// It is a wrapper around the component which will be rendered givent the options and the domain informations provided to it.
 function Field({multiple, ...otherProps}) {
-    const {InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent} = otherProps.metadata;
-    const renderConsult = () => (
-        <div>{otherProps.formattedInputValue}</div>
-    );
+    const {DisplayComponent = DefaultDisplay, InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent} = otherProps.metadata;
+    const renderConsult = () => <DisplayComponent value={otherProps.formattedInputValue} />
     const renderEdit = () => multiple ? <SelectComponent {...otherProps}/> : <InputComponent {...otherProps}/>;
     return (
         <div className='field'>
@@ -19,7 +20,8 @@ function Field({multiple, ...otherProps}) {
 Field.displayName = 'Field';
 Field.propTypes = {
     error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    multiple: PropTypes.bool
 };
 
 export default Field;

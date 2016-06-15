@@ -69,6 +69,12 @@ const _validateActionBuilderParams = ({names, type, service}) => {
     }
 }
 
+type ActionBuilderConfig = {
+  name: string,
+  type: string,
+  service: Function
+}
+
 // Action builder is a simple way to create action types, action creator, and an async action
 // It takes one object parameter
 // ### doc
