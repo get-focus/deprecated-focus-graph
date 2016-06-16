@@ -11,7 +11,7 @@ import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import omit from 'lodash/omit';
 import map from 'lodash/map';
-
+import _fakeValidate from './_fake-validate';
 /**
  * Default field formatter. Defaults to the identity function
  * @type {function}
@@ -25,9 +25,13 @@ const MIDDLEWARES_FORM_VALIDATION = 'MIDDLEWARES_FORM_VALIDATION';
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
 // TODO : replace this with the focus core function
 export const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
-    const rand = Math.random();
-    const isValid = rand > 0.5;
-    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : 'Random error set by a fake function';
+
+    const validationResult =  _fakeValidate({name, value: rawValue}, validators);
+    const isValid = validationResult.isValid;
+
+    //const rand = Math.random();
+    //const isValid = rand > 0.5;
+    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
     return {
         name,
         value: rawValue,
@@ -80,16 +84,26 @@ export const filterNonValidatedFields = (fields, nonValidatedFields) => {
  * @param  {function} dispatch  redux dispatch function
  * @return {boolean}            the field validation status
  */
-export const validateField = (definitions, domains, formKey, entityPath, fieldName, value, dispatch) => {
+export const validateField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch) => {
     let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
     let validationResult= {};
     // Redirect use to have the information of a list field
     if(isArray(value)){
+      // If it is a list field it should redirect to a line entity definition.
       if(redirect){
-        domainName = definitions[redirect]
-        value.map((element, index)=>{
+        if(!isArray(redirect)){
+          throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: `)
+        }
+        //TODO: feature redirect array
+        const FAKE_REDIRECT_INDEX = 0;
+        if(redirect.length > 1){
+          console.warn(`${MIDDLEWARES_FIELD_VALIDATION}: This feature is not yet supported. It will be done soon.`)
+        }
+        const redirectDefinition = definitions[redirect.length === 1 ? redirect[0]: redirect[FAKE_REDIRECT_INDEX]];
+        // The value is an array and we iterate over it.
+        value.map((element, index) => {
           mapKeys(element, (value, propertyNameLine) => {
-            const domain = domains[domainName[propertyNameLine].domain];
+            const domain = domains[redirectDefinition[propertyNameLine].domain];
             const fieldValid = validateFieldForList(definitions, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
           })
         })
@@ -99,7 +113,11 @@ export const validateField = (definitions, domains, formKey, entityPath, fieldNa
 
       validationResult = {isValid : true}
     }else {
+      //TODO: Maybe it should be entityName + fieldName.
       const domain = domains[domainName];
+      if(!domain){
+        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: Your field ${fieldName} in the entity ${entityPath} don't have a domain, you may have an array field which have a **redirect** property in it.`)
+      }
       validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
     }
 

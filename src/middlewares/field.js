@@ -10,8 +10,9 @@ import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/lang';
-
+const FIELD_MIDDLEWARE = 'FIELD_MIDDLEWARE';
 const fieldMiddleware = store => next => action => {
+  if(!store || !store.getState){ throw new Error(`${FIELD_MIDDLEWARE}: Your middleware needs a redux store.`)}
     const {forms, definitions, domains} = store.getState();
     switch(action.type) {
         case INPUT_BLUR:
@@ -36,11 +37,11 @@ const fieldMiddleware = store => next => action => {
                 ...action,
                 fields: action.fields.map(field => {
                   const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
-                  const _rentityPath = redirectEntityPath ? {redirectEntityPath} : {};
+                  const _redirectEntityPath = redirectEntityPath ? {redirectEntityPath} : {};
                   return {
                     ...field,
                     formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
-                    ...redirectEntityPath
+                    ..._redirectEntityPath
                 }
               })
             });
