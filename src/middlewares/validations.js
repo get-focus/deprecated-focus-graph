@@ -68,7 +68,13 @@ export const filterNonValidatedFields = (fields, nonValidatedFields) => {
 }
 
 
-
+const _getRedirectDefinition = (redirect: Array, definitions: Object) => {
+  if(redirect.length > 1){
+    console.warn(`${MIDDLEWARES_FIELD_VALIDATION}: This feature is not yet supported. It will be done soon.`)
+  }
+  const FAKE_REDIRECT_INDEX = 0;
+  return definitions[redirect.length === 1 ? redirect[0]: redirect[FAKE_REDIRECT_INDEX]];
+}
 
 
 /**
@@ -92,26 +98,25 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
       // If it is a list field it should redirect to a line entity definition.
       if(redirect){
         if(!isArray(redirect)){
-          throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: `)
+          throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: your redirect property should be an array in the definition of ${entityPath}.${fieldName}.`)
         }
         //TODO: feature redirect array
-        const FAKE_REDIRECT_INDEX = 0;
-        if(redirect.length > 1){
-          console.warn(`${MIDDLEWARES_FIELD_VALIDATION}: This feature is not yet supported. It will be done soon.`)
-        }
-        const redirectDefinition = definitions[redirect.length === 1 ? redirect[0]: redirect[FAKE_REDIRECT_INDEX]];
+        const redirectDefinition = _getRedirectDefinition(redirect, definitions);
         // The value is an array and we iterate over it.
+        validationResult = {isValid : true};
         value.map((element, index) => {
           mapKeys(element, (value, propertyNameLine) => {
             const domain = domains[redirectDefinition[propertyNameLine].domain];
             const fieldValid = validateFieldForList(definitions, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
+            if(fieldValid === false){
+              validationResult.isValid = false;
+            }
           })
         })
       }else {
-        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${fieldName}`)
+        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
       }
 
-      validationResult = {isValid : true}
     }else {
       //TODO: Maybe it should be entityName + fieldName.
       const domain = domains[domainName];
@@ -143,9 +148,11 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
  * @return {boolean}             the field validation status
  */
 export const validateFieldForList = (definitions, domain, propertyNameLine, formKey, value, dispatch,index, entityPath, fieldNameList ) => {
+//  if(value === 1) throw new Error(JSON.stringify({ domain, propertyNameLine, formKey, value, index, entityPath, fieldNameList}))
     let validationResult= {};
-    let {isRequired} = definitions[entityPath][fieldNameList];
+    const {isRequired} = definitions[entityPath][fieldNameList];
     validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldNameList, value);
+    //if(value === 1) throw new Error(JSON.stringify(validationResult));
     if (!validationResult.isValid ){
       dispatch(inputErrorList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
       return false;
@@ -203,11 +210,11 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
     const entityDefinition = definitions[entityPath] || {};
     const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
     if(redirect){
-      const domainName = definitions[redirect]
+      const redirectDefinition = _getRedirectDefinition(redirect, definitions);
       value = value.map((element, index)=>{
         const newElement ={};
         Object.keys(element).map((propertyNameLine)=> {
-          const domain = domains[domainName[propertyNameLine].domain];
+          const domain = domains[redirectDefinition[propertyNameLine].domain];
           const {formatter = defaultFormatter} = domain || {};
           newElement[propertyNameLine] = formatter(element[propertyNameLine]);
         })

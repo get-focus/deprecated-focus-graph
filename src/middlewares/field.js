@@ -11,10 +11,12 @@ import isEmpty from 'lodash/isEmpty';
 import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/lang';
 const FIELD_MIDDLEWARE = 'FIELD_MIDDLEWARE';
-const fieldMiddleware = store => next => action => {
+
+const fieldMiddleware = store => next => (action) => {
   if(!store || !store.getState){ throw new Error(`${FIELD_MIDDLEWARE}: Your middleware needs a redux store.`)}
     const {forms, definitions, domains} = store.getState();
     switch(action.type) {
+        // Middleware post state processing
         case INPUT_BLUR:
             // On input blur action, validate the provided field
             validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
@@ -22,12 +24,11 @@ const fieldMiddleware = store => next => action => {
         case INPUT_BLUR_LIST:
             validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
             break;
-
+        // Middleware pre state processing
         case INPUT_CHANGE:
             next({
                 ...action,
-                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains),
-                redirectEntityPath : 'child'
+                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
             break;
         case SYNC_FORM_ENTITIES:
