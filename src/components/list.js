@@ -4,7 +4,9 @@ import React, {PropTypes} from 'react';
 function List({onClick, fieldForLine, LineComponent, children, options, error, values, ...otherProps}) {
     const renderLine = () => {
     return (values ? values.map((element, index) => {
-            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element}   fieldForLine={fieldForLine} index={index} {...otherProps}/>
+            // fieldFor which wrapp the index.
+            const lineFieldFor = (linePropertyName, lineOptions) => fieldForLine(linePropertyName, lineOptions, index)
+            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element}   fieldForLine={lineFieldFor} index={index} {...otherProps}/>
          }): <div></div>) // todo: null ?
     }
     return (
