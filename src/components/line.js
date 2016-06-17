@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
-
-function Line({onClick, children, fieldForLine, options,index,  ...otherProps}) {
+const Line =  ({onClick, children, fieldForLine, options,index,  ...otherProps}) => {
     return (
     <div>
         <div>  {fieldForLine('firstName', {entityPath: 'child'}, index)} </div>
@@ -12,7 +11,7 @@ function Line({onClick, children, fieldForLine, options,index,  ...otherProps}) 
 
 Line.displayName = 'Line';
 Line.propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     options: PropTypes.arrayOf(PropTypes.string)
 };
 Line.defaultProps = {
