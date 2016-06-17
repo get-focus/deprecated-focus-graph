@@ -12,6 +12,22 @@ import mapKeys from 'lodash/mapKeys';
 import isArray from 'lodash/lang';
 const FIELD_MIDDLEWARE = 'FIELD_MIDDLEWARE';
 
+// Check the definitions givent the data.
+export const _checkFieldDefinition = (fieldName: string, entityPath: string, definitions: object)=> {
+  if(!definitions){
+    return console.warn(`${FIELD_MIDDLEWARE}: You need to provide definitions.`)
+  }
+  if(!entityPath || !fieldName){
+    return console.warn(`${FIELD_MIDDLEWARE}: You need an entityPath and a fieldName.`)
+  }
+  if(!definitions[entityPath]){
+    return console.warn(`${FIELD_MIDDLEWARE}: your entityPath ${entityPath} is not in your definitions`, definitions);
+  }
+  if(!definitions[entityPath][fieldName]){
+    return console.warn(`${FIELD_MIDDLEWARE}: your field ${fieldName} is not in the definitions of ${entityPath}, please check the data in your store. Maybe your server response is not what you think it is.`, definitions[entityPath]);
+  }
+}
+
 const fieldMiddleware = store => next => (action) => {
   if(!store || !store.getState){ throw new Error(`${FIELD_MIDDLEWARE}: Your middleware needs a redux store.`)}
     const {forms, definitions, domains} = store.getState();
@@ -31,12 +47,13 @@ const fieldMiddleware = store => next => (action) => {
                 formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
             break;
+        case CREATE_FORM:
         case SYNC_FORM_ENTITIES:
         case SYNC_FORMS_ENTITY:
-        case CREATE_FORM:
             next({
                 ...action,
                 fields: action.fields.map(field => {
+                  _checkFieldDefinition(field.name, field.entityPath, definitions);
                   const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
                   const _redirectEntityPath = redirectEntityPath ? {redirectEntityPath} : {};
                   return {
