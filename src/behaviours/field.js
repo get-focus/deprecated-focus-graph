@@ -79,9 +79,9 @@ export function connect() {
         function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers}) {
             const fieldFor = fieldHelpers.fieldForBuilder(otherProps);
             const selectFor = fieldHelpers.fieldForBuilder(otherProps, true);
-            const list = fieldHelpers.fieldForBuilder( otherProps, false, true, fieldHelpers.fieldForListBuilder);
+            const listFor = fieldHelpers.fieldForBuilder( otherProps, false, true, fieldHelpers.fieldForListBuilder);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} list={list}/>;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} listFor={listFor}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
