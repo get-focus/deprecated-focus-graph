@@ -69,6 +69,9 @@ export const filterNonValidatedFields = (fields, nonValidatedFields) => {
 
 
 const _getRedirectDefinition = (redirect: Array, definitions: Object) => {
+  if(!isArray(redirect)){
+    throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: The redirect property must be an array`);
+  }
   if(redirect.length > 1){
     console.warn(`${MIDDLEWARES_FIELD_VALIDATION}: This feature is not yet supported. It will be done soon.`)
   }
@@ -230,7 +233,7 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
 
 
 export const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
-  if(definitions && definitions[entityPath] && definitions[entityPath][fieldName].redirect){
+  if(definitions && definitions[entityPath] && definitions[entityPath][fieldName] && definitions[entityPath][fieldName].redirect){
     return definitions[entityPath][fieldName].redirect;
   } return;
 }
