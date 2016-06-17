@@ -40,12 +40,18 @@ describe('The form middleware', () => {
         nextSpy.reset();
         dispatchSpy.reset();
     })
+    describe('when no store is given tho the middleware ', ()=>{
+      it('should throw an error', () =>{
+        expect(() => formMiddleware()(nextSpy)({type: 'lol'}))
+        .to.throw('FORM_MIDDLEWARE: You middleware needs a redux store.');
+      })
+    });
     describe('when a random action is passed', () => {
         const randomAction = {
             type: 'LOL'
         };
         it('should just pass the action to next', () => {
-            formMiddleware(null)(nextSpy)(randomAction);
+            formMiddleware(store)(nextSpy)(randomAction);
             expect(nextSpy).to.have.been.callCount(1);
             expect(nextSpy).to.have.been.calledWith(randomAction);
         });

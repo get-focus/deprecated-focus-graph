@@ -9,7 +9,8 @@ export const definitions = {
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
-        childs : {redirect: 'child'}
+        // TODO: ['childs'] ?
+        childs : {redirect: ['child']}
    },
    child : {
      firstName : { domain: 'DO_RODRIGO', isRequired: false},
@@ -25,7 +26,7 @@ export const definitions = {
 export const domains = {
     DO_RODRIGO: {
         type: 'text',
-        validator: [{
+        validators: [{
             type: 'string',
             options: {
                 maxLength: 50
@@ -35,7 +36,7 @@ export const domains = {
     },
     DO_DON_DIEGO: {
         type: 'text',
-        validator: [{
+        validators: [{
             type: 'string',
             options: {
                 maxLength: 200
@@ -48,7 +49,7 @@ export const domains = {
     },
     DO_CIVILITE: {
         type: 'text',
-        validator: [{
+        validators: [{
             type: 'string',
             options: {
                 maxLength: 200

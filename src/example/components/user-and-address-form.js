@@ -7,7 +7,7 @@ import {loadMixedAction, saveMixedAction} from '../actions/mixed-actions';
 
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
-
+import LineComponent from '../../components/line'
 class UserAddressForm extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
@@ -16,11 +16,11 @@ class UserAddressForm extends Component {
     }
 
     render() {
-        const {editing, fields, fieldFor, list, selectFor} = this.props;
+        const {editing, fields, fieldFor, listFor, selectFor} = this.props;
         return (
             <Panel title='User and address' {...this.props}>
                 {fieldFor('uuid', {onChange: () => {console.log(fields)}, entityPath: 'user'})}
-                {list('childs', {entityPath : 'user', redirectEntityPath: 'child'})}
+                {listFor('childs', {LineComponent, entityPath : 'user', redirectEntityPath: 'child'})}
             </Panel>
         );
     }
