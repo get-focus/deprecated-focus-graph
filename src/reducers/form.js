@@ -19,7 +19,32 @@ const findField = (fields, entityPath, name) => find(fields, {entityPath, name})
 const getFieldsOutterJoin = (firstSource, secondSource) => xorWith(firstSource, secondSource, (a, b) => a.name === b.name && a.entityPath === b.entityPath);
 const isNotAFieldFromForm = ({dirty}) => isUndefined(dirty);
 
-const forms = (state = [], action) => {
+type FormStateType = {
+  formKey: string, // The name of the form in the state shape. This name is provide to the connector.
+  entityPathArray: Array<string>, // An array of entity path use to build the field.
+  editing: boolean, // A boolean which indicates wether this form has editing
+  loading: boolean, // A boolean which indicates if the form is waiting for an action to be completed
+  saving: boolean, // A boolean which indicates if the form is in saving mode
+  fields: Array<FieldStateType> // The array of fields composing the form n(constructed with both data and definitions)
+}
+
+type FieldStateType = {
+  name: string, // The name of the field action.fieldName,
+  entityPath: string, // The path to the entity definition,
+  valid: boolean, // The validation status of the field
+  error: ?string, // The error which can come along with the field
+  loading: boolean, // Is the field in a loading state
+  saving: boolean, // Is the field in saving mode
+  active: boolean, // Has the field a focus
+  dirty: true, // Is the data different from the data in the data part of the state
+  rawInputValue: Object | string | number | Array<Object | string | number > , // The  value as it is from the webservice or raw typed by the user.
+  formattedInputValue: Object | string | number | Array<Object | string | number > // The value with formatter applied
+}
+
+// This middleware is used to build and maintain the form part of the state.
+// Each form has a name in the state
+//
+const forms = (state: Array<FormStateType> = [], action) => {
     switch (action.type) {
         case CREATE_FORM:
             // When creating a form, simply initialize all the fields and pass it to the new form object
