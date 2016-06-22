@@ -17,7 +17,6 @@ const lastNameMiddleware = store => next => action => {
 
 export const ownActiondMiddleware = store => next => action => {
      if (action.type === INPUT_CHANGE && action.fieldName == 'uuid') {
-         console.log('je vasi cvhanger des trics')
          const customAction = {};
          customAction.type = 'CLEAR_FORM';
          customAction.formKey = action.formKey;
