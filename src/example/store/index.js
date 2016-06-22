@@ -15,6 +15,20 @@ const lastNameMiddleware = store => next => action => {
     }
 }
 
-const store = builder(rootReducer, [lastNameMiddleware], [DevTools.instrument()]);
+export const ownActiondMiddleware = store => next => action => {
+     if (action.type === INPUT_CHANGE && action.fieldName == 'uuid') {
+         console.log('je vasi cvhanger des trics')
+         const customAction = {};
+         customAction.type = 'CLEAR_FORM';
+         customAction.formKey = action.formKey;
+         next(action);
+         store.dispatch(customAction);
+     } else {
+         next(action);
+     }
+ }
+
+
+const store = builder(rootReducer, [lastNameMiddleware,ownActiondMiddleware], [DevTools.instrument()]);
 
 export default store;

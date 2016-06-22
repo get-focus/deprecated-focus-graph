@@ -8,6 +8,7 @@ export const TOGGLE_FORM_EDITING = 'TOGGLE_FORM_EDITING';
 export const SET_FORM_TO_SAVING = 'SET_FORM_TO_SAVING';
 
 export const VALIDATE_FORM = 'VALIDATE_FORM';
+export const CLEAR_FORM = 'CLEAR_FORM';
 
 /**
  * Form creation action
@@ -34,6 +35,20 @@ export const destroyForm = formKey => ({
     type: DESTROY_FORM,
     formKey
 });
+
+
+ /**
+  * Form clear action
+  * Removes all the data in the form.
+  * Usage: destroyForm('movieForm');
+  * @param  {string} formKey} the form key
+  * @return {object}          the action itself
+  */
+ export const clearForm = formKey => ({
+     type: CLEAR_FORM,
+     formKey
+ });
+ 
 
 /**
  * Sync multiple forms with a single entity
