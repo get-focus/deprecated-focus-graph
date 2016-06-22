@@ -7,6 +7,8 @@ import fieldMiddleware from '../middlewares/field';
 
 const loggerMiddleware = createLogger();
 
+
+
 const builder = (appReducers, customMiddlewares = [], enhancers = []) => createStore(
     combineReducers({
         dataset: appReducers,
@@ -23,5 +25,4 @@ const builder = (appReducers, customMiddlewares = [], enhancers = []) => createS
         ...enhancers
     )
 );
-
-export default builder;
+ export default builder;

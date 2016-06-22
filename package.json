@@ -9,6 +9,7 @@
   "scripts": {
     "test": "BABEL_ENV=test mocha src/**/__tests__/**/*.js",
     "test:watch": "BABEL_ENV=test mocha src/**/__tests__/**/*.js --watch",
+    "test-windows:watch": "better-npm-run test",
     "start": "better-npm-run dev-server",
     "build:node": "better-npm-run babelify",
     "build": "npm run build:node",

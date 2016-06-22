@@ -1,4 +1,4 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING, CLEAR_FORM} from '../actions/form';
 import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
@@ -58,6 +58,20 @@ const forms = (state: Array<FormStateType> = [], action) => {
             }];
         case DESTROY_FORM:
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
+        case CLEAR_FORM :
+               return state.map(form => ({
+                 ...form,
+                 ...(form.formKey === action.formKey ? {
+                     fields: form.fields.map(field => {
+                        return {
+                             ...field,
+                             formattedInputValue : null,
+                             rawInputValue: null,
+                             dataSetValue: null
+                           };
+                     })
+                 } : {})
+               }));
         case SYNC_FORMS_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
             return state.map(form => {

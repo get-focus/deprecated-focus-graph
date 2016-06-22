@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from '../form';
 import {Provider as StoreProvider} from 'react-redux';
-import store from '../../example/store';
+import builder from '../../store/builder';
 const {renderIntoDocument} = TestUtils;
 import find from 'lodash/find';
+import rootReducer from '../../reducers';
+import DevTools from '../../example/containers/dev-tools';
+
+const store = builder(rootReducer, [], [DevTools.instrument()]);
 
 describe('The form connect', () => {
     let capturedProps;
