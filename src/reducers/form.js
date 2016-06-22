@@ -1,4 +1,4 @@
-import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING} from '../actions/form';
+import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING,CLEAR_FORM} from '../actions/form';
 import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
@@ -18,7 +18,6 @@ const initializeField = field => ({
 const findField = (fields, entityPath, name) => find(fields, {entityPath, name});
 const getFieldsOutterJoin = (firstSource, secondSource) => xorWith(firstSource, secondSource, (a, b) => a.name === b.name && a.entityPath === b.entityPath);
 const isNotAFieldFromForm = ({dirty}) => isUndefined(dirty);
-
 const forms = (state = [], action) => {
     switch (action.type) {
         case CREATE_FORM:
@@ -77,6 +76,20 @@ const forms = (state = [], action) => {
                 },
                 ...state.slice(formIndex + 1)
             ];
+        case CLEAR_FORM :
+          return state.map(form => ({
+            ...form,
+            ...(form.formKey === action.formKey ? {
+                fields: form.fields.map(field => {
+                    return {
+                        ...field,
+                        formattedInputValue : null,
+                        rawInputValue: null,
+                        dataSetValue: null
+                        };
+                })
+            } : {})
+          }));
         case INPUT_CHANGE:
             // Check if the field to change exists
             const changedFieldExistsInForm = !isUndefined(find(find(state, {formKey: action.formKey}).fields, {name: action.fieldName, entityPath: action.entityPath}));
@@ -192,6 +205,7 @@ const forms = (state = [], action) => {
                 }
             });
         default:
+
             return state;
     }
 }

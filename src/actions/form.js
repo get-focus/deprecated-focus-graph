@@ -9,6 +9,8 @@ export const SET_FORM_TO_SAVING = 'SET_FORM_TO_SAVING';
 
 export const VALIDATE_FORM = 'VALIDATE_FORM';
 
+export const CLEAR_FORM = 'CLEAR_FORM';
+
 /**
  * Form creation action
  * Creates a new form in the 'forms' key in the state.
@@ -32,6 +34,19 @@ export const createForm = (formKey, entityPathArray) => ({
  */
 export const destroyForm = formKey => ({
     type: DESTROY_FORM,
+    formKey
+});
+
+
+/**
+ * Form clear action
+ * Removes all the data in the form.
+ * Usage: destroyForm('movieForm');
+ * @param  {string} formKey} the form key
+ * @return {object}          the action itself
+ */
+export const clearForm = formKey => ({
+    type: CLEAR_FORM,
     formKey
 });
 
