@@ -46,9 +46,10 @@ export const destroyForm = formKey => ({
   */
  export const clearForm = formKey => ({
      type: CLEAR_FORM,
-     formKey
+     formKey,
+     entityName
  });
- 
+
 
 /**
  * Sync multiple forms with a single entity

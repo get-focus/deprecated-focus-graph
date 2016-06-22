@@ -63,12 +63,12 @@ const forms = (state: Array<FormStateType> = [], action) => {
                  ...form,
                  ...(form.formKey === action.formKey ? {
                      fields: form.fields.map(field => {
-                         return {
+                        return {
                              ...field,
                              formattedInputValue : null,
                              rawInputValue: null,
                              dataSetValue: null
-                             };
+                           };
                      })
                  } : {})
                }));

@@ -29,6 +29,6 @@ export const ownActiondMiddleware = store => next => action => {
  }
 
 
-const store = builder(rootReducer, [lastNameMiddleware,ownActiondMiddleware], [DevTools.instrument()]);
+const store = builder(rootReducer, [lastNameMiddleware, ownActiondMiddleware], [DevTools.instrument()]);
 
 export default store;
