@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
-import isObject from 'lodash/isString';
+import isObject from 'lodash/isObject';
 // Build a reducer in order to ease the creation on these in 80% of the cases
 // ## doc
 // To build a reducer you need to provide an object which is
@@ -116,22 +116,22 @@ export function reducerBuilder({defaultData, name, loadTypes, saveTypes} : Reduc
   }
   const UPPERCASE_NAME = name.toUpperCase();
   const REQUEST_LOAD = loadTypes[`REQUEST_LOAD_${UPPERCASE_NAME}`];
-  const RECEIVE_LOAD = loadTypes[`RECEIVE_LOAD_${UPPERCASE_NAME}`];
+  const RESPONSE_LOAD = loadTypes[`RESPONSE_LOAD_${UPPERCASE_NAME}`];
   const REQUEST_SAVE = saveTypes[`REQUEST_SAVE_${UPPERCASE_NAME}`];
-  const RECEIVE_SAVE = saveTypes[`RECEIVE_SAVE_${UPPERCASE_NAME}`];
+  const RESPONSE_SAVE = saveTypes[`RESPONSE_SAVE_${UPPERCASE_NAME}`];
   if(
     isUndefined(REQUEST_LOAD) ||
-    isUndefined(RECEIVE_LOAD) ||
+    isUndefined(RESPONSE_LOAD) ||
     isUndefined(REQUEST_SAVE) ||
-    isUndefined(RECEIVE_SAVE)
+    isUndefined(RESPONSE_SAVE)
   ){
     //throw new Error('REDUCER_BUILDER: you need provide a load and a save type to the reducer builder');
   }
   return _reducerBuilder({
     defaultData,
     types: {
-      load: {request: REQUEST_LOAD, receive: RECEIVE_LOAD},
-      save: {request: REQUEST_SAVE, receive: RECEIVE_SAVE}
+      load: {request: REQUEST_LOAD, response: RESPONSE_LOAD},
+      save: {request: REQUEST_SAVE, response: RESPONSE_SAVE}
     }
   });
 }

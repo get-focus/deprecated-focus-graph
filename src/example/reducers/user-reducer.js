@@ -15,10 +15,9 @@ const DEFAULT_DATA = {
 
 // Reducer for the user entity with a state modification on load and save.
 const userReducer = reducerBuilder({
-    types: {
-        load: {request: REQUEST_LOAD_USER, response: RESPONSE_LOAD_USER, error: ERROR_LOAD_USER},
-        save: {request: REQUEST_SAVE_USER, response: RESPONSE_SAVE_USER, error: ERROR_SAVE_USER}
-    },
+    name: 'user',
+    loadTypes: loadUserTypes,
+    saveTypes: saveUserTypes,
     defaultData: DEFAULT_DATA
 });
 
