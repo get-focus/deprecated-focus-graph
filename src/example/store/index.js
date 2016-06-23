@@ -1,4 +1,4 @@
-import builder from '../../store/builder';
+import builder from '../../store/create-store';
 import rootReducer from '../reducers';
 import {INPUT_CHANGE} from '../../actions/input';
 import DevTools from '../containers/dev-tools';

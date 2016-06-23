@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from '../form';
 import {Provider as StoreProvider} from 'react-redux';
-import builder from '../../store/builder';
+import builder from '../../store/create-store';
 const {renderIntoDocument} = TestUtils;
 import find from 'lodash/find';
 import rootReducer from '../../reducers';
