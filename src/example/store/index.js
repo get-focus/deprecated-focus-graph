@@ -1,4 +1,4 @@
-import builder from '../../store/builder';
+import builder from '../../store/create-store';
 import rootReducer from '../reducers';
 import {INPUT_CHANGE} from '../../actions/input';
 import DevTools from '../containers/dev-tools';
@@ -28,6 +28,6 @@ export const ownActiondMiddleware = store => next => action => {
  }
 
 
-const store = builder(rootReducer, [lastNameMiddleware, ownActiondMiddleware], [DevTools.instrument()]);
+const store = builder({dataset: rootReducer}, [lastNameMiddleware, ownActiondMiddleware], [DevTools.instrument()]);
 
 export default store;
