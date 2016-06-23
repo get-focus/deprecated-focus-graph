@@ -1,6 +1,7 @@
-import map from 'lodash/map';
-
-import {LOAD_DEFINITIONS, LOAD_DOMAINS} from '../actions/metadata';
+import {
+  LOAD_DEFINITIONS,
+  LOAD_DOMAINS
+} from '../actions/metadata';
 
 export const definitions = (state = {}, action) => {
     switch(action.type) {

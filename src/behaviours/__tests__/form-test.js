@@ -7,7 +7,7 @@ import find from 'lodash/find';
 import rootReducer from '../../reducers';
 import DevTools from '../../example/containers/dev-tools';
 
-const store = builder(rootReducer, [], [DevTools.instrument()]);
+const store = builder({dataset:rootReducer}, [], [DevTools.instrument()]);
 
 describe('The form connect', () => {
     let capturedProps;
