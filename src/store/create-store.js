@@ -14,9 +14,18 @@ const loggerMiddleware = createLogger();
 // appReducers : an object build with combineReducers which is here to save dataset
 // customMiddlewares: An array of middlewares you want to add to your project (custom treatement on global state after an action) Do not abuse of them.
 // enhancers: Redux middleware or other third party enhancers.
-const createStoreWithFocus = (appReducers, customMiddlewares = [], enhancers = []) => createStore(
+const createStoreWithFocus = (
+    reducers = {},
+    customMiddlewares = [],
+    enhancers = []
+  ) => {
+    const {dataset, customData, ...otherReducers} = reducers;
+    const customReducer =  customData ? {customData} : {};
+    return createStore(
     combineReducers({
-        dataset: appReducers,
+        dataset,
+        ...customReducer,
+        ...otherReducers,
         ...focusReducers
     }),
     compose(
@@ -29,13 +38,21 @@ const createStoreWithFocus = (appReducers, customMiddlewares = [], enhancers = [
         ),
         ...enhancers
     )
-);
+)};
  export default createStoreWithFocus;
 
 /*** SELECTORS ***/
 
  // It  extracts data from the dataset part of the state
- const selectData = name => (state ={}) => {
-   if( !state.dataset[name]) return console.warm(`SELECT_DATA : there is no ${name} in the dataset of the state`)
+ export const selectData = name => (state ={}) => {
+   if( !state.dataset[name]) throw new Error(`SELECTOR_DATASET : there is no ${name} in the dataset of the state`);
    return state.dataset[name]
+ }
+
+
+ // It extracts customData from the state
+ // selectDate
+ export const selectCustomData = name => (state ={}) => {
+   if( !state.customData|| !state.customData[name]) throw new Error(`SELECTOR_CUTSOM_DATA : there is no ${name} in the dataset of the state`);
+   return state.customData[name]
  }
