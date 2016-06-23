@@ -9,7 +9,7 @@ import DefaultListComponent from './list';
 function Field({multiple, list,fieldFor,fieldForLine,  ...otherProps}) {
 
     const {DisplayComponent = DefaultDisplay, InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent, ListComponent = DefaultListComponent} = otherProps.metadata;
-    const renderConsult = () => ( list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : <DisplayComponent value={otherProps.formattedInputValue} /> );
+    const renderConsult = () => ( list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : <DisplayComponent {...otherProps} /> );
     const renderEdit = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponent {...otherProps}/> : <InputComponent {...otherProps}/>);
     return (
         <div className='field'>

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-const Display = ({value}) => <div data-focus='display'>{value}</div>;
+const Display = ({formattedInputValue}) => <div data-focus='display'>{formattedInputValue}</div>;
 
 Display.displayName =  'Display';
 export default Display;

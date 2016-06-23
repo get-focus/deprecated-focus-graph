@@ -1,4 +1,6 @@
 import moment from 'moment';
+import React from 'react';
+
 import {loadCivility} from './services/load-civility';
 const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
 
@@ -32,7 +34,8 @@ export const domains = {
                 maxLength: 50
             }
         }],
-         formatter: value => value + ' - formaté rodrigo'
+         formatter: value => value + ' - formaté rodrigo',
+         DisplayComponent: props => <div>{props.rawInputValue}</div>
     },
     DO_DON_DIEGO: {
         type: 'text',
@@ -45,6 +48,7 @@ export const domains = {
         formatter: value => value + ' - formaté'
     },
     DO_DATE : {
+
         formatter: date => date ? moment(date, format).format('DD/MM/YYYY') : ''
     },
     DO_CIVILITE: {
@@ -55,6 +59,7 @@ export const domains = {
                 maxLength: 200
             }
         }]
+
     }
 };
 
