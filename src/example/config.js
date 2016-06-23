@@ -3,7 +3,7 @@ import React from 'react';
 
 import {loadCivility} from './services/load-civility';
 const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
-import AutoCompleteSelect from 'focus-components/components/input/autocomplete-select/field';
+//import AutoCompleteSelect from 'focus-components/components/input/autocomplete-select/field';
 
 const _querySearcher = query => {
     let data = [
@@ -129,7 +129,7 @@ export const domains = {
         //DisplayComponent: props => <div><AutoCompleteSelect isEdit={false} querySearcher={querySearcher} placeholder={'Your search...'} keyResolver={keyResolver} {...props} />{JSON.stringify(props)}</div>,
         InputComponent:  props => <div>
         value: {props.value}
-        <AutoCompleteSelect isEdit={true} querySearcher={querySearcher} placeholder={'Your search...'} keyResolver={keyResolver} {...props} />
+        {/*<AutoCompleteSelect isEdit={true} querySearcher={querySearcher} placeholder={'Your search...'} keyResolver={keyResolver} {...props} />*/}
         {JSON.stringify(props)}
         </div>
 
