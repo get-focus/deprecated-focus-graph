@@ -3,10 +3,80 @@ import React from 'react';
 
 import {loadCivility} from './services/load-civility';
 const format = ['DD/MM/YYYY', 'DD-MM-YYYY', 'D MMM YYYY'];
+//import AutoCompleteSelect from 'focus-components/components/input/autocomplete-select/field';
+
+const _querySearcher = query => {
+    let data = [
+        {
+            key: 'JL',
+            label: 'Joh Lickeur'
+        },
+        {
+            key: 'GK',
+            label: 'Guénolé Kikabou'
+        },
+        {
+            key: 'YL',
+            label: 'Yannick Lounivis'
+        }
+    ];
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({
+                data,
+                totalCount: data.length
+            });
+        }, 500);
+    });
+};
+
+const keyResolver = key => {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve.bind(this, 'Resolved value'), 300);
+    });
+}
+
+const querySearcher = query => {
+  const data = [
+      {
+          key: 'NY',
+          label: 'New York'
+      },
+      {
+          key: 'PAR',
+          label: 'Paris'
+      },
+      {
+          key: 'TOY',
+          label: 'Tokyo'
+      },
+      {
+          key: 'BEI',
+          label: 'Pékin'
+      },
+      {
+          key: 'LON',
+          label: 'Londres'
+      },
+      {
+          key: 'BER',
+          label: 'Berlin'
+      }
+  ].filter(({key, label}) => label.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({
+                data,
+                totalCount: 40
+            });
+        }, 200);
+    });
+}
+
 
 export const definitions = {
     user: {
-        uuid: { domain: 'DO_RODRIGO', isRequired: false},
+        uuid: { domain: 'DO_DON_DIEGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
@@ -35,7 +105,6 @@ export const domains = {
             }
         }],
          formatter: value => value + ' - formaté rodrigo',
-         DisplayComponent: props => <div>{props.rawInputValue}</div>
     },
     DO_DON_DIEGO: {
         type: 'text',
@@ -46,6 +115,24 @@ export const domains = {
             }
         }],
         formatter: value => value + ' - formaté'
+
+    },
+    DO_AUTOCOMPLETE: {
+        type: 'text',
+        validators: [{
+            type: 'string',
+            options: {
+                maxLength: 200
+            }
+        }],
+        formatter: value => value + ' - formaté',
+        //DisplayComponent: props => <div><AutoCompleteSelect isEdit={false} querySearcher={querySearcher} placeholder={'Your search...'} keyResolver={keyResolver} {...props} />{JSON.stringify(props)}</div>,
+        InputComponent:  props => <div>
+        value: {props.value}
+        {/*<AutoCompleteSelect isEdit={true} querySearcher={querySearcher} placeholder={'Your search...'} keyResolver={keyResolver} {...props} />*/}
+        {JSON.stringify(props)}
+        </div>
+
     },
     DO_DATE : {
 
