@@ -74,7 +74,7 @@ MetadataProvider.propTypes = {
 };
 
 //TODO: Add custom proptyes on this instead of flow types
-
+/*
 // Options you can provide to the field
 // <Field {...options}/>
 // fieldFor(propertyName, options)>
@@ -85,7 +85,7 @@ type FieldOptions = {
   InputComponent: ReactClass | function,
   SelectComponent: ReactClass | function,
   DisplayComponent: ReactClass | function,
-  multiple: boolean
+  multiple: boolean,
   options: Object,
   onChange: function,
   onBlur: function,
@@ -105,4 +105,5 @@ type DomainType = {name: string} & FieldOptions;
 type EntityType = {name: string} & FieldOptions;
 // The entity type for a list (or maybe in the future another type) is child
 type EntityListType = {redirect: string};
+*/
 export const Provider = MetadataProvider;
