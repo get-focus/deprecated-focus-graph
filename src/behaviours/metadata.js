@@ -73,4 +73,37 @@ MetadataProvider.propTypes = {
     domains: PropTypes.object.isRequired
 };
 
+//TODO: Add custom proptyes on this instead of flow types
+/*
+// Options you can provide to the field
+// <Field {...options}/>
+// fieldFor(propertyName, options)>
+type FieldOptions = {
+  name: string,
+  isRequired: boolean,
+  validateOnBlur: boolean,
+  InputComponent: ReactClass | function,
+  SelectComponent: ReactClass | function,
+  DisplayComponent: ReactClass | function,
+  multiple: boolean,
+  options: Object,
+  onChange: function,
+  onBlur: function,
+  rawInputValue: any,
+  formattedInputValue: any
+};
+
+// List specific options
+type ListFieldOptions = {
+  metadata: Object,
+  list: boolean
+} & FieldOptions;
+
+// A domain is just a name and any other information you need to add to all the fields with the same domain.
+type DomainType = {name: string} & FieldOptions;
+// An entity  is the same information as a field options or a domain but on the field level.
+type EntityType = {name: string} & FieldOptions;
+// The entity type for a list (or maybe in the future another type) is child
+type EntityListType = {redirect: string};
+*/
 export const Provider = MetadataProvider;

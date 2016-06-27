@@ -6,6 +6,8 @@ const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
 };
 
+// TODO: local override with entity definitions
+
 const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
     const propertyDefinition = definitions[entityPath][propertyName];
     if (!propertyDefinition) throw new Error(`Property ${propertyName} does not exist in definition ${entityPath}`);
@@ -15,7 +17,7 @@ const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
     }
 }
 
-const getTestFieldMetadata = (propertyName, entityPath = {}, definitions, domains) => {
+const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domains) => {
   const propertyDefinition = definitions[entityPath]
   return {
     isRequired: propertyDefinition.isRequired,
@@ -30,7 +32,7 @@ const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuil
     // Maybe the cost is too high.
     if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
     entityPath = entityPath ? entityPath : entityPathArray[0];
-    const metadata = list ? getTestFieldMetadata(propertyName, redirectEntityPath, definitions, domains) :  getFieldMetadata(propertyName, entityPath, definitions, domains);
+    const metadata = list ? getListFieldMetadata(propertyName, redirectEntityPath, definitions, domains) :  getFieldMetadata(propertyName, entityPath, definitions, domains);
 
     const field =  find(fields, {entityPath, name: propertyName});
     const {rawInputValue} = field || {};
