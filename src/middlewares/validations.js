@@ -40,7 +40,11 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
     }
 }
 
-export const filterNonValidatedFields = (fields, nonValidatedFields) => {
+export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
+  if(!isArray(nonValidatedFields)){
+     throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);      
+  }
+  if(nonValidatedFields.length === 0) return fields;
   return fields.reduce((finalFieldsToValidate, currentField) => {
     const potentialCurrentFieldToValidate = nonValidatedFields.reduce( (field,nonValidateField) => {
       const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
