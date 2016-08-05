@@ -1,6 +1,6 @@
 {
-  "name": "focus-redux",
-  "version": "0.2.2-beta.1",
+  "name": "focus-graph",
+  "version": "0.2.2-beta.2",
   "description": "Form, data behaviours",
   "main": "src/index.js",
   "files": [
