@@ -1,12 +1,31 @@
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
-import * as focusReducers from '../reducers';
+import * as focusReducersDefault from '../reducers';
 import formMiddleware from '../middlewares/form';
 import fieldMiddleware from '../middlewares/field';
 
 const loggerMiddleware = createLogger();
-
+type ProjectReducersType = {
+  dataset: Function,
+  customData: Object
+}
+// Creates a root reducer with all the focus reducers included
+// It follows a convention
+// Inside your project reducers you should have an object with the following nodes:ProjectReducersType
+// - dataSet => All the reducers relative to data fetching inside your project
+// - customData => Your custom reducer relative to the data
+// - ...otherReducers => All the other property inside the object will be spread as a root reducer node.  
+export const combineReducerWithFocus = (projectReducers, focusReducers = focusReducersDefault) => {
+  const {dataset, customData, ...otherReducers} = projectReducers;
+  const customReducers =  customData ? {customData} : {};
+  return combineReducers({
+    dataset,
+    ...customReducers,
+    ...otherReducers,
+    ...focusReducers
+  });
+}
 
 // It just creates a store with focus presets
 // It calls this method from redux http://redux.js.org/docs/api/createStore.html
@@ -19,25 +38,18 @@ const createStoreWithFocus = (
     customMiddlewares = [],
     enhancers = []
   ) => {
-    const {dataset, customData, ...otherReducers} = reducers;
-    const customReducer =  customData ? {customData} : {};
     return createStore(
-    combineReducers({
-        dataset,
-        ...customReducer,
-        ...otherReducers,
-        ...focusReducers
-    }),
-    compose(
-        applyMiddleware(
-            ...customMiddlewares,
-            formMiddleware, // This middleware syncs the form state with the app lifecycle.
-            fieldMiddleware, // This middleware
-            thunkMiddleware, // lets us dispatch() functions
-            // loggerMiddleware // neat middleware that logs actions
-        ),
-        ...enhancers
-    )
+      combineReducerWithFocus(reducers),
+      compose(
+          applyMiddleware(
+              ...customMiddlewares,
+              formMiddleware, // This middleware syncs the form state with the app lifecycle.
+              fieldMiddleware, // This middleware
+              thunkMiddleware, // lets us dispatch() functions
+              // loggerMiddleware // neat middleware that logs actions
+          ),
+          ...enhancers
+      )
 )};
  export default createStoreWithFocus;
 
