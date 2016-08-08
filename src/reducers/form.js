@@ -138,7 +138,6 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                 active: true,
                                 dirty: true,
                                 rawInputValue: action.rawValue,
-                                value: action.rawValue, // https://github.com/get-focus/focus-redux/issues/39 compatibility with focus components
                                 formattedInputValue: action.formattedValue
                             }
                         ]
@@ -155,8 +154,6 @@ const forms = (state: Array<FormStateType> = [], action) => {
                             return {
                                 ...field,
                                 rawInputValue: action.rawValue,
-                                value: action.rawValue,
-                                // https://github.com/get-focus/focus-redux/issues/39 compatibility with focus components
                                 formattedInputValue: action.formattedValue,
                                 dirty: true,
                                 valid: true
