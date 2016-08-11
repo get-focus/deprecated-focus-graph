@@ -18,11 +18,11 @@ class UserDisplayOnly extends Component {
     }
     render() {
         const {editing, fields, fieldFor, selectFor} = this.props;
-        const civilityField = find(fields, {name: 'civility', entityPath: 'user'});
+        const civilityField = find(fields, {name: 'civility', entityPath: 'user.information'});
         return (
-            <Panel title='Display only user page' >
-                {fieldFor('uuid', {entityPath: 'user'})}
-                {fieldFor('date', {entityPath: 'user'})}
+            <Panel title='Display only user page' {...this.props}>
+                {fieldFor('uuid', {entityPath: 'user.information'})}
+                {fieldFor('date', {entityPath: 'user.information'})}
             </Panel>
         );
     }
@@ -32,11 +32,8 @@ UserDisplayOnly.displayName = 'UserDisplayOnly';
 
 const formConfig = {
     formKey: 'userDisplay',
-    entityPathArray: ['user', 'address'],
-    // The loading action, it will be passed as a props to the child
+    entityPathArray: ['user.information'],
     loadAction: loadUserAction,
-    /*The fields you want to exclude from the valiation if they are in your domain*/
-    nonValidatedFields: ['user.firstName']
 };
 
 export const tuto = `

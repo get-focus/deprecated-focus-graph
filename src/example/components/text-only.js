@@ -19,10 +19,10 @@ class UserTextOnly extends Component {
     render() {
         const {textFor} = this.props;
         return (
-            <Panel title='Text only user page'>
-                <div>{textFor('uuid', {entityPath: 'user'})}</div>
-                <div>{textFor('firstName', {entityPath: 'user'})}</div>
-                <div>{textFor('lastName', {entityPath: 'user'})}</div>
+            <Panel title='Text only user page' {...this.props}>
+                <div>{textFor('uuid', {entityPath: 'user.information'})}</div>
+                <div>{textFor('firstName', {entityPath: 'user.information'})}</div>
+                <div>{textFor('lastName', {entityPath: 'user.information'})}</div>
             </Panel>
         );
     }
@@ -32,7 +32,7 @@ UserTextOnly.displayName = 'UserTextOnly';
 
 const formConfig = {
     formKey: 'userDisplay',
-    entityPathArray: ['user'],
+    entityPathArray: ['user.information'],
     loadAction: loadUserAction,
 };
 
