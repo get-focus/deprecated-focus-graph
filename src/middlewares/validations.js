@@ -158,7 +158,7 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
 export const validateFieldForList = (definitions, domain, propertyNameLine, formKey, value, dispatch,index, entityPath, fieldNameList ) => {
 //  if(value === 1) throw new Error(JSON.stringify({ domain, propertyNameLine, formKey, value, index, entityPath, fieldNameList}))
     let validationResult= {};
-    const {isRequired} = definitions[entityPath][fieldNameList];
+    const {isRequired} = get(definitions, `${entityPath}.${fieldNameList}`);
     validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldNameList, value);
     //if(value === 1) throw new Error(JSON.stringify(validationResult));
     if (!validationResult.isValid ){
