@@ -32,10 +32,10 @@ UserForm.displayName = 'UserForm';
 
 const formConfig = {
     formKey: 'userForm',
-    entityPathArray: ['user', 'address'],
+    entityPathArray: ['user.information', 'user.address'],
     loadAction: loadUserAction,
     saveAction: saveUserAction,
-    nonValidatedFields: ['user.firstName']
+    nonValidatedFields: ['user.information.firstName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)

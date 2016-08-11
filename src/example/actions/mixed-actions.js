@@ -1,7 +1,7 @@
 import {actionBuilder} from '../../actions/entity-actions-builder';
 import {loadMixedEntities, saveMixedEntities} from '../services/mixed-service';
 
-const _loadMixedAction = actionBuilder({names: ['user', 'address', 'child'], type: 'load', service: loadMixedEntities});
+const _loadMixedAction = actionBuilder({names: ['user.information', 'user.address', 'user.child'], type: 'load', service: loadMixedEntities});
 export const loadMixedTypes = _loadMixedAction.types;
 export const loadMixedAction = _loadMixedAction.action;
 

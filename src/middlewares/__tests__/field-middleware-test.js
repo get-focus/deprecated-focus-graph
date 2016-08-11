@@ -53,7 +53,7 @@ describe('The field middleware', () => {
       .to.throw('FIELD_MIDDLEWARE: Your middleware needs a redux store.');
     });
     it('when an INPUT_BLUR action is passed', () => {
-      fieldMiddleware(store)(nextSpy)({type: INPUT_BLUR, entityPath: 'user', fieldName: 'firstName'})
+      fieldMiddleware(store)(nextSpy)({type: INPUT_BLUR, entityPath: 'user.information', fieldName: 'firstName'})
     });
     it('when an INPUT_BLUR_LIST action is passed', () => {});
     it('when an INPUT_CHANGE action is passed', () => {});

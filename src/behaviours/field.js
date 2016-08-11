@@ -1,7 +1,7 @@
 import React , {Component, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
 import find from 'lodash/find';
-
+import get from 'lodash/get';
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
 };
@@ -9,7 +9,7 @@ const FIELD_CONTEXT_TYPE = {
 // TODO: local override with entity definitions
 
 const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
-    const propertyDefinition = definitions[entityPath][propertyName];
+    const propertyDefinition = get(definitions, `${entityPath}.${propertyName}`);
     if (!propertyDefinition) throw new Error(`Property ${propertyName} does not exist in definition ${entityPath}`);
     return {
         isRequired: propertyDefinition.isRequired,
@@ -18,7 +18,7 @@ const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
 }
 
 const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domains) => {
-  const propertyDefinition = definitions[entityPath]
+  const propertyDefinition = get(definitions,entityPath)
   return {
     isRequired: propertyDefinition.isRequired,
     ...domains[propertyDefinition.domain]
@@ -43,7 +43,7 @@ const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuil
 
     // Construct the onBlur, with the validation if validateOnBlur has not been set to false in the domain
     const onBlur = () => {
-        if (definitions[entityPath][propertyName].validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
+        if (get(definitions, `${entityPath}.${propertyName}`).validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
@@ -66,7 +66,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
         if (options.onChange) options.onChange(rawValue);
       }
       const onBlur = () => {
-        if (definitions[entityPathList][propertyNameList].validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
+        if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
 

@@ -13,18 +13,18 @@ describe('Form: validation', () => {
     })
     describe('with a simple field', ()=> {
       it('should validate the name given correct defintion and value' , ()=>{
-        const validationResult = validateField(definitions, domains, 'formBalec', 'user', 'firstName', 'NewName', dispatchSpy);
+        const validationResult = validateField(definitions, domains, 'formBalec', 'user.information', 'firstName', 'NewName', dispatchSpy);
         expect(validationResult).to.be.true;
         expect(dispatchSpy).to.have.callCount(0);
       });
       it('should dispatch an invalid the name given correct defintion and value' , ()=>{
-        const validationResult = validateField(definitions, domains, 'formBalec', 'user', 'firstName', 12, dispatchSpy);
+        const validationResult = validateField(definitions, domains, 'formBalec', 'user.information', 'firstName', 12, dispatchSpy);
         expect(validationResult).to.be.false;
         expect(dispatchSpy).to.have.callCount(1);
         const dispatchArgs = dispatchSpy.lastCall.args[0];
         expect(dispatchArgs.type = INPUT_ERROR);
         expect(dispatchArgs.formKey === 'formBalec');
-        expect(dispatchArgs.entityPath === 'user');
+        expect(dispatchArgs.entityPath === 'user.information');
         expect(dispatchArgs.fieldName === 'firstName');
         expect(dispatchArgs.error.length > 0 );
       });
@@ -35,19 +35,19 @@ describe('Form: validation', () => {
           {firstName:'FirstChildOne',lastName:'LastChildOne'},
           {firstName:'FirstChildTwo',lastName:'LastChildTwo'}
         ];
-        const validationResult = validateField(definitions, domains, 'formBalec', 'user', 'childs', newListValue, dispatchSpy);
+        const validationResult = validateField(definitions, domains, 'formBalec', 'user.information', 'childs', newListValue, dispatchSpy);
         expect(validationResult).to.be.true;
         expect(dispatchSpy).to.have.callCount(0);
       });
       it('should throw an error when the data type is not an array in case of a redirect', () => {
-          const WRONG_DEFINITION_ERROR = `MIDDLEWARES_FIELD_VALIDATION: Your field childs in the entity user don't have a domain, you may have an array field which have a **redirect** property in it`;
-          const wrongDefinition = () => validateField(definitions, domains, 'formBalec', 'user', 'childs', 12, dispatchSpy);
+          const WRONG_DEFINITION_ERROR = `MIDDLEWARES_FIELD_VALIDATION: Your field childs in the entity user.information don't have a domain, you may have an array field which have a **redirect** property in it`;
+          const wrongDefinition = () => validateField(definitions, domains, 'formBalec', 'user.information', 'childs', 12, dispatchSpy);
           expect(wrongDefinition).to.throw(WRONG_DEFINITION_ERROR)
       });
       it('should throw an error when the redirect is incorrect', () => {
-        const WRONG_REDIRECT_ERROR = `MIDDLEWARES_FIELD_VALIDATION: Your field childs in the entity user don't have a domain, you may have an array field which have a **redirect** property in it.`
+        const WRONG_REDIRECT_ERROR = `MIDDLEWARES_FIELD_VALIDATION: Your field childs in the entity user.information don't have a domain, you may have an array field which have a **redirect** property in it.`
         const def = {...definitions, user: {...definitions.user, redirect: 12}};
-        const wrongDefinition = () => validateField(definitions, domains, 'formBalec', 'user', 'childs', 12, dispatchSpy);
+        const wrongDefinition = () => validateField(definitions, domains, 'formBalec', 'user.information', 'childs', 12, dispatchSpy);
         expect(wrongDefinition).to.throw(WRONG_REDIRECT_ERROR)
       });
       it('should dispatch an invalid the name given correct defintion and an incorrect value' , ()=>{
@@ -55,13 +55,13 @@ describe('Form: validation', () => {
           {firstName:1,lastName:'LastChildOne'},
           {firstName:'FirstChildTwo',lastName: 'test'}
         ];
-        const validationResult = validateField(definitions, domains, 'formBalec', 'user', 'childs', newListValue, dispatchSpy);
+        const validationResult = validateField(definitions, domains, 'formBalec', 'user.information', 'childs', newListValue, dispatchSpy);
         expect(validationResult).to.be.false;
         expect(dispatchSpy).to.have.callCount(2);
         const dispatchArgs = dispatchSpy.lastCall.args[0];
         expect(dispatchArgs.type = INPUT_ERROR);
         expect(dispatchArgs.formKey === 'formBalec');
-        expect(dispatchArgs.entityPath === 'user');
+        expect(dispatchArgs.entityPath === 'user.information');
         expect(dispatchArgs.fieldName === 'firstName');
       //  expect(dispatchArgs.error.length > 0 );
       });

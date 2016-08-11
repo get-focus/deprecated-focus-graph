@@ -8,7 +8,7 @@ const DEFAULT_DATA = {
 
 // Reducer for the user entity with a state modification on load and save.
 const userReducer = reducerBuilder({
-    name: 'ADDRESS',
+    name: 'USER.ADDRESS',
     loadTypes: loadMixedTypes,
     saveTypes: saveMixedTypes,
     defaultData: DEFAULT_DATA

@@ -38,7 +38,9 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   dispatch(responseActionCreator(svcValue));
                 } else {
                   // Whene there is more node only a part of the payload is dispathed.
-                  svcValue[name] && dispatch(responseActionCreator(svcValue[name]));
+                  const splitName = name.split('.');
+                  const lastNamePart = splitName[splitName.length - 1];
+                  svcValue[lastNamePart] && dispatch(responseActionCreator(svcValue[lastNamePart]));
                 }
               });
 

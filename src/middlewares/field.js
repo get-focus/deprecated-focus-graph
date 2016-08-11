@@ -5,6 +5,7 @@ import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from 
 import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
@@ -20,10 +21,10 @@ export const _checkFieldDefinition = (fieldName: string, entityPath: string, def
   if(!entityPath || !fieldName){
     return console.warn(`${FIELD_MIDDLEWARE}: You need an entityPath and a fieldName.`)
   }
-  if(!definitions[entityPath]){
+  if(!get(definitions, `${entityPath}`)){
     return console.warn(`${FIELD_MIDDLEWARE}: your entityPath ${entityPath} is not in your definitions`, definitions);
   }
-  if(!definitions[entityPath][fieldName]){
+  if(!get(definitions, `${entityPath}.${fieldName}`)){
     return console.warn(`${FIELD_MIDDLEWARE}: your field ${fieldName} is not in the definitions of ${entityPath}, please check the data in your store. Maybe your server response is not what you think it is.`, definitions[entityPath]);
   }
 }

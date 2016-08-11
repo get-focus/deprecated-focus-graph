@@ -76,13 +76,14 @@ const querySearcher = query => {
 
 export const definitions = {
     user: {
+  information: {
         uuid: { domain: 'DO_DON_DIEGO', isRequired: false},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
         // TODO: ['childs'] ?
-        childs : {redirect: ['child']}
+        childs : {redirect: ['user.child']}
    },
    child : {
      firstName : { domain: 'DO_RODRIGO', isRequired: false},
@@ -93,6 +94,7 @@ export const definitions = {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
         city: { domain: 'DO_DON_DIEGO', isRequired: true}
     }
+  }
 }
 
 export const domains = {
