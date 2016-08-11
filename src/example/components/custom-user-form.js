@@ -19,14 +19,14 @@ class UserForm extends Component {
 
     render() {
         const {editing, fields, fieldFor, selectFor} = this.props;
-        const civilityField = find(fields, {name: 'civility', entityPath: 'user'});
+        const civilityField = find(fields, {name: 'civility', entityPath: 'user.information'});
         return (
             <Panel title='User with more details for Mrs' {...this.props}>
-                {fieldFor('uuid', {entityPath: 'user', onChange: () => {console.log(fields)}})}
-                {selectFor('civility', {entityPath: 'user', masterDatum: 'civility'})}
-                {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('firstName', {entityPath: 'user'})}
-                {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('lastName', {entityPath: 'user'})}
-                {fieldFor('date', {entityPath: 'user'})}
+                {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
+                {selectFor('civility', {entityPath: 'user.information', masterDatum: 'civility'})}
+                {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('firstName', {entityPath: 'user.information'})}
+                {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('lastName', {entityPath: 'user.information'})}
+                {fieldFor('date', {entityPath: 'user.information'})}
             </Panel>
         );
     }
@@ -36,10 +36,10 @@ UserForm.displayName = 'UserForm';
 
 const formConfig = {
     formKey: 'userCustomForm',
-    entityPathArray: ['user', 'address'],
+    entityPathArray: ['user.information'],
     loadAction: loadUserAction,
     saveAction: saveUserAction,
-    nonValidatedFields: ['user.firstName']
+    nonValidatedFields: ['user.information.firstName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)

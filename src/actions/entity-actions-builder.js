@@ -32,15 +32,24 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
         try {
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
             const svcValue = await promiseSvc(data);
-              actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
+            actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1){
                   dispatch(responseActionCreator(svcValue));
                 } else {
                   // Whene there is more node only a part of the payload is dispathed.
+                  // TODO: a bit ugly but with the convention on name it should work.
                   const splitName = name.split('.');
                   const lastNamePart = splitName[splitName.length - 1];
-                  svcValue[lastNamePart] && dispatch(responseActionCreator(svcValue[lastNamePart]));
+                  const responsePartFromName = svcValue[lastNamePart];
+                  if(responsePartFromName){
+                    dispatch(responseActionCreator(responsePartFromName));
+                  } else {
+                    throw new Error(
+                      `ACTION_BUILDER: Your response does not contain the property ${lastNamePart} extracted from the action name ${name} you provided to the builder`,
+                      svcValue
+                    );
+                  }
                 }
               });
 
