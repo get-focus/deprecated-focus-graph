@@ -3,6 +3,7 @@ import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList} fr
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
@@ -42,7 +43,7 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
 
 export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
   if(!isArray(nonValidatedFields)){
-     throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);      
+     throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);
   }
   if(nonValidatedFields.length === 0) return fields;
   return fields.reduce((finalFieldsToValidate, currentField) => {
@@ -80,7 +81,7 @@ const _getRedirectDefinition = (redirect: Array, definitions: Object) => {
     console.warn(`${MIDDLEWARES_FIELD_VALIDATION}: This feature is not yet supported. It will be done soon.`)
   }
   const FAKE_REDIRECT_INDEX = 0;
-  return definitions[redirect.length === 1 ? redirect[0]: redirect[FAKE_REDIRECT_INDEX]];
+  return get(definitions, `${redirect.length === 1 ? redirect[0]: redirect[FAKE_REDIRECT_INDEX]}`);
 }
 
 
@@ -98,7 +99,7 @@ const _getRedirectDefinition = (redirect: Array, definitions: Object) => {
  * @return {boolean}            the field validation status
  */
 export const validateField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch) => {
-    let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldName];
+    let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldName}`);
     let validationResult= {};
     // Redirect use to have the information of a list field
     if(isArray(value)){
@@ -183,11 +184,11 @@ export const validateFieldForList = (definitions, domain, propertyNameLine, form
  * @return {boolean}                  the field validation status
  */
 export const validateFieldArray = (definitions, domains, formKey, entityPath, fieldNameList, value,propertyNameLine, index, dispatch ) => {
-  let {isRequired, domain: domainName, redirect} = definitions[entityPath][fieldNameList];
+  let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldNameList}`);
   let validationResult= {};
 
   if(redirect){
-    domainName = definitions[redirect][propertyNameLine].domain;
+    domainName = get(definitions, `${redirect}.${propertyNameLine}`).domain;
     const domain = domains[domainName];
     validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
   }else {
@@ -214,7 +215,7 @@ export const validateFieldArray = (definitions, domains, formKey, entityPath, fi
  */
 export const formatValue = (value, entityPath, fieldName, definitions, domains) => {
     //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
-    const entityDefinition = definitions[entityPath] || {};
+    const entityDefinition = get(definitions, `${entityPath}`) || {};
     const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
     if(redirect){
       const redirectDefinition = _getRedirectDefinition(redirect, definitions);
@@ -237,7 +238,7 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
 
 
 export const getRedirectEntityPath = (value, entityPath, fieldName, definitions, domains) => {
-  if(definitions && definitions[entityPath] && definitions[entityPath][fieldName] && definitions[entityPath][fieldName].redirect){
-    return definitions[entityPath][fieldName].redirect;
+  if(definitions && get(definitions, entityPath) && get(definitions, `${entityPath}.${fieldName}`) && get(definitions, `${entityPath}.${fieldName}`).redirect){
+    return get(definitions, `${entityPath}.${fieldName}`).redirect;
   } return;
 }

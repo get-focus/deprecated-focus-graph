@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react';
 const Line =  ({onClick, children, fieldForLine, options,index,  ...otherProps}) => {
     return (
     <div>
-        <div>  {fieldForLine('firstName', {entityPath: 'child'})} </div>
-        <div>  {fieldForLine('lastName', {entityPath: 'child'})}  </div>
+        <div>  {fieldForLine('firstName', {entityPath: 'user.child'})} </div>
+        <div>  {fieldForLine('lastName', {entityPath: 'user.child'})}  </div>
     </div>
   );
 }

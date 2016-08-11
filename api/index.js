@@ -89,7 +89,7 @@ app.get(API_ROOT  + '/entity/:id', function getSingleEntity(req, res) {
 
 app.get(API_ROOT  + '/mixed/:id', function getSingleEntity(req, res) {
     res.json({
-      user: entityJSON.find(d => d.uuid === req.params.id),
+      information: entityJSON.find(d => d.uuid === req.params.id),
       address: adressJSON.find(d => d.uuid = req.params.id)
     });
   }
