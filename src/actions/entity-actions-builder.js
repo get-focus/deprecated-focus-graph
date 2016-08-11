@@ -43,9 +43,9 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   const lastNamePart = splitName[splitName.length - 1];
                   const responsePartFromName = svcValue[lastNamePart];
                   if(responsePartFromName){
-                    dispatch(responseActionCreator(responsePartFromName);
+                    dispatch(responseActionCreator(responsePartFromName));
                   } else {
-                    console.warn(
+                    throw new Error(
                       `ACTION_BUILDER: Your response does not contain the property ${lastNamePart} extracted from the action name ${name} you provided to the builder`,
                       svcValue
                     );

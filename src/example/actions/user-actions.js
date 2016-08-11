@@ -5,6 +5,6 @@ const _loadUserAction = actionBuilder({names: ['user.information'], type: 'load'
 export const loadUserTypes = _loadUserAction.types;
 export const loadUserAction = _loadUserAction.action;
 
-const _saveUserAction = actionBuilder({names: ['user'], type: 'save', service: saveUser});
+const _saveUserAction = actionBuilder({names: ['user.information'], type: 'save', service: saveUser});
 export const saveUserTypes = _saveUserAction.types;
 export const saveUserAction = _saveUserAction.action;
