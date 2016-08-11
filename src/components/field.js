@@ -5,21 +5,22 @@ import DefaultSelectComponent from './select';
 import DefaultListComponent from './list';
 import DefaultTextComponent from './text';
 
+const FieldLabelValueComponent = ({label, ValueComponent}) => (
+    <div className='field'>
+        <div><b>{label}</b></div>
+        {ValueComponent}
+    </div>
+);
+FieldLabelValueComponent.displayName = 'FieldLabelValueComponent';
+
 
 function Field({textOnly, multiple, list, fieldFor, fieldForLine, ...otherProps}) {
-    const {TextComponent = DefaultTextComponent, DisplayComponent = DefaultDisplayComponent, InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent, ListComponent = DefaultListComponent} = otherProps.metadata;
-    if(textOnly) {
-        return <TextComponent {...otherProps} />
-    }
     otherProps.value = otherProps.rawInputValue; //https://github.com/get-focus/focus-redux/issues/39 compatibility with focus components
-    const renderConsult = () => (list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : <DisplayComponent {...otherProps} /> );
+    const {TextComponent = DefaultTextComponent, DisplayComponent = DefaultDisplayComponent, InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent, ListComponent = DefaultListComponent} = otherProps.metadata;
+    const renderConsult = () => (list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (textOnly ? <TextComponent {...otherProps} /> : <DisplayComponent {...otherProps} />));
     const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponent {...otherProps}/> : <InputComponent {...otherProps}/>);
-    return (
-        <div className='field'>
-            <div><b>{otherProps.name}</b></div>
-            {otherProps.editing ? renderEdit() : renderConsult()}
-        </div>
-    );
+    const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
+    return textOnly ? ValueComponent : <FieldLabelValueComponent name={otherProps.name} ValueComponent={ValueComponent} />;
 }
 
 Field.displayName = 'Field';
