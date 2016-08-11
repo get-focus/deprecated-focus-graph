@@ -30,6 +30,7 @@ import paramExtractor from './components/param-extractor';
 import NoMatch from './components/no-match';
 import Home from './components/home';
 import UserDisplayOnly from './components/display-only';
+import UserTextOnly from './components/text-only';
 
 //configuration
 import store from './store';
@@ -66,6 +67,7 @@ const Layout = (props) => {
                   <Link className='mdl-navigation__link'  to='/user/1234/form'>form</Link>
                   <Link className='mdl-navigation__link'  to='/user/1234/custom'>Custom</Link>
                   <Link className='mdl-navigation__link'  to='/user/1234/display'>Display only</Link>
+                  <Link className='mdl-navigation__link'  to='/user/1234/text'>Text only</Link>
                 </nav>
             </div>
         </header>
@@ -106,6 +108,7 @@ document.addEventListener('DOMContentLoaded', event => {
           <Route path="user/:id/form" component={pe(UserForm)} />
           <Route path="user/:id/custom" component={pe(CustomUserForm)} />
           <Route path="user/:id/display" component={pe(UserDisplayOnly)} />
+          <Route path="user/:id/text" component={pe(UserTextOnly)} />
           <Route path="*" component={NoMatch}/>
         </Route>
       </Router>,
