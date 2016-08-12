@@ -25,7 +25,6 @@
         "build": "npm run build:node",
         "prepublish": "npm run build"
     },
-
     "betterScripts": {
         "test": {
             "command": "mocha src/**/__tests__/**/*.js --watch",
@@ -74,17 +73,17 @@
     "peerDependencies": {
         "react": ">= 15.3.0 < 16.0.0",
         "react-dom": ">= 15.3.0 < 16.0.0",
-        "react-redux": ">= 4.3.0",
+        "react-redux": ">= 4.4.5",
         "redux": ">= 3.5.2",
-        "redux-thunk": ">= 1.0.3"
+        "redux-thunk": ">= 2.1.0"
     },
     "devDependencies": {
         "react": "^15.3.0",
         "react-dom": "^15.3.0",
-        "react-redux": "^4.3.0",
+        "react-redux": "^4.4.5",
         "react-router": "^2.6.0",
         "redux": "^3.5.2",
-        "redux-thunk": "^1.0.3",
+        "redux-thunk": "^2.1.0",
         "autoprefixer-loader": "^3.2.0",
         "babel-core": "^6.7.6",
         "babel-eslint": "^6.0.2",
