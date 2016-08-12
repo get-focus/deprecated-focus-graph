@@ -20,9 +20,9 @@ class UserTextOnly extends Component {
         const {textFor} = this.props;
         return (
             <Panel title='Text only user page' {...this.props}>
-                <div>{textFor('uuid', {entityPath: 'user.information'})}</div>
-                <div>{textFor('firstName', {entityPath: 'user.information'})}</div>
-                <div>{textFor('lastName', {entityPath: 'user.information'})}</div>
+                <div>{textFor('uuid', {editing: false})}</div>
+                <div>{textFor('firstName')}</div>
+                <div>{textFor('lastName')}</div>
             </Panel>
         );
     }

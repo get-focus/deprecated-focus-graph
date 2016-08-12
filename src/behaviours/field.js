@@ -47,7 +47,8 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
-    return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
+    const finalEditing = options.editing !== undefined ? options.editing : editing;
+    return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
 }
 
 
