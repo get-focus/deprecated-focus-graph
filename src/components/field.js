@@ -20,7 +20,7 @@ function Field({textOnly, multiple, list, fieldForLine, ...otherProps}) {
     const renderConsult = () => (list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (textOnly ? <TextComponent {...otherProps} /> : <DisplayComponent {...otherProps} />));
     const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponent {...otherProps}/> : <InputComponent {...otherProps}/>);
     const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
-    return textOnly ? ValueComponent : <FieldLabelValueComponent name={otherProps.name} ValueComponent={ValueComponent} />;
+    return textOnly ? ValueComponent : <FieldLabelValueComponent label={otherProps.name} ValueComponent={ValueComponent} />;
 }
 
 Field.displayName = 'Field';
