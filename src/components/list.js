@@ -6,7 +6,7 @@ function List({ fieldForLine, LineComponent, children, options, error, values, .
     return (values ? values.map((element, index) => {
             // fieldFor which wrapp the index.
             const lineFieldFor = (linePropertyName, lineOptions) => fieldForLine(linePropertyName, lineOptions, index)
-            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element}   fieldForLine={lineFieldFor} index={index} {...otherProps}/>
+            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element} fieldForLine={lineFieldFor} index={index} {...otherProps}/>
          }): <div></div>) // todo: null ?
     }
     return (

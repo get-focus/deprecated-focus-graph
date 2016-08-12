@@ -10,25 +10,25 @@ import {loadUserAction, saveUserAction} from '../actions/user-actions';
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
-class UserDisplayOnly extends Component {
+class UserTextOnly extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
         load({id});
         loadMasterData();
     }
     render() {
-        const {editing, fields, fieldFor, selectFor} = this.props;
-        const civilityField = find(fields, {name: 'civility', entityPath: 'user.information'});
+        const {textFor} = this.props;
         return (
-            <Panel title='Display only user page' {...this.props}>
-                {fieldFor('uuid', {entityPath: 'user.information'})}
-                {fieldFor('date', {entityPath: 'user.information'})}
+            <Panel title='Text only user page' {...this.props}>
+                <div>{textFor('uuid', {editing: false})}</div>
+                <div>{textFor('firstName')}</div>
+                <div>{textFor('lastName')}</div>
             </Panel>
         );
     }
 };
 
-UserDisplayOnly.displayName = 'UserDisplayOnly';
+UserTextOnly.displayName = 'UserTextOnly';
 
 const formConfig = {
     formKey: 'userDisplay',
@@ -37,11 +37,6 @@ const formConfig = {
 };
 
 export const tuto = `
-  ## How can you build a pure consultation page
-  - You have a component which can be pure or not, but it needs to be connected to the providers to have .
-  - First you need to provide the meta data informations that is the role of the \`connectToMetadata\` informations. You can pass the informations to it .
-  - Then if you need master data you need to be connected to them. Here we need the \`civility\`
-  - Then you need to be connected to the form provider with the connect to form data, a form need a \`formKey\`, then
 
 `;
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
@@ -51,6 +46,6 @@ const ConnectedDisplayUser = compose(
     connectToForm(formConfig),
     connectToFieldHelpers(),
     connectToDocumentation(tuto)
-  )(UserDisplayOnly);
+)(UserTextOnly);
 
 export default ConnectedDisplayUser;

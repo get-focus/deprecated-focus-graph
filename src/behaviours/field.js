@@ -25,7 +25,7 @@ const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domain
   };
 }
 
-const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
+const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
     const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
@@ -47,7 +47,8 @@ const fieldForBuilder = (props, multiple = false, list = false, fieldForListBuil
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
-    return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list= {list} editing={editing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
+    const finalEditing = options.editing !== undefined ? options.editing : editing;
+    return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
 }
 
 
@@ -80,10 +81,11 @@ export function connect() {
     return function connectComponent(ComponentToConnect) {
         function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers}) {
             const fieldFor = fieldHelpers.fieldForBuilder(otherProps);
-            const selectFor = fieldHelpers.fieldForBuilder(otherProps, true);
-            const listFor = fieldHelpers.fieldForBuilder( otherProps, false, true, fieldHelpers.fieldForListBuilder);
+            const textFor = fieldHelpers.fieldForBuilder(otherProps, true);
+            const selectFor = fieldHelpers.fieldForBuilder(otherProps, false, true);
+            const listFor = fieldHelpers.fieldForBuilder(otherProps, false, false, true, fieldHelpers.fieldForListBuilder);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} listFor={listFor}/>;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
