@@ -12,10 +12,12 @@ describe('The MetadataProvider', () => {
     const dispatchSpy = sinon.spy();
     const context = {
         store: {
-            dispatch: dispatchSpy
+            subscribe: sinon.spy(),
+            dispatch: dispatchSpy,
+            getState: sinon.spy()
         }
     }
-    shallowRenderer.render(<MetadataProvider definitions={definitions} domains={domains}/>, context);
+    shallowRenderer.render(<MetadataProvider definitions={definitions} domains={domains}><div>test</div></MetadataProvider>, context);
     it('should dispatch two actions', () => {
         expect(dispatchSpy).to.have.callCount(2);
     });
