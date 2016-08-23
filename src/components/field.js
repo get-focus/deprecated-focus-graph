@@ -4,6 +4,7 @@ import DefaultDisplayComponent from './display';
 import DefaultSelectComponent from './select';
 import DefaultListComponent from './list';
 import DefaultTextComponent from './text';
+import DefaultSelectDisplayComponent from './select-display';
 
 const FieldLabelValueComponent = ({label, ValueComponent}) => (
     <div className='field'>
