@@ -18,6 +18,7 @@ let childTwoJSON = {
 
 let entityJSON = [{
   uuid: '1234',
+  civility: 'MRS',
   firstName: 'Don Diego',
   lastName: 'De Libercourt',
   childs : [childOneJSON, childTwoJSON]
@@ -28,6 +29,7 @@ let entityJSON = [{
 
 let adressJSON = [{
     uuid: '1234',
+    civility: 'MRS',
     city: faker.address.city()
   }
 ];
@@ -36,6 +38,7 @@ function createEntity(){
           uuid: faker.random.uuid(),
           firstName: faker.name.firstName(),
           lastName: faker.name.lastName(),
+          civility: 'MRS',
           childs: [childOneJSON, childTwoJSON]
         };
 
