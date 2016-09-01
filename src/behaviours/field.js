@@ -55,6 +55,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
 const fieldForListBuilder = (entityPathList, propertyNameList) => {
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
+      const {onChange: optionsOnChange, ...otherOptions} = options;
       const fieldTab = find(fields, {name: propertyNameList});
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
@@ -64,14 +65,14 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
       const onChange = rawValue => {
        fieldTab.rawInputValue[index][propertyName] = rawValue;
         onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
-        if (options.onChange) options.onChange(rawValue);
+        if (optionsOnChange) optionsOnChange(rawValue);
       }
       const onBlur = () => {
         if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
 
-      return <FieldComponent {...options} {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
+      return <FieldComponent {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur} {...otherOptions}/>;
   }
   return fieldForLineBuilder;
 
