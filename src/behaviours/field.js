@@ -25,7 +25,7 @@ const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domain
   };
 }
 
-const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur, ...options} = {}) => {
+const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange, ...options} = {}) => {
     const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
@@ -38,7 +38,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     const {rawInputValue} = field || {};
     const onChange = rawValue => {
         onInputChange(propertyName, entityPath, rawValue);
-        if (options.onChange) options.onChange(rawValue);
+        if (userDefinedOnChange) userDefinedOnChange(rawValue);
     };
 
     // Construct the onBlur, with the validation if validateOnBlur has not been set to false in the domain
@@ -48,13 +48,14 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     };
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    return <FieldComponent {...options} {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} />;
+    return <FieldComponent  {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} {...options}/>;
 }
 
 
 const fieldForListBuilder = (entityPathList, propertyNameList) => {
-  const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur, ...options} = {}, index) => {
+  const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
+      const {onChange: optionsOnChange, ...otherOptions} = options;
       const fieldTab = find(fields, {name: propertyNameList});
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
@@ -64,14 +65,14 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
       const onChange = rawValue => {
        fieldTab.rawInputValue[index][propertyName] = rawValue;
         onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
-        if (options.onChange) options.onChange(rawValue);
+        if (userDefinedOnChange) userDefinedOnChange(rawValue);
       }
       const onBlur = () => {
         if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
 
-      return <FieldComponent {...options} {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} test='yolo' editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur}/>;
+      return <FieldComponent {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur} {...options}/>;
   }
   return fieldForLineBuilder;
 
