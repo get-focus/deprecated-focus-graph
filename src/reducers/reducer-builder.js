@@ -47,7 +47,7 @@ const getDefaultState = defaultData => ({
 
 const _reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defaultData), {type, payload}) => {
     //todo: add some validation and check here
-    const {load, save} = types;
+    const {load ={}, save ={}} = types;
     switch(type) {
         case load.request:
             return {...state, loading: true};
@@ -108,30 +108,36 @@ export function reducerBuilder({defaultData, name, loadTypes, saveTypes} : Reduc
   if(!isString(name)){
     throw new Error('REDUCER_BUILDER: you need to provide a name.')
   }
-  if(!isObject(loadTypes)){
-    throw new Error('REDUCER_BUILDER: you need to provide loadTypes with REQUEST AND RECEIVE inside.')
-  }
-  if(!isObject(saveTypes)){
-    throw new Error('REDUCER_BUILDER: you need to provide saveTypes with REQUEST AND RECEIVE inside.')
+  if(!isObject(loadTypes) && !isObject(saveTypes)){
+    throw new Error('REDUCER_BUILDER: you need to provide loadTypes or saveTypes with REQUEST AND RECEIVE inside.')
   }
   const UPPERCASE_NAME = name.toUpperCase();
-  const REQUEST_LOAD = loadTypes[`REQUEST_LOAD_${UPPERCASE_NAME}`];
-  const RESPONSE_LOAD = loadTypes[`RESPONSE_LOAD_${UPPERCASE_NAME}`];
-  const REQUEST_SAVE = saveTypes[`REQUEST_SAVE_${UPPERCASE_NAME}`];
-  const RESPONSE_SAVE = saveTypes[`RESPONSE_SAVE_${UPPERCASE_NAME}`];
-  if(
-    isUndefined(REQUEST_LOAD) ||
-    isUndefined(RESPONSE_LOAD) ||
-    isUndefined(REQUEST_SAVE) ||
-    isUndefined(RESPONSE_SAVE)
-  ){
-    //throw new Error('REDUCER_BUILDER: you need provide a load and a save type to the reducer builder');
+
+  const reducerBuilderTypes = {};
+  if(isObject(loadTypes)){
+    const REQUEST_LOAD = loadTypes[`REQUEST_LOAD_${UPPERCASE_NAME}`];
+    const RESPONSE_LOAD = loadTypes[`RESPONSE_LOAD_${UPPERCASE_NAME}`];
+    reducerBuilderTypes.load=  {request: REQUEST_LOAD, response: RESPONSE_LOAD};
   }
+
+  if(isObject(saveTypes)){
+    const REQUEST_SAVE = saveTypes[`REQUEST_SAVE_${UPPERCASE_NAME}`];
+    const RESPONSE_SAVE = saveTypes[`RESPONSE_SAVE_${UPPERCASE_NAME}`];
+    reducerBuilderTypes.save=  {request: REQUEST_SAVE, response: RESPONSE_SAVE};
+
+  }
+
+
+  // if(
+  //   isUndefined(REQUEST_LOAD) &&
+  //   isUndefined(RESPONSE_LOAD) &&
+  //   isUndefined(REQUEST_SAVE) &&
+  //   isUndefined(RESPONSE_SAVE)
+  // ){
+  //   //throw new Error('REDUCER_BUILDER: you need provide a load and a save type to the reducer builder');
+  // }
   return _reducerBuilder({
     defaultData,
-    types: {
-      load: {request: REQUEST_LOAD, response: RESPONSE_LOAD},
-      save: {request: REQUEST_SAVE, response: RESPONSE_SAVE}
-    }
+    types: reducerBuilderTypes
   });
 }
