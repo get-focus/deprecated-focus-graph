@@ -5,6 +5,8 @@ import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
 import {loadUserAction, saveUserAction} from '../actions/user-actions';
 
+import LineComponent from '../../components/line'
+
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
@@ -15,13 +17,14 @@ class UserForm extends Component {
     }
 
     render() {
-        const {editing, fields, fieldFor,  loading, saving, list} = this.props;
+        const {editing, fields, fieldFor,listFor, loading, saving, list} = this.props;
         return (
             <Panel title='User' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
                 {fieldFor('firstName', {entityPath: 'user.information'})}
                 {fieldFor('lastName', {entityPath: 'user.information'})}
                 {fieldFor('date', {entityPath: 'user.information'})}
+                {listFor('childs', {LineComponent, entityPath : 'user.information', redirectEntityPath: 'user.child'})}
 
             </Panel>
         );
@@ -32,7 +35,7 @@ UserForm.displayName = 'UserForm';
 
 const formConfig = {
     formKey: 'userForm',
-    entityPathArray: ['user.information', 'user.address'],
+    entityPathArray: ['user.information'],
     loadAction: loadUserAction,
     saveAction: saveUserAction,
     nonValidatedFields: ['user.information.firstName']

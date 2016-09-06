@@ -8,7 +8,8 @@ import {saveUserTypes} from '../actions/user-actions';
 
 // default data
 const DEFAULT_DATA = {
-    firstName:'UserYolo'
+    firstName:'UserYolo',
+    childs: []
 };
 
 // Reducer for the user entity with a state modification on load and save.
