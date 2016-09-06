@@ -24,6 +24,7 @@ class UserForm extends Component {
                 {fieldFor('firstName', {entityPath: 'user.information'})}
                 {fieldFor('lastName', {entityPath: 'user.information'})}
                 {fieldFor('date', {entityPath: 'user.information'})}
+                {fieldFor('test', {entityPath: 'user.information'})}
                 {listFor('childs', {LineComponent, entityPath : 'user.information', redirectEntityPath: 'user.child'})}
 
             </Panel>

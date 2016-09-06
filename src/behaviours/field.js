@@ -48,12 +48,15 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
+    const selectForLine = list ? fieldForListBuilder(entityPath, propertyName, true)(props): {};
+    const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
+
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    return <FieldComponent  {...field} fieldForLine={fieldForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} {...options}/>;
+    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} {...options}/>;
 }
 
 
-const fieldForListBuilder = (entityPathList, propertyNameList) => {
+const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, textOnly= false) => {
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const {onChange: optionsOnChange, ...otherOptions} = options;
@@ -61,6 +64,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
       if(!isArray(fieldTab.rawInputValue) || !isArray(fieldTab.formattedInputValue) ){
         throw new Error(`You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
       }
+
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
         rawInputValue : fieldTab.rawInputValue[index][propertyName],
@@ -76,7 +80,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
 
-      return <FieldComponent {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} editing={editing} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur} {...options}/>;
+      return <FieldComponent {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} textOnly={textOnly} editing={editing} multiple={multiple} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur} {...options} fields={fields} {...connectedComponentProps}/>;
   }
   return fieldForLineBuilder;
 
