@@ -9,13 +9,15 @@ const SelectComponent = ({
     onChange,
     error,
     valid,
+    values,
     masterDatum,
     ...otherProps
 }, {store: {getState}}) => {
-  console.log(masterDatum)
+
     const {masterData = []} = getState();
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
-    const {value: values} = masterDatumObject;
+    const {value} = masterDatumObject;
+    const selectValues = values || value
     const wrappedOnChange = ({target:{value}}) => {
         onChange(value);
     }
@@ -23,7 +25,7 @@ const SelectComponent = ({
         <div>
             <select name={name} onChange={wrappedOnChange} value={rawInputValue}>
                 <option value={null}></option>
-                {values.map(({code, label}) => <option key={code} value={code}>{label}</option>)}
+                {selectValues.map(({code, label}) => <option key={code} value={code}>{label}</option>)}
             </select>
             {!valid && <b style={{color: 'red'}}>{error}</b>}
         </div>

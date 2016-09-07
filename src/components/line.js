@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
 const Line =  ({onClick, children, fieldForLine, textForLine,options,index,selectForLine,  ...otherProps}) => {
-    console.log(otherProps)
     return (
     <div>
         <div>  {fieldForLine('firstName', {entityPath: 'user.child'})} </div>
