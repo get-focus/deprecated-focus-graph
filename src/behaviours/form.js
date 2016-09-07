@@ -1,7 +1,7 @@
 // @flow
 import React, {Component, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
-import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities} from '../actions/form';
+import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities, clearForm} from '../actions/form';
 import {inputChange, inputBlur, inputBlurList} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
@@ -20,9 +20,11 @@ const internalMapStateToProps = (state, formKey) => {
     return resultingProps;
 };
 
-const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields) => {
+const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
-    if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction(...loadArgs));
+    console.log(entityPathArray)
+    if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction(formKey, ...loadArgs));
+    resultingActions.clear = () => entityPathArray.map(element => dispatch(clearForm(formKey, element)));
     if (saveAction) resultingActions.save = (...saveArgs) => dispatch(validateForm(formKey, nonValidatedFields, saveAction(...saveArgs)));
     return resultingActions;
 };
@@ -137,7 +139,7 @@ export const connect = (formOptions: FormOptions) => (ComponentToConnect: ReactC
         ...userDefinedMapStateToProps(state)
     });
     const mapDispatchToProps : Function = (dispatch: Function) => ({
-        ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields),
+        ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields, entityPathArray),
         ...userDefinedMapDispatchToProps(dispatch)
     });
 

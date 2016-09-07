@@ -59,6 +59,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
         case DESTROY_FORM:
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
         case CLEAR_FORM :
+              console.log('je vais clear')
                return state.map(form => ({
                  ...form,
                  ...(form.formKey === action.formKey ? {

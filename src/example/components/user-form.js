@@ -14,26 +14,36 @@ import compose from 'lodash/flowRight';
 
 class UserForm extends Component {
     componentWillMount() {
-        const {id, load} = this.props;
+        const {id, load, clear} = this.props;
     }
-
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
         return (
             <Panel title='User' {...this.props}>
-              {fieldFor('firstName', {entityPath: 'user.information'})}
+                {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
+                {fieldFor('firstName', {entityPath: 'user.information'})}
+                {fieldFor('lastName', {entityPath: 'user.information'})}
+                {fieldFor('date', {entityPath: 'user.information'})}
+                {fieldFor('test', {entityPath: 'user.information'})}
             </Panel>
         );
     }
+};
+
+const formConfigUser = {
+  formKey: 'userFormUser',
+  entityPathArray: ['user.information'],
+  saveAction: saveUserAction,
+  nonValidatedFields: ['user.information.firstName']
 };
 
 UserForm.displayName = 'UserForm';
 
 
 const ConnectedUserForm = compose(
-    connectToState(selectFieldsByFormKey('userForm')),
-    connectToMetadata(['user']),
-    connectToFieldHelpers()
+  connectToMetadata(['user']),
+  connectToForm(formConfigUser),
+  connectToFieldHelpers()
 )(UserForm);
 
 
@@ -42,6 +52,7 @@ class UserFormConfig extends Component {
         const {id, load} = this.props;
         load({id});
     }
+
 
     render() {
         const {editing, fields, fieldFor,listFor, loading, saving, list} = this.props;
@@ -52,8 +63,6 @@ class UserFormConfig extends Component {
                 {fieldFor('lastName', {entityPath: 'user.information'})}
                 {fieldFor('date', {entityPath: 'user.information'})}
                 {fieldFor('test', {entityPath: 'user.information'})}
-                {listFor('childs', {LineComponent, entityPath : 'user.information', redirectEntityPath: 'user.child'})}
-
             </Panel>
         );
     }
@@ -62,11 +71,11 @@ class UserFormConfig extends Component {
 UserFormConfig.displayName = 'UserFormConfig';
 
 const formConfig = {
-    formKey: 'userForm',
-    entityPathArray: ['user.information'],
-    loadAction: loadUserAction,
-    saveAction: saveUserAction,
-    nonValidatedFields: ['user.information.firstName']
+  formKey: 'userForm',
+  entityPathArray: ['user.information'],
+  loadAction: loadUserAction,
+  saveAction: saveUserAction,
+  nonValidatedFields: ['user.information.firstName']
 };
 
 const ConnectedUserFormConfig = compose(
@@ -78,8 +87,8 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
-    <ConnectedUserForm {...props}/>
     <ConnectedUserFormConfig {...props}/>
+    <ConnectedUserForm {...props}/>
   </div>
 
 }

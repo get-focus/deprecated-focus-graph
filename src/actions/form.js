@@ -46,8 +46,7 @@ export const destroyForm = formKey => ({
   */
  export const clearForm = formKey => ({
      type: CLEAR_FORM,
-     formKey,
-     entityName
+     formKey
  });
 
 
