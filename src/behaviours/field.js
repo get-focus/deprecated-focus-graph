@@ -1,6 +1,7 @@
 import React , {Component, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
 import find from 'lodash/find';
+import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object
@@ -30,7 +31,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
     // Maybe the cost is too high.
-    if (entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
+    if (entityPathArray && entityPathArray.length > 1 && !entityPath) throw new Error(`You must provide an entityPath when calling fieldFor('${propertyName}') since the form has multiple entityPath ${entityPathArray}`);
     entityPath = entityPath ? entityPath : entityPathArray[0];
     const metadata = list ? getListFieldMetadata(propertyName, redirectEntityPath, definitions, domains) :  getFieldMetadata(propertyName, entityPath, definitions, domains);
 
@@ -57,6 +58,9 @@ const fieldForListBuilder = (entityPathList, propertyNameList) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const {onChange: optionsOnChange, ...otherOptions} = options;
       const fieldTab = find(fields, {name: propertyNameList});
+      if(!isArray(fieldTab.rawInputValue) || !isArray(fieldTab.formattedInputValue) ){
+        throw new Error(`You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
+      }
       const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
       const field = {
         rawInputValue : fieldTab.rawInputValue[index][propertyName],

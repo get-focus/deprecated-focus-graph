@@ -10,7 +10,7 @@ import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isEmpty from 'lodash/isEmpty';
 import mapKeys from 'lodash/mapKeys';
-import isArray from 'lodash/lang';
+import isArray from 'lodash/isArray';
 const FIELD_MIDDLEWARE = 'FIELD_MIDDLEWARE';
 
 // Check the definitions givent the data.
@@ -26,6 +26,12 @@ export const _checkFieldDefinition = (fieldName: string, entityPath: string, def
   }
   if(!get(definitions, `${entityPath}.${fieldName}`)){
     return console.warn(`${FIELD_MIDDLEWARE}: your field ${fieldName} is not in the definitions of ${entityPath}, please check the data in your store. Maybe your server response is not what you think it is.`, definitions[entityPath]);
+  }
+}
+
+export const _checkValueForList = (value,propertyName) => {
+  if(!isArray(value) ){
+    throw new Error(`${FIELD_MIDDLEWARE}: You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
   }
 }
 
@@ -56,7 +62,11 @@ const fieldMiddleware = store => next => (action) => {
                 fields: action.fields.map(field => {
                   _checkFieldDefinition(field.name, field.entityPath, definitions);
                   const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
-                  const _redirectEntityPath = redirectEntityPath ? {redirectEntityPath} : {};
+                  let _redirectEntityPath= {};
+                  if(redirectEntityPath){
+                    _checkValueForList(field.dataSetValue, field.name)
+                    _redirectEntityPath = {redirectEntityPath}
+                  }
                   return {
                     ...field,
                     formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
