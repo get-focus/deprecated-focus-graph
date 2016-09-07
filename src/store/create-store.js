@@ -15,7 +15,7 @@ type ProjectReducersType = {
 // Inside your project reducers you should have an object with the following nodes:ProjectReducersType
 // - dataSet => All the reducers relative to data fetching inside your project
 // - customData => Your custom reducer relative to the data
-// - ...otherReducers => All the other property inside the object will be spread as a root reducer node.  
+// - ...otherReducers => All the other property inside the object will be spread as a root reducer node.
 export const combineReducerWithFocus = (projectReducers, focusReducers = focusReducersDefault) => {
   const {dataset, customData, ...otherReducers} = projectReducers;
   const customReducers =  customData ? {customData} : {};
@@ -54,6 +54,13 @@ const createStoreWithFocus = (
  export default createStoreWithFocus;
 
 /*** SELECTORS ***/
+
+export const selectFieldsByFormKey = formKey => (state= {}) => {
+  const form = state.forms.find(element => element.formKey === formKey )
+  const fields = form ? form.fields : [];
+  return {fields: fields}
+}
+
 
  // It  extracts data from the dataset part of the state
  export const selectData = name => (state ={}) => {
