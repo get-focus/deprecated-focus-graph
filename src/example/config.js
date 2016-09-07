@@ -81,6 +81,7 @@ export const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
+        test: {domain: 'DO_RODRIGO', isRequired:true},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
         // TODO: ['childs'] ?
         childs : {redirect: ['user.child']}
@@ -103,7 +104,7 @@ export const domains = {
         validators: [{
             type: 'string',
             options: {
-                maxLength: 50
+                maxLength: 2
             }
         }],
          formatter: value => value + ' - formaté rodrigo',

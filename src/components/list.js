@@ -1,12 +1,15 @@
 import React, {PropTypes} from 'react';
 
 
-function List({ fieldForLine, LineComponent, children, options, error, values, ...otherProps}) {
+function List({ fieldForLine, selectForLine, textForLine, LineComponent, children, options, error, values, ...otherProps}) {
     const renderLine = () => {
     return (values ? values.map((element, index) => {
             // fieldFor which wrapp the index.
             const lineFieldFor = (linePropertyName, lineOptions) => fieldForLine(linePropertyName, lineOptions, index)
-            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element} fieldForLine={lineFieldFor} index={index} {...otherProps}/>
+            const selectFieldFor = (linePropertyName, lineOptions) => selectForLine(linePropertyName, lineOptions, index)
+            const textFieldFor = (linePropertyName, lineOptions) => textForLine(linePropertyName, lineOptions, index)
+
+            return <LineComponent key={otherProps.idField ? element[idField]: index} value={element} fieldForLine={lineFieldFor} textForLine={textFieldFor} selectForLine={selectFieldFor} index={index} {...otherProps}/>
          }): <div></div>) // todo: null ?
     }
     return (

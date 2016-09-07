@@ -12,6 +12,7 @@ const SelectComponent = ({
     masterDatum,
     ...otherProps
 }, {store: {getState}}) => {
+  console.log(masterDatum)
     const {masterData = []} = getState();
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
     const {value: values} = masterDatumObject;

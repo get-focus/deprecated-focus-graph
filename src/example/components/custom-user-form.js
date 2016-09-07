@@ -7,6 +7,8 @@ import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
 import {loadUserAction, saveUserAction} from '../actions/user-actions';
 
+import LineComponent from '../../components/line'
+
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
@@ -18,7 +20,7 @@ class UserForm extends Component {
     }
 
     render() {
-        const {editing, fields, fieldFor, selectFor} = this.props;
+        const {editing, fields, fieldFor, selectFor, listFor} = this.props;
         const civilityField = find(fields, {name: 'civility', entityPath: 'user.information'});
         return (
             <Panel title='User with more details for Mrs' {...this.props}>
@@ -27,6 +29,7 @@ class UserForm extends Component {
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('firstName', {entityPath: 'user.information'})}
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('lastName', {entityPath: 'user.information'})}
                 {fieldFor('date', {entityPath: 'user.information'})}
+                {listFor('childs', {LineComponent, entityPath : 'user.information', redirectEntityPath: 'user.child'})}
             </Panel>
         );
     }
