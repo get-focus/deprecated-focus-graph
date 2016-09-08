@@ -46,7 +46,7 @@ const createStoreWithFocus = (
               formMiddleware, // This middleware syncs the form state with the app lifecycle.
               fieldMiddleware, // This middleware
               thunkMiddleware, // lets us dispatch() functions
-              // loggerMiddleware // neat middleware that logs actions
+              // loggerMiddleware // neat middleware that logs actionsMe
           ),
           ...enhancers
       )
