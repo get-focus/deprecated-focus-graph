@@ -17,6 +17,7 @@
         "url": "git+https://github.com/get-focus/focus-graph.git"
     },
     "scripts": {
+        "start-react": "react-scripts start",
         "test": "BABEL_ENV=test mocha src/**/__tests__/**/*.js",
         "test:watch": "BABEL_ENV=test mocha src/**/__tests__/**/*.js --watch",
         "test-windows:watch": "better-npm-run test",

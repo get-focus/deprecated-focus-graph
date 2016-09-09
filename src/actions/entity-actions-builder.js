@@ -14,7 +14,7 @@ export const ERROR = 'ERROR';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {})});
+const _actionCreatorBuilder = (type, name, _meta) => (payload, formKey) => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {}), formKey});
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
@@ -27,15 +27,15 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 //     error: the function standing for an action creator of error
 //   }]
 // }
-const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => ((data, formKey) => {
     return async dispatch => {
         try {
-            actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
+            actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data, formKey)));
             const svcValue = await promiseSvc(data);
             actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1){
-                  dispatch(responseActionCreator(svcValue));
+                  dispatch(responseActionCreator(svcValue, formKey));
                 } else {
                   // Whene there is more node only a part of the payload is dispathed.
                   // TODO: a bit ugly but with the convention on name it should work.
@@ -43,7 +43,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   const lastNamePart = splitName[splitName.length - 1];
                   const responsePartFromName = svcValue[lastNamePart];
                   if(responsePartFromName){
-                    dispatch(responseActionCreator(responsePartFromName));
+                    dispatch(responseActionCreator(responsePartFromName, formKey));
                   } else {
                     throw new Error(
                       `ACTION_BUILDER: Your response does not contain the property ${lastNamePart} extracted from the action name ${name} you provided to the builder`,
