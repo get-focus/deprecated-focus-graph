@@ -14,7 +14,11 @@ import compose from 'lodash/flowRight';
 
 class UserForm extends Component {
     componentWillMount() {
-        const {id, load, clear} = this.props;
+        const {id, clear, load} = this.props;
+        console.log(id)
+        load({id});
+
+
     }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
@@ -23,8 +27,6 @@ class UserForm extends Component {
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
                 {fieldFor('firstName', {entityPath: 'user.information'})}
                 {fieldFor('lastName', {entityPath: 'user.information'})}
-                {fieldFor('date', {entityPath: 'user.information'})}
-                {fieldFor('test', {entityPath: 'user.information'})}
             </Panel>
         );
     }
@@ -33,6 +35,7 @@ class UserForm extends Component {
 const formConfigUser = {
   formKey: 'userFormUser',
   entityPathArray: ['user.information'],
+  loadAction: loadUserAction,
   saveAction: saveUserAction,
   nonValidatedFields: ['user.information.firstName']
 };
@@ -50,6 +53,7 @@ const ConnectedUserForm = compose(
 class UserFormConfig extends Component {
     componentWillMount() {
         const {id, load} = this.props;
+        console.log(id)
         load({id});
     }
 
@@ -61,8 +65,6 @@ class UserFormConfig extends Component {
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
                 {fieldFor('firstName', {entityPath: 'user.information'})}
                 {fieldFor('lastName', {entityPath: 'user.information'})}
-                {fieldFor('date', {entityPath: 'user.information'})}
-                {fieldFor('test', {entityPath: 'user.information'})}
             </Panel>
         );
     }
@@ -87,7 +89,7 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
-    <ConnectedUserFormConfig {...props}/>
+    <ConnectedUserFormConfig {...props} id='1235'/>
     <ConnectedUserForm {...props}/>
   </div>
 

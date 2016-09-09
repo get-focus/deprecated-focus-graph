@@ -45,16 +45,19 @@ const getDefaultState = defaultData => ({
     saving: false
 });
 
-const _reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defaultData), {type, payload}) => {
+const _reducerBuilder = ({types, defaultData, idField = 'uuid'}) => ((state = getDefaultState(defaultData), action) => {
+    const {type, payload, formKey} = action;
+    action.formKey && console.log('reducerBuilder', action.formKey)
     //todo: add some validation and check here
     const {load ={}, save ={}} = types;
+    const dataToUpdate = state ? state[idField] : {};
     switch(type) {
         case load.request:
-            return {...state, loading: true};
+            return {...state,...{[payload[idField]]: {data:  null,formKey, loading: false} }};
         case save.request:
             return {...state, saving: true};
         case load.response:
-            return {...state, data: payload, loading: false};
+            return {...state, ...{[payload[idField]]: {data:  payload,formKey, loading: false} } };
         case save.response:
             return {...state, data: payload, saving: false};
         case load.error:

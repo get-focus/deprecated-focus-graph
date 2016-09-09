@@ -57,6 +57,7 @@ const fieldMiddleware = store => next => (action) => {
         case CREATE_FORM:
         case SYNC_FORM_ENTITIES:
         case SYNC_FORMS_ENTITY:
+        console.log('youpy')
             next({
                 ...action,
                 fields: action.fields.map(field => {

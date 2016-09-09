@@ -58,10 +58,11 @@ export const destroyForm = formKey => ({
  * @param  {array} fields      the updated fields objects
  * @return {object}            the action
  */
-export const syncFormsEntity = (entityPath, fields) => ({
+export const syncFormsEntity = (entityPath, fields, formKey) => ({
     type: SYNC_FORMS_ENTITY,
     entityPath,
-    fields
+    fields,
+    formKey
 });
 
 /**

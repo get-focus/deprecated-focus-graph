@@ -21,22 +21,23 @@ const formMiddleware = store => next => action => {
         // Get the updated dataset
         const {dataset, forms} = store.getState();
         const entityPath = action.entityPath;
+        const extractedData = get(dataset, `${entityPath}.${action.payload.uuid}.data`);
+        console.log('jfdklfhjkqshkfdg', extractedData)
         // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
-        const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
+        const fields = map(extractedData, (fieldValue, fieldName) => {
             const field = {
                 name: fieldName,
                 entityPath,
                 dataSetValue: fieldValue,
-                loading: get(dataset, `${entityPath}.loading`),
-                saving: get(dataset, `${entityPath}.saving`)
+                loading: get(dataset, `${entityPath}.${action.payload.uuid}.loading`),
+                saving: get(dataset, `${entityPath}.${action.payload.uuid}.saving`)
             };
             // If action was a success, then replace the rawInputValue
             if (status === SUCCESS) field.rawInputValue = fieldValue;
             return field;
         });
-
         // Dispatch the SYNC_FORMS_ENTITY action
-        store.dispatch(syncFormsEntity(entityPath, fields));
+        store.dispatch(syncFormsEntity(entityPath, fields, action.formKey));
 
         // Treat the _meta
         if (saving && status === SUCCESS) {
@@ -88,6 +89,7 @@ const formMiddleware = store => next => action => {
               break;
           case SYNC_FORM_ENTITIES:
             const form = find(forms, {formKey: action.formKey});
+            console.log(form)
             action.fields = form.fields.map(field => ({
                 ...field,
                 rawInputValue: field.dataSetValue

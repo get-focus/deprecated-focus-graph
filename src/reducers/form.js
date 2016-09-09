@@ -59,7 +59,6 @@ const forms = (state: Array<FormStateType> = [], action) => {
         case DESTROY_FORM:
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
         case CLEAR_FORM :
-              console.log('je vais clear')
                return state.map(form => ({
                  ...form,
                  ...(form.formKey === action.formKey ? {
@@ -76,7 +75,10 @@ const forms = (state: Array<FormStateType> = [], action) => {
         case SYNC_FORMS_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
             return state.map(form => {
-                if (form.entityPathArray.indexOf(action.entityPath) === -1) return form;
+                //Select the good form for the synchronization with the field from the dataset
+
+                console.log({action, form})
+                if (form.formKey !== action.formKey /* && form.entityPathArray.indexOf(action.entityPath) === -1 && */) return form;
                 const newForm = {
                     ...form,
                     fields: [
