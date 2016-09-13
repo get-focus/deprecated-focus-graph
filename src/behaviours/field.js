@@ -56,7 +56,6 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    console.log(components)
     return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={{...metadata, ...components, lala: 'YO'}} {...options}/>;
 }
 
@@ -118,13 +117,12 @@ class FieldProvider extends Component {
                 fieldForListBuilder
             },
             components: {
-              InputComponent : this.props.components.InputComponent,
-              DisplayComponent: this.props.components.DisplayComponent
+              InputComponent : this.props.InputComponent,
+              DisplayComponent: this.props.DisplayComponent
             }
         }
     }
     render() {
-      console.log(this.props.components)
         return this.props.children;
     }
 }
