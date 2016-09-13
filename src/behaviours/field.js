@@ -123,6 +123,7 @@ class FieldProvider extends Component {
         }
     }
     render() {
+      console.log(this.props.components)
         return this.props.children;
     }
 }
