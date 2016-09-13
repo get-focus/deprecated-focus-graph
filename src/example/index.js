@@ -37,6 +37,8 @@ import store from './store';
 import {definitions, domains, masterDataConfig} from './config';
 moment.locale('fr');
 
+
+
 const App = ({children}) => {
     return (
         <StoreProvider store={store}>

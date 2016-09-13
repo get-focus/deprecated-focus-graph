@@ -4,7 +4,11 @@ import find from 'lodash/find';
 import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 const FIELD_CONTEXT_TYPE = {
-    fieldHelpers: PropTypes.object
+    fieldHelpers: PropTypes.object,
+    components: PropTypes.shape ({
+       InputComponent: PropTypes.func,
+       DisplayComponent: PropTypes.func
+    })
 };
 
 // TODO: local override with entity definitions
@@ -27,7 +31,7 @@ const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domain
 }
 
 const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange, ...options} = {}) => {
-    const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing} = props;
+    const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, components} = props;
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
     // Maybe the cost is too high.
@@ -52,7 +56,8 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={metadata} {...options}/>;
+    console.log(components)
+    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={{...metadata, ...components, lala: 'YO'}} {...options}/>;
 }
 
 
@@ -88,13 +93,15 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
 
 export function connect() {
     return function connectComponent(ComponentToConnect) {
-        function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers}) {
-            const fieldFor = fieldHelpers.fieldForBuilder(otherProps);
-            const textFor = fieldHelpers.fieldForBuilder(otherProps, true);
-            const selectFor = fieldHelpers.fieldForBuilder(otherProps, false, true);
-            const listFor = fieldHelpers.fieldForBuilder(otherProps, false, false, true, fieldHelpers.fieldForListBuilder);
+        function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers, components}) {
+            const props = {...otherProps, components}
+            const {InputComponent, DisplayComponent} = components;
+            const fieldFor = fieldHelpers.fieldForBuilder(props);
+            const textFor = fieldHelpers.fieldForBuilder(props, true);
+            const selectFor = fieldHelpers.fieldForBuilder(props, false, true);
+            const listFor = fieldHelpers.fieldForBuilder(props, false, false, true, fieldHelpers.fieldForListBuilder);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} components={components}  fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
@@ -109,10 +116,15 @@ class FieldProvider extends Component {
             fieldHelpers: {
                 fieldForBuilder,
                 fieldForListBuilder
+            },
+            components: {
+              InputComponent : this.props.components.InputComponent,
+              DisplayComponent: this.props.components.DisplayComponent
             }
         }
     }
     render() {
+      console.log(this.props.components)
         return this.props.children;
     }
 }
