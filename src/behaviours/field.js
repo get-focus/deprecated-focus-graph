@@ -56,7 +56,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={{...metadata, ...components, lala: 'YO'}} {...options}/>;
+    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={{ ...components, ...metadata}} {...options}/>;
 }
 
 
