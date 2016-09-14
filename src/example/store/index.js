@@ -28,6 +28,6 @@ export const ownActiondMiddleware = store => next => action => {
  }
 
 
-const store = builder({dataset: rootReducer}, [lastNameMiddleware, ownActiondMiddleware], [DevTools.instrument()]);
+const store = builder({dataset: rootReducer}, [lastNameMiddleware], [DevTools.instrument()]);
 
 export default store;
