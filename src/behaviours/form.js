@@ -7,6 +7,7 @@ import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
+import bindActionCreators from 'redux';
 
 const validateFormOptions = ({formKey, entityPathArray}) => {
     if (!isString(formKey)) throw new Error('FormConnect: You must provide a "formKey" option as a string to the form connect.');
@@ -20,9 +21,12 @@ const internalMapStateToProps = (state, formKey) => {
     return resultingProps;
 };
 
+function buildActionForTheDispatch (actionForTheDispatch, dispatch) {
+    return actionForTheDispatch.map(element => dispatch => bindActionCreators)
+}
+
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
-    console.log(entityPathArray)
     if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction( ...loadArgs));
     resultingActions.clear = () => dispatch(clearForm(formKey, element));
     if (saveAction) resultingActions.save = (...saveArgs) => dispatch(validateForm(formKey, nonValidatedFields, saveAction(...saveArgs)));
@@ -36,7 +40,7 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, n
  * @param  {object} formOptions                 the form options
  * @return {ReactComponent}                     the extended component
  */
-const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions) => {
+const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions, actionsForTheDispatch) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
@@ -76,7 +80,13 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
         render() {
             const {_behaviours, ...otherProps} = this.props;
             const behaviours = {connectedToForm: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} onInputChange={::this._onInputChange} onInputBlur={::this._onInputBlur} onInputBlurList={::this._onInputBlurList} toggleEdit={::this._toggleEdit} entityPathArray={formOptions.entityPathArray} />;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours}
+                    onInputChange={::this._onInputChange}
+                    onInputBlur={::this._onInputBlur}
+                    onInputBlurList={::this._onInputBlurList}
+                    toggleEdit={::this._toggleEdit}
+                    actionsToDispatch={buildActionForTheDispatch(actionForTheDispatch, dispatch)}
+                    entityPathArray={formOptions.entityPathArray} />;
         }
     }
     // Extract the redux methods without a connector

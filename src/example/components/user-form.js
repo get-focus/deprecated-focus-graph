@@ -19,13 +19,14 @@ class UserForm extends Component {
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
         return (
-            <Panel title='User' {...this.props}>
-                {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
-                {fieldFor('firstName', {entityPath: 'user.information'})}
-                {fieldFor('lastName', {entityPath: 'user.information'})}
-                {fieldFor('date', {entityPath: 'user.information'})}
-                {fieldFor('test', {entityPath: 'user.information'})}
-            </Panel>
+          <div>
+          Booooooooooooooooooooooonjour
+          <Panel title='User' {...this.props}>
+              {fieldFor('firstName', {entityPath: 'user.information'})}
+              {fieldFor('lastName', {entityPath: 'user.information'})}
+          </Panel>
+          </div>
+
         );
     }
 };
@@ -87,7 +88,6 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
-    <ConnectedUserFormConfig {...props}/>
     <ConnectedUserForm {...props}/>
   </div>
 
