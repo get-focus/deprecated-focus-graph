@@ -37,6 +37,10 @@ const internalMapStateToProps = (state, formKey) => {
     return resultingProps;
 };
 
+function buildActionForTheDispatch (actionForTheDispatch, dispatch) {
+    return actionForTheDispatch.map(element => dispatch => bindActionCreators)
+}
+
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
     if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction( ...loadArgs));
@@ -52,7 +56,7 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, n
  * @param  {object} formOptions                 the form options
  * @return {ReactComponent}                     the extended component
  */
-const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions) => {
+const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions, actionsForTheDispatch) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
