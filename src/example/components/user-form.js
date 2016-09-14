@@ -98,7 +98,6 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
-
     <ConnectedUserForm {...props}/>
   </div>
 
