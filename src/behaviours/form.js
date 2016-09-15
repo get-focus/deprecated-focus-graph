@@ -6,12 +6,28 @@ import {inputChange, inputBlur, inputBlurList} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
-import bindActionCreators from 'redux';
+import {bindActionCreators} from 'redux';
 
 const validateFormOptions = ({formKey, entityPathArray}) => {
     if (!isString(formKey)) throw new Error('FormConnect: You must provide a "formKey" option as a string to the form connect.');
     if (!isArray(entityPathArray)) throw new Error('FormConnect: You must provide a "entityPathArray" option as an array to the form connect.');
+}
+
+function buildMapDispatchToProps (dispatch , formOptions) {
+  const {formKey,entityPathArray,mapDispatchToProps: userDefinedMapDispatchToProps = () => ({}),loadAction,saveAction,nonValidatedFields} = formOptions;
+  let mapDispatch;
+  if(isObject(userDefinedMapDispatchToProps)){
+    const userFunctionToDispatch = dispatch => bindActionCreators(userDefinedMapDispatchToProps, dispatch);
+    mapDispatch = userFunctionToDispatch(dispatch)
+  } else {
+    mapDispatch = userDefinedMapDispatchToProps(dispatch)
+  }
+  return {
+    ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields, entityPathArray),
+    ...mapDispatch
+  }
 }
 
 const internalMapStateToProps = (state, formKey) => {
@@ -20,10 +36,6 @@ const internalMapStateToProps = (state, formKey) => {
     if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entities, field) => ({...entities, [field.entityPath]: {...entities[field.entityPath], [field.name]: field.rawInputValue}}), {})
     return resultingProps;
 };
-
-function buildActionForTheDispatch (actionForTheDispatch, dispatch) {
-    return actionForTheDispatch.map(element => dispatch => bindActionCreators)
-}
 
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
@@ -40,7 +52,7 @@ const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, n
  * @param  {object} formOptions                 the form options
  * @return {ReactComponent}                     the extended component
  */
-const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions, actionsForTheDispatch) => {
+const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: FormOptions) => {
     class FormComponent extends Component {
         componentWillMount() {
             const {store: {dispatch}} = this.context;
@@ -79,13 +91,13 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
 
         render() {
             const {_behaviours, ...otherProps} = this.props;
+            const {store: {dispatch}} = this.context;
             const behaviours = {connectedToForm: true, ..._behaviours};
             return <ComponentToConnect {...otherProps} _behaviours={behaviours}
                     onInputChange={::this._onInputChange}
                     onInputBlur={::this._onInputBlur}
                     onInputBlurList={::this._onInputBlurList}
                     toggleEdit={::this._toggleEdit}
-                    actionsToDispatch={buildActionForTheDispatch(actionForTheDispatch, dispatch)}
                     entityPathArray={formOptions.entityPathArray} />;
         }
     }
@@ -126,6 +138,10 @@ type FormOptions = {
  * FormOptions is describe in the associated type
  * Usage: const FormComponent = connect({formKey: 'movieForm', entityPathArray: ['movie']})(MyComponent);
  */
+
+
+
+
 export const connect = (formOptions: FormOptions) => (ComponentToConnect: ReactClass<{}>) => {
     const {
         formKey,
@@ -148,10 +164,8 @@ export const connect = (formOptions: FormOptions) => (ComponentToConnect: ReactC
         ...internalMapStateToProps(state, formKey),
         ...userDefinedMapStateToProps(state)
     });
-    const mapDispatchToProps : Function = (dispatch: Function) => ({
-        ...internalMapDispatchToProps(dispatch, loadAction, saveAction, formKey, nonValidatedFields, entityPathArray),
-        ...userDefinedMapDispatchToProps(dispatch)
-    });
+
+    const mapDispatchToProps : Function = (dispatch: Function) => (buildMapDispatchToProps(dispatch, formOptions));
 
     // Call the redux connector
     return connectToStore(entityPathArray, {
