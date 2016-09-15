@@ -13,10 +13,9 @@ import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
 
-export const deleteFields = (victoire, defaite) => {
+export const deleteFields = (victoire) => {
   type: MY_ACTION,
-  victoire,
-  defaite
+  victoire
 }
 
 
@@ -27,6 +26,8 @@ class UserForm extends Component {
     }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
+        console.log(this.props)
+
         return (
           <div>
           <Panel title='User' {...this.props}>
@@ -39,9 +40,11 @@ class UserForm extends Component {
     }
 };
 
+//mapDispatchToProps: (dispatch) => {const test = {}; test.deleteFields = (arg) => dispatch(deleteFields(arg)); return test},
+
 const formConfigUser = {
   formKey: 'userFormUser',
-  mapDispatchToProps: (dispatch) => {const test = {}; test.deleteFields = (arg) => dispatch(deleteFields(arg)); return test},
+  mapDispatchToProps: {deleteFields},
   entityPathArray: ['user.information'],
   saveAction: saveUserAction,
   nonValidatedFields: ['user.information.firstName']
@@ -66,6 +69,7 @@ class UserFormConfig extends Component {
 
     render() {
         const {editing, fields, fieldFor,listFor, loading, saving, list} = this.props;
+        console.log(this.props)
         return (
             <Panel title='User' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
@@ -98,6 +102,7 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
+  hjghjgjhghj
     <ConnectedUserForm {...props}/>
   </div>
 

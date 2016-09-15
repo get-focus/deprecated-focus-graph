@@ -8,7 +8,7 @@ import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
-import bindActionCreators from 'redux';
+import {bindActionCreators} from 'redux';
 
 const validateFormOptions = ({formKey, entityPathArray}) => {
     if (!isString(formKey)) throw new Error('FormConnect: You must provide a "formKey" option as a string to the form connect.');
@@ -36,10 +36,6 @@ const internalMapStateToProps = (state, formKey) => {
     if (resultingProps) resultingProps.getUserInput = () => formCandidate.fields.reduce((entities, field) => ({...entities, [field.entityPath]: {...entities[field.entityPath], [field.name]: field.rawInputValue}}), {})
     return resultingProps;
 };
-
-function buildActionForTheDispatch (actionForTheDispatch, dispatch) {
-    return actionForTheDispatch.map(element => dispatch => bindActionCreators)
-}
 
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
