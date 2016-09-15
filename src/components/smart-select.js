@@ -19,10 +19,12 @@ const SmartSelectComponent = ({
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
     const {value} = masterDatumObject;
     const selectValues = values || value
-
+    const wrappedOnChange = ({target:{value}}) => {
+        onChange(value);
+    }
     return (
         <div>
-            <SelectComponent onChange={onChange} valid={valid} error={error} name={name} values={selectValues} value={rawInputValue} {...otherProps}/>
+            <SelectComponent onChange={wrappedOnChange} valid={valid} error={error} name={name} values={selectValues} value={rawInputValue} {...otherProps}/>
             {!valid && <b style={{color: 'red'}}>{error}</b>}
         </div>
     );
