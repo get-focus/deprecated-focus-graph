@@ -1,4 +1,4 @@
-import React, {PropTypes, Component} from 'react';
+import React, {PropTypes, PureComponent} from 'react';
 import {loadDefinitions, loadDomains} from '../actions/metadata';
 import {isArray, isEmpty} from 'lodash';
 
@@ -36,7 +36,7 @@ export function connect(definitionNameArray : Array<string> = []) {
     }
 }
 
-class MetadataProvider extends Component {
+class MetadataProvider extends PureComponent {
     getChildContext() {
         // Definitions and domains are also sent to the childre via the context.
         return {
