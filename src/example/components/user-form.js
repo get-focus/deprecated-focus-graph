@@ -13,9 +13,10 @@ import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
 
-export const deleteFields = (victoire) => {
+export const deleteFields = (victoire, defaite) => {
   type: MY_ACTION,
-  victoire
+  victoire,
+  defaite
 }
 
 
