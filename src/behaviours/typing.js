@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import isEqual from 'lodash/isEqual';
 
-const TypingBehaviour = InputComponent => class WrappedInputComponent extends Component {
+const TypingBehaviour = InputComponent => class WrappedInputComponent extends PureComponent {
     state = {typing: false};
 
     onTypingBeginning = () => {
