@@ -17,7 +17,6 @@ class UserAddressForm extends Component {
 
     render() {
         const {editing, fields, fieldFor, listFor, selectFor} = this.props;
-        console.log(loadMixedAction)
         return (
             <Panel title='User and address' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information'})}
