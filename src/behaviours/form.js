@@ -37,10 +37,6 @@ const internalMapStateToProps = (state, formKey) => {
     return resultingProps;
 };
 
-function buildActionForTheDispatch (actionForTheDispatch, dispatch) {
-    return actionForTheDispatch.map(element => dispatch => bindActionCreators)
-}
-
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
     if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction( ...loadArgs));
