@@ -26,6 +26,8 @@ class UserForm extends Component {
     }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
+        console.log(this.props)
+
         return (
           <div>
           <Panel title='User' {...this.props}>
@@ -37,6 +39,8 @@ class UserForm extends Component {
         );
     }
 };
+
+//mapDispatchToProps: (dispatch) => {const test = {}; test.deleteFields = (arg) => dispatch(deleteFields(arg)); return test},
 
 const formConfigUser = {
   formKey: 'userFormUser',
@@ -65,6 +69,7 @@ class UserFormConfig extends Component {
 
     render() {
         const {editing, fields, fieldFor,listFor, loading, saving, list} = this.props;
+        console.log(this.props)
         return (
             <Panel title='User' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
