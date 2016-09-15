@@ -1,4 +1,4 @@
-import React, {PropTypes, PureComponent, Component} from 'react';
+import React, {Component, PureComponent, PropTypes} from 'react';
 import DefaultInputComponent from './input';
 import DefaultDisplayComponent from './display';
 import DefaultSelectComponent from './select';
@@ -15,7 +15,8 @@ const FieldLabelValueComponent = ({label, ValueComponent}) => (
 FieldLabelValueComponent.displayName = 'FieldLabelValueComponent';
 
 
-class Field extends Component {
+class Field extends PureComponent {
+
   render(){
     const {textOnly, multiple, list, fieldForLine, ...otherProps} = this.props;
     otherProps.value = otherProps.rawInputValue; //https://github.com/get-focus/focus-redux/issues/39 compatibility with focus components
