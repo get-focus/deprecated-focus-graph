@@ -40,7 +40,7 @@ const internalMapStateToProps = (state, formKey) => {
 const internalMapDispatchToProps = (dispatch, loadAction, saveAction, formKey, nonValidatedFields,entityPathArray ) => {
     const resultingActions = {};
     if (loadAction) resultingActions.load = (...loadArgs) => dispatch(loadAction( ...loadArgs));
-    resultingActions.clear = () => dispatch(clearForm(formKey, element));
+    resultingActions.clear = (element) => dispatch(clearForm(formKey, element));
     if (saveAction) resultingActions.save = (...saveArgs) => dispatch(validateForm(formKey, nonValidatedFields, saveAction(...saveArgs)));
     return resultingActions;
 };
