@@ -35,50 +35,56 @@ export const _checkValueForList = (value,propertyName) => {
   }
 }
 
-const fieldMiddleware = store => next => (action) => {
-  if(!store || !store.getState){ throw new Error(`${FIELD_MIDDLEWARE}: Your middleware needs a redux store.`)}
-    const {forms, definitions, domains} = store.getState();
-    switch(action.type) {
-        // Middleware post state processing
-        case INPUT_BLUR:
-            // On input blur action, validate the provided field
-            validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
-            break;
-        case INPUT_BLUR_LIST:
-            validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
-            break;
-        // Middleware pre state processing
-        case INPUT_CHANGE:
-            next({
-                ...action,
-                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
-            });
-            break;
-        case CREATE_FORM:
-        case SYNC_FORM_ENTITIES:
-        case SYNC_FORMS_ENTITY:
-            next({
-                ...action,
-                fields: action.fields.map(field => {
-                  _checkFieldDefinition(field.name, field.entityPath, definitions);
-                  const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
-                  let _redirectEntityPath= {};
-                  if(redirectEntityPath){
-                    _checkValueForList(field.dataSetValue, field.name)
-                    _redirectEntityPath = {redirectEntityPath}
+
+
+const fieldMiddlewareBuilder = (translate = element => element) => {
+  return  store => next => (action) => {
+    if(!store || !store.getState){ throw new Error(`${FIELD_MIDDLEWARE}: Your middleware needs a redux store.`)}
+      const {forms, definitions, domains} = store.getState();
+      switch(action.type) {
+          // Middleware post state processing
+          case INPUT_BLUR:
+              // On input blur action, validate the provided field
+              validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
+              break;
+          case INPUT_BLUR_LIST:
+              validateFieldArray(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue, action.propertyNameLine, action.index,store.dispatch);
+              break;
+          // Middleware pre state processing
+          case INPUT_CHANGE:
+              next({
+                  ...action,
+                  formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
+              });
+              break;
+          case CREATE_FORM:
+          case SYNC_FORM_ENTITIES:
+          case SYNC_FORMS_ENTITY:
+              next({
+                  ...action,
+                  fields: action.fields.map(field => {
+                    _checkFieldDefinition(field.name, field.entityPath, definitions);
+                    const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
+                    let _redirectEntityPath= {};
+                    if(redirectEntityPath){
+                      _checkValueForList(field.dataSetValue, field.name)
+                      _redirectEntityPath = {redirectEntityPath}
+                    }
+                    return {
+                      ...field,
+                      formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
+                      label: translate(field.entityPath + "." + field.name),
+                      ..._redirectEntityPath
                   }
-                  return {
-                    ...field,
-                    formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
-                    ..._redirectEntityPath
-                }
-              })
-            });
-            break;
-        default:
-            next(action);
-            break;
-    }
+                })
+              });
+              break;
+          default:
+              next(action);
+              break;
+      }
+  }
 }
 
-export default fieldMiddleware;
+
+export default fieldMiddlewareBuilder;

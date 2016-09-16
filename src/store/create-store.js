@@ -3,7 +3,7 @@ import createLogger from 'redux-logger';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import * as focusReducersDefault from '../reducers';
 import formMiddleware from '../middlewares/form';
-import fieldMiddleware from '../middlewares/field';
+import fieldMiddlewareBuilder from '../middlewares/field';
 
 const loggerMiddleware = createLogger();
 type ProjectReducersType = {
@@ -36,7 +36,8 @@ export const combineReducerWithFocus = (projectReducers, focusReducers = focusRe
 const createStoreWithFocus = (
     reducers = {},
     customMiddlewares = [],
-    enhancers = []
+    enhancers = [],
+    translate = element=> element
   ) => {
     return createStore(
       combineReducerWithFocus(reducers),
@@ -44,7 +45,7 @@ const createStoreWithFocus = (
           applyMiddleware(
               ...customMiddlewares,
               formMiddleware, // This middleware syncs the form state with the app lifecycle.
-              fieldMiddleware, // This middleware
+              fieldMiddlewareBuilder(translate), // This middleware
               thunkMiddleware, // lets us dispatch() functions
               // loggerMiddleware // neat middleware that logs actionsMe
           ),
