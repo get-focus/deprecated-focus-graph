@@ -10,10 +10,13 @@ const SelectComponent = ({
     valid,
     error
 }) => {
-
+      const wrappedOnChange = ({target:{value}}) => {
+          onChange(value);
+      }
     return (
+
         <div>
-            <select name={name} onChange={onChange} value={value}>
+            <select name={name} onChange={wrappedOnChange} value={value}>
                 <option value={null}></option>
                 {values.map(({code, label}) => <option key={code} value={code}>{label}</option>)}
             </select>

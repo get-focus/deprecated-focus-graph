@@ -7,10 +7,10 @@ import DefaultListComponent from './list';
 import DefaultTextComponent from './text';
 import DefaultSelectDisplayComponent from './select-display';
 
-const FieldLabelValueComponent = ({label, ValueComponent}) => (
-    <div className='field'>
-        <div><b>{label}</b></div>
-        {ValueComponent}
+const FieldLabelValueComponent = ({label, ValueComponent, editing}) => (
+    <div data-focus='field' data-mode={editing ? 'edit' : 'consult'}>
+        <div data-focus='label'><b>{label}</b></div>
+        <div data-focus='field-value-container'>{ValueComponent}</div>
     </div>
 );
 FieldLabelValueComponent.displayName = 'FieldLabelValueComponent';
@@ -25,7 +25,7 @@ class Field extends PureComponent {
     const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponentDisplay {...otherProps} /> : <InputComponent {...otherProps} />);
     const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SmartSelectComponent SelectComponent={SelectComponent} {...otherProps}/> : <InputComponent {...otherProps}/>);
     const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
-    return textOnly ? ValueComponent : <FieldLabelValueComponent label={otherProps.name} ValueComponent={ValueComponent} />;
+    return textOnly ? ValueComponent : <FieldLabelValueComponent label={otherProps.name}  editing={otherProps.editing} ValueComponent={ValueComponent} />;
   }
 }
 
