@@ -1,4 +1,4 @@
-import React , {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
 import find from 'lodash/find';
 import isArray from 'lodash/isArray';
@@ -109,7 +109,7 @@ export function connect() {
 }
 
 
-class FieldProvider extends Component {
+class FieldProvider extends PureComponent {
     getChildContext() {
         return {
             fieldHelpers: {

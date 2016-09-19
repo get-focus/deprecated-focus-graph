@@ -12,6 +12,14 @@ import LineComponent from '../../components/line'
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
+
+export const deleteFields = (victoire, defaite) => {
+  type: MY_ACTION,
+  victoire,
+  defaite
+}
+
+
 class UserForm extends Component {
     componentWillMount() {
         const {id, load, clear} = this.props;
@@ -19,19 +27,20 @@ class UserForm extends Component {
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
         return (
-            <Panel title='User' {...this.props}>
-                {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
-                {fieldFor('firstName', {entityPath: 'user.information'})}
-                {fieldFor('lastName', {entityPath: 'user.information'})}
-                {fieldFor('date', {entityPath: 'user.information'})}
-                {fieldFor('test', {entityPath: 'user.information'})}
-            </Panel>
+          <div>
+          <Panel title='User' {...this.props}>
+              {fieldFor('firstName', {entityPath: 'user.information'})}
+              {fieldFor('lastName', {entityPath: 'user.information'})}
+          </Panel>
+          </div>
+
         );
     }
 };
 
 const formConfigUser = {
   formKey: 'userFormUser',
+  mapDispatchToProps: (dispatch) => {const test = {}; test.deleteFields = (arg) => dispatch(deleteFields(arg)); return test},
   entityPathArray: ['user.information'],
   saveAction: saveUserAction,
   nonValidatedFields: ['user.information.firstName']
@@ -75,6 +84,7 @@ const formConfig = {
   entityPathArray: ['user.information'],
   loadAction: loadUserAction,
   saveAction: saveUserAction,
+  mapDispatchToProps: () => {deleteFields},
   nonValidatedFields: ['user.information.firstName']
 };
 
@@ -87,7 +97,7 @@ const ConnectedUserFormConfig = compose(
 
 function ComponentUser(props)  {
   return <div>
-    <ConnectedUserFormConfig {...props}/>
+
     <ConnectedUserForm {...props}/>
   </div>
 

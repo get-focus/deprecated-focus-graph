@@ -21,8 +21,6 @@ class UserAddressForm extends Component {
             <Panel title='User and address' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information'})}
                 {fieldFor('city', {entityPath: 'user.address'})}
-                {listFor('childs', {LineComponent, entityPath : 'user.information', redirectEntityPath: 'user.child'})}
-                {fieldFor('firstName', {onChange: () => {console.log(fields)}, entityPath: 'user.information'})}
             </Panel>
         );
     }

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import {loadMasterDatum} from '../actions/master-data';
 import {pick} from 'lodash/object';
 import {isArray} from 'lodash/lang';
@@ -79,7 +79,7 @@ export const connect = connectMasterData;
 //  <MyMasterDataConnectedDumbComponent />
 //</MasterDataProvider>
 //```
-class MasterDataProvider extends Component {
+class MasterDataProvider extends PureComponent {
     getChildContext() {
         return {
             masterDatumLoaders: this.props.configuration
