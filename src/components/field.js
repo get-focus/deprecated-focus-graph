@@ -25,7 +25,7 @@ class Field extends PureComponent {
     const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponentDisplay {...otherProps} /> : <DisplayComponent  {...otherProps} />);
     const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SmartSelectComponent SelectComponent={SelectComponent} {...otherProps}/> : <InputComponent {...otherProps}/>);
     const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
-    return textOnly ? ValueComponent : <FieldLabelValueComponent label={otherProps.name}  editing={otherProps.editing} ValueComponent={ValueComponent} />;
+    return textOnly ? ValueComponent : <FieldLabelValueComponent label={otherProps.label}  editing={otherProps.editing} ValueComponent={ValueComponent} />;
   }
 }
 

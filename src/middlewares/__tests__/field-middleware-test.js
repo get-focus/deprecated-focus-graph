@@ -49,11 +49,11 @@ describe('The field middleware', () => {
   });
   describe('when no store is given tho the middleware ', ()=>{
     it('should throw an error', () =>{
-      expect(() => fieldMiddleware()(nextSpy)({type: 'lol'}))
+      expect(() => fieldMiddleware()()(nextSpy)({type: 'lol'}))
       .to.throw('FIELD_MIDDLEWARE: Your middleware needs a redux store.');
     });
     it('when an INPUT_BLUR action is passed', () => {
-      fieldMiddleware(store)(nextSpy)({type: INPUT_BLUR, entityPath: 'user.information', fieldName: 'firstName'})
+      fieldMiddleware()(store)(nextSpy)({type: INPUT_BLUR, entityPath: 'user.information', fieldName: 'firstName'})
     });
     it('when an INPUT_BLUR_LIST action is passed', () => {});
     it('when an INPUT_CHANGE action is passed', () => {});
