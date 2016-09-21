@@ -64,12 +64,23 @@ const forms = (state: Array<FormStateType> = [], action) => {
                  ...form,
                  ...(form.formKey === action.formKey ? {
                      fields: form.fields.map(field => {
-                        return {
-                             ...field,
-                             formattedInputValue : null,
-                             rawInputValue: null,
-                             dataSetValue: null
-                           };
+                       if(Object.keys(action.defaultData).find(element => element === field.name)) {
+                         {
+                              return {
+                                ...field,
+                                formattedInputValue : action.defaultData[field.name],
+                                rawInputValue: action.defaultData[field.name],
+                                dataSetValue: action.defaultData[field.name]
+                              }
+                            };
+                       } else {
+                         return {
+                              ...field,
+                              formattedInputValue : null,
+                              rawInputValue: null,
+                              dataSetValue: null
+                            };
+                       }
                      })
                  } : {})
                }));

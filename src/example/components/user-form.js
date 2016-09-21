@@ -23,6 +23,7 @@ export const deleteFields = (victoire, defaite) => {
 class UserForm extends Component {
     componentWillMount() {
         const {id, load, clear} = this.props;
+        // clear({firstName: "José"});
     }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
