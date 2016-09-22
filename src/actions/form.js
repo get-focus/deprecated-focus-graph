@@ -44,8 +44,9 @@ export const destroyForm = formKey => ({
   * @param  {string} formKey} the form key
   * @return {object}          the action itself
   */
- export const clearForm = formKey => ({
+ export const clearForm = (formKey, defaultData) => ({
      type: CLEAR_FORM,
+     defaultData,
      formKey
  });
 

@@ -41,6 +41,58 @@ describe('The form reducer', () => {
             expect(newState.length).to.equal(0);
         });
     });
+    describe('When receiving a CLEAR_FORM action', () => {
+      const formKey = 'form1';
+
+      const state = [{
+          formKey: formKey,
+          entityPathArray: ['user'],
+          fields: [
+              {
+                  name: 'firstName',
+                  entityPath: 'user',
+                  rawInputValue: 'David',
+                  dataSetValue: 'David',
+                  dirty: true
+              },
+              {
+                  name: 'lastName',
+                  entityPath: 'user',
+                  rawInputValue: 'Lopez',
+                  dataSetValue: 'Lopez',
+                  dirty: false
+              },
+              {
+                  name: 'weapon',
+                  entityPath: 'user',
+                  rawInputValue: 'shoe',
+                  dataSetValue: 'shoe',
+                  dirty: false
+              }
+          ]
+      }];
+
+      const defaultData = {firstName: 'Edouardo', lastName: 'Emilio', weapon: 'shoe'};
+
+      const action = {
+        type: "CLEAR_FORM",
+        defaultData,
+        formKey
+      };
+
+      const newState = formReducer(state, action);
+
+      it('Should update the rawInputValue from default value', () => {
+        expect(newState[0].fields[0].rawInputValue).to.equal(defaultData.firstName);
+        expect(newState[0].fields[1].rawInputValue).to.equal(defaultData.lastName);
+        expect(newState[0].fields[2].rawInputValue).to.equal(defaultData.weapon);
+      })
+      it('Should update the dataSetValue from default value', () => {
+        expect(newState[0].fields[0].dataSetValue).to.equal(defaultData.firstName);
+        expect(newState[0].fields[1].dataSetValue).to.equal(defaultData.lastName);
+        expect(newState[0].fields[2].dataSetValue).to.equal(defaultData.weapon);
+      })
+    });
     describe('when receiving a SYNC_FORMS_ENTITY action', () => {
         const state = [{
             formKey: 'form1',
