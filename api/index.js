@@ -117,8 +117,19 @@ app.post(API_ROOT  + '/entity/:id', (req, res) => {
 );
 app.get(API_ROOT  + '/entity/create', function createNotifs(req, res) {
     entityJSON.push(createEntity())
-    res.json(entityJSON);}
+    res.json(entityJSON);
+
+  }
 );
+
+
+app.get(API_ROOT  + '/error', function createNotifs(req, res) {
+    res.status(403);
+    res.json({"globalErrors":[" Libelle doit être renseigné"]})
+
+  }
+);
+
 app.delete(API_ROOT  + '/entity', function deleteNotifs(req, res) {
 
   res.json(JSON.stringify(req.body));
