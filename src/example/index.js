@@ -25,6 +25,8 @@ import DevTools from './containers/dev-tools';
 //Components
 import UserAddressForm from './components/user-and-address-form';
 import UserForm from './components/user-form';
+import UserError from './components/user-error';
+
 import CustomUserForm from './components/custom-user-form';
 import paramExtractor from './components/param-extractor';
 import NoMatch from './components/no-match';
@@ -70,6 +72,8 @@ const Layout = (props) => {
                   <Link className='mdl-navigation__link'  to='/user/1234/custom'>Custom</Link>
                   <Link className='mdl-navigation__link'  to='/user/1234/display'>Display only</Link>
                   <Link className='mdl-navigation__link'  to='/user/1234/text'>Text only</Link>
+                  <Link className='mdl-navigation__link'  to='/user/error'>Error</Link>
+
                 </nav>
             </div>
         </header>
@@ -111,6 +115,8 @@ document.addEventListener('DOMContentLoaded', event => {
           <Route path="user/:id/custom" component={pe(CustomUserForm)} />
           <Route path="user/:id/display" component={pe(UserDisplayOnly)} />
           <Route path="user/:id/text" component={pe(UserTextOnly)} />
+          <Route path="user/error" component={pe(UserError)} />
+
           <Route path="*" component={NoMatch}/>
         </Route>
       </Router>,

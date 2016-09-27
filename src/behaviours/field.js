@@ -56,7 +56,19 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
-    return <FieldComponent  {...field} fieldForLine={fieldForLine} textForLine={textForLine}  selectForLine={selectForLine} multiple={multiple} list={list} textOnly={textOnly} editing={finalEditing} name={propertyName} onBlur={onBlur} onChange={onChange} metadata={{ ...components, ...metadata}} {...options}/>;
+    return <FieldComponent  {...field}
+              fieldForLine={fieldForLine}
+              textForLine={textForLine}
+              selectForLine={selectForLine}
+              multiple={multiple}
+              list={list}
+              textOnly={textOnly}
+              editing={finalEditing}
+              name={propertyName}
+              onBlur={onBlur}
+              onChange={onChange}
+              metadata={{ ...components, ...metadata}}
+              {...options}/>;
 }
 
 
@@ -84,7 +96,18 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
 
-      return <FieldComponent {...field} error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]} textOnly={textOnly} editing={editing} multiple={multiple} name={propertyName} metadata={metadata} onChange={onChange} onBlur={onBlur} {...options} fields={fields} {...connectedComponentProps}/>;
+      return <FieldComponent {...field}
+                error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]}
+                textOnly={textOnly}
+                editing={editing}
+                multiple={multiple}
+                name={propertyName}
+                metadata={metadata}
+                onChange={onChange}
+                 onBlur={onBlur}
+                 fields={fields}
+                 {...connectedComponentProps}
+                 {...options} />;
   }
   return fieldForLineBuilder;
 
@@ -123,7 +146,6 @@ class FieldProvider extends PureComponent {
         }
     }
     render() {
-      console.log(this.props.components)
         return this.props.children;
     }
 }

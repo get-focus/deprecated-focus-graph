@@ -4,6 +4,13 @@ export const loadUser = async ({id}) => {
     return data;
 }
 
+export const loadError= async () => {
+    const response = await fetch(`http://localhost:9999/x/error`)
+    const data = await response.json();
+    console.log(data)
+    return data;
+}
+
 export const saveUser = async ({user}) => {
     await new Promise((resolve, reject) => {
         setTimeout(() => {

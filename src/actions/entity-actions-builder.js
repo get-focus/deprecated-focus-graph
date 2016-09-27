@@ -1,6 +1,14 @@
 import {capitalize, toUpper} from 'lodash/string';
 import {isArray, isFunction,isString} from 'lodash/lang';
 
+
+let msgId = 0;
+
+function _getMessageId(){
+  msgId++;
+  return `msgId_${msgId}`;
+}
+
 const ACTION_BUILDER = 'ACTION_BUILDER';
 const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
 const STRING_EMPTY = '';
@@ -32,11 +40,11 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
         try {
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
             const svcValue = await promiseSvc(data);
-            actionCreatorsArray.forEach(({name, response: responseActionCreator}) => {
+            actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
-                if(actionCreatorsArray.length === 1){
+                if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
                   dispatch(responseActionCreator(svcValue));
-                } else {
+                } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
                   // Whene there is more node only a part of the payload is dispathed.
                   // TODO: a bit ugly but with the convention on name it should work.
                   const splitName = name.split('.');
@@ -50,6 +58,16 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                       svcValue
                     );
                   }
+                }else {
+                  svcValue['globalErrors'].map(element => {
+                    return dispatch({
+                      type: 'PUSH_MESSAGE', message : {
+                        content: element,
+                        id: _getMessageId()
+                      }
+                    })
+                  })
+                    dispatch(errorActionCreator(svcValue))
                 }
               });
 
