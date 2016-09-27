@@ -19,11 +19,36 @@ export const deleteFields = (victoire, defaite) => {
   defaite
 }
 
+class Test extends Component {
+  componentDidMount(){
+    console.log('DidTest')
+  }
+  render(){
+    console.log(this.props)
+    return (
+      <div>Bien le Bonjour je suis un test</div>
+    )
+  }
+}
+
+
+class ReTest extends Component {
+  componentDidMount(){
+    console.log('Did')
+  }
+  render(){
+
+    return (
+      <Test {...this.props}/>
+    )
+  }
+}
 
 class UserForm extends Component {
     componentWillMount() {
         const {id, load, clear} = this.props;
         // clear({firstName: "José"});
+        load({id})
     }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
@@ -31,7 +56,7 @@ class UserForm extends Component {
           <div>
           <Panel title='User' {...this.props}>
               {fieldFor('firstName', {entityPath: 'user.information'})}
-              {fieldFor('lastName', {entityPath: 'user.information'})}
+              {fieldFor('lastName', {entityPath: 'user.information', metadata: {InputComponent: ReTest}})}
           </Panel>
           </div>
 
@@ -44,6 +69,7 @@ const formConfigUser = {
   mapDispatchToProps: (dispatch) => {const test = {}; test.deleteFields = (arg) => dispatch(deleteFields(arg)); return test},
   entityPathArray: ['user.information'],
   saveAction: saveUserAction,
+  loadAction:loadUserAction,
   nonValidatedFields: ['user.information.firstName']
 };
 

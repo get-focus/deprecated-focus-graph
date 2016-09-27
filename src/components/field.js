@@ -19,6 +19,7 @@ FieldLabelValueComponent.displayName = 'FieldLabelValueComponent';
 class Field extends PureComponent {
 
   render(){
+
     const {textOnly, multiple, list, fieldForLine, ...otherProps} = this.props;
     otherProps.value = otherProps.rawInputValue; //https://github.com/get-focus/focus-redux/issues/39 compatibility with focus components
     const {TextComponent = DefaultTextComponent, DisplayComponent = DefaultDisplayComponent, InputComponent = DefaultInputComponent, SelectComponent = DefaultSelectComponent,SelectComponentDisplay = DefaultSelectDisplayComponent, ListComponent = DefaultListComponent} = otherProps.metadata;

@@ -59,19 +59,28 @@ const forms = (state: Array<FormStateType> = [], action) => {
         case DESTROY_FORM:
             return state.filter(({formKey: candidateKey}) => candidateKey !== action.formKey);
         case CLEAR_FORM :
-               return state.map(form => ({
-                 ...form,
-                 ...(form.formKey === action.formKey ? {
-                     fields: form.fields.map(field => {
-                        return {
-                             ...field,
-                             formattedInputValue : null,
-                             rawInputValue: null,
-                             dataSetValue: null
-                           };
-                     })
-                 } : {})
-               }));
+           return state.map(form => ({
+             ...form,
+             ...(form.formKey === action.formKey ? {
+                 fields: form.fields.map(field => {
+                   if(action.defaultData === null) {
+                     return {
+                          ...field,
+                          formattedInputValue : null,
+                          rawInputValue: null,
+                          dataSetValue: null
+                        };
+                   } else if(Object.keys(action.defaultData).find(element => element === field.name)) {
+                          return {
+                            ...field,
+                            formattedInputValue : action.defaultData[field.name],
+                            rawInputValue: action.defaultData[field.name],
+                            dataSetValue: action.defaultData[field.name]
+                          };
+                      }
+                 })
+             } : {})
+           }));
         case SYNC_FORMS_ENTITY:
             // Iterate over all forms, and synchronise fields with the dataset
             return state.map(form => {
