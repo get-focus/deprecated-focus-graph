@@ -1,4 +1,4 @@
-import React, {Component, PureComponent, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import DefaultInputComponent from './input';
 import DefaultDisplayComponent from './display';
 import DefaultSelectComponent from './select';

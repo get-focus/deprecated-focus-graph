@@ -13,10 +13,9 @@ import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 
 
-export const deleteFields = (victoire, defaite) => {
+export const deleteFields = (victoire) => {
   type: MY_ACTION,
-  victoire,
-  defaite
+  victoire
 }
 
 class Test extends Component {
