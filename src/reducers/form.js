@@ -63,7 +63,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
              ...form,
              ...(form.formKey === action.formKey ? {
                  fields: form.fields.map(field => {
-                   if(action.defaultData === null || action.defaultData === undefined) {
+                   if((action.defaultData && Object.keys(action.defaultData).find(element => element === field.name) === undefined) || action.defaultData === null || action.defaultData === undefined) {
                      return {
                           ...field,
                           formattedInputValue : null,
