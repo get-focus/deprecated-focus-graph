@@ -49,6 +49,13 @@ class UserForm extends Component {
         // clear({firstName: "José"});
         load({id})
     }
+    componentWillReceiveProps(newProps){
+      console.log('newProps',newProps.loading);
+      console.log('props',this.props.loading);
+      if(newProps.loading === false && this.props.loading === true){
+        console.log(newProps)
+      }
+    }
     render() {
         const {editing, fields, fieldFor,listFor,selectFor, loading, saving, list} = this.props;
         return (
