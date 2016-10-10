@@ -28,10 +28,10 @@ const formMiddleware = store => next => action => {
         const userDataSet = dataset.user || {};
         const entityPath = action.entityPath;
         const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
-          if(! get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+          if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
             name: key,
             entityPath: entityPath,
-            dataSetValue: null,
+            dataSetValue: undefined,
             loading: false,
             saving : false
           })
@@ -53,7 +53,7 @@ const formMiddleware = store => next => action => {
         });
 
         // Dispatch the SYNC_FORMS_ENTITY action
-        store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions]));
+        store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
 
         // Treat the _meta
         if (saving && status === SUCCESS) {

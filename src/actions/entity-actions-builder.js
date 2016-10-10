@@ -35,7 +35,7 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 //     error: the function standing for an action creator of error
 //   }]
 // }
-const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, message}) => (data => {
     return async dispatch => {
         try {
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
@@ -44,6 +44,14 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
                   dispatch(responseActionCreator(svcValue));
+                  if(type === 'save'){
+                    dispatch({
+                      type: 'PUSH_MESSAGE', message : {
+                        content: message ? message : 'Fields saved',
+                        id: _getMessageId()
+                      }})
+                  }
+
                 } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
                   // Whene there is more node only a part of the payload is dispathed.
                   // TODO: a bit ugly but with the convention on name it should work.
@@ -51,7 +59,16 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   const lastNamePart = splitName[splitName.length - 1];
                   const responsePartFromName = svcValue[lastNamePart];
                   if(responsePartFromName){
+
                     dispatch(responseActionCreator(responsePartFromName));
+                    if(type === 'save'){
+                      dispatch({
+                        type: 'PUSH_MESSAGE', message : {
+                          content: message ? message : 'Fields saved',
+                          id: _getMessageId()
+                        }})
+                    }
+
                   } else {
                     throw new Error(
                       `ACTION_BUILDER: Your response does not contain the property ${lastNamePart} extracted from the action name ${name} you provided to the builder`,
@@ -128,7 +145,7 @@ type ActionBuilderConfig = {
 // export const loadUserAction = loadAction.action;
 // //which is a function taking the criteria as param
 // ```
-export const actionBuilder = ({names, type, service}) => {
+export const actionBuilder = ({names, type, service, message}) => {
     _validateActionBuilderParams({names, type, service});
     //Case transformation
     const UPPER_TYPE = toUpper(type);
@@ -183,7 +200,7 @@ export const actionBuilder = ({names, type, service}) => {
       };
     }, {types: {}, creators: {}, actionCreatorsArray: []});
 
-    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray});
+    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray, type, message});
     return {
         action,
         types: _creatorsAndTypes.types,
