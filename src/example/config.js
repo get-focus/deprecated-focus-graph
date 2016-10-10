@@ -84,7 +84,7 @@ export const definitions = {
         test: {domain: 'DO_RODRIGO', isRequired:true},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
         // TODO: ['childs'] ?
-        childs : { domain: 'DO_CIVILITE', isRequired: true},
+        childs : {redirect: ['user.child']}
    },
    child : {
      firstName : { domain: 'DO_RODRIGO', isRequired: false},

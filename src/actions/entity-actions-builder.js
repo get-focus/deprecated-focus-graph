@@ -35,7 +35,10 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 //     error: the function standing for an action creator of error
 //   }]
 // }
-const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, message}) => (data => {
+
+// TO DO type and message const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, message}) => (data => {
+
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
     return async dispatch => {
         try {
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
@@ -44,13 +47,13 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, me
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
                   dispatch(responseActionCreator(svcValue));
-                  if(type === 'save'){
-                    dispatch({
-                      type: 'PUSH_MESSAGE', message : {
-                        content: message ? message : 'Fields saved',
-                        id: _getMessageId()
-                      }})
-                  }
+                  // if(type === 'save'){
+                  //   dispatch({
+                  //     type: 'PUSH_MESSAGE', message : {
+                  //       content: message ? message : 'Fields saved',
+                  //       id: _getMessageId()
+                  //     }})
+                  // }
 
                 } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
                   // Whene there is more node only a part of the payload is dispathed.
@@ -61,13 +64,13 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, me
                   if(responsePartFromName){
 
                     dispatch(responseActionCreator(responsePartFromName));
-                    if(type === 'save'){
-                      dispatch({
-                        type: 'PUSH_MESSAGE', message : {
-                          content: message ? message : 'Fields saved',
-                          id: _getMessageId()
-                        }})
-                    }
+                    // if(type === 'save'){
+                    //   dispatch({
+                    //     type: 'PUSH_MESSAGE', message : {
+                    //       content: message ? message : 'Fields saved',
+                    //       id: _getMessageId()
+                    //     }})
+                    // }
 
                   } else {
                     throw new Error(
@@ -199,8 +202,9 @@ export const actionBuilder = ({names, type, service, message}) => {
         ]
       };
     }, {types: {}, creators: {}, actionCreatorsArray: []});
+//    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray, type, message});
 
-    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray, type, message});
+    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray});
     return {
         action,
         types: _creatorsAndTypes.types,

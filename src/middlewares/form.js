@@ -24,8 +24,6 @@ const formMiddleware = store => next => action => {
         // Get the updated dataset
         const {dataset, forms, definitions} = store.getState();
 
-        const userDefinitions = definitions.user || {};
-        const userDataSet = dataset.user || {};
         const entityPath = action.entityPath;
         const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
           if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
