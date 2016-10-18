@@ -90,6 +90,7 @@ describe('The actionBuilder', () => {
                 expect(dispatchSpy).to.have.callCount(2);
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncForm: true, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE, syncForm: true, entityPath: 'test', _meta: {status: SUCCESS, loading: true, saving: false}});
+
                 done();
             });
             it('when called with an unsuccessfull load service should call the error action creator', async done => {
@@ -103,9 +104,10 @@ describe('The actionBuilder', () => {
             it('when called with a successfull save service should call the response and request action creators', async done => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedSaveResolveAsync()(dispatchSpy);
-                expect(dispatchSpy).to.have.callCount(2);
+                expect(dispatchSpy).to.have.callCount(3);
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncForm: true, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE, syncForm: true, entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1"}});
                 done();
             });
             it('when called with an unsuccessfull save service should call the error action creator', async done => {

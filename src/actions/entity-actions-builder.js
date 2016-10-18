@@ -1,6 +1,6 @@
 import {capitalize, toUpper} from 'lodash/string';
 import {isArray, isFunction,isString} from 'lodash/lang';
-
+import i18n from 'i18next';
 
 let msgId = 0;
 
@@ -35,10 +35,7 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 //     error: the function standing for an action creator of error
 //   }]
 // }
-
-// TO DO type and message const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray, type, message}) => (data => {
-
-const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  message}) => (data => {
     return async dispatch => {
         try {
             actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
@@ -47,14 +44,14 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
                   dispatch(responseActionCreator(svcValue));
-                  // if(type === 'save'){
-                  //   dispatch({
-                  //     type: 'PUSH_MESSAGE', message : {
-                  //       content: message ? message : 'Fields saved',
-                  //       id: _getMessageId()
-                  //     }})
-                  // }
-
+                  if(type === 'save'){
+                    dispatch({
+                      type: 'PUSH_MESSAGE',
+                      message : {
+                        content: message ? message : name+'.fields.saved',
+                        id: _getMessageId()
+                      }})
+                  }
                 } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
                   // Whene there is more node only a part of the payload is dispathed.
                   // TODO: a bit ugly but with the convention on name it should work.
@@ -64,14 +61,15 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   if(responsePartFromName){
 
                     dispatch(responseActionCreator(responsePartFromName));
-                    // if(type === 'save'){
-                    //   dispatch({
-                    //     type: 'PUSH_MESSAGE', message : {
-                    //       content: message ? message : 'Fields saved',
-                    //       id: _getMessageId()
-                    //     }})
-                    // }
 
+                    if(type === 'save'){
+                      dispatch({
+                        type: 'PUSH_MESSAGE',
+                        message : {
+                          content: message ? message : name+'.fields.saved',
+                          id: _getMessageId()
+                        }})
+                    }
                   } else {
                     throw new Error(
                       `ACTION_BUILDER: Your response does not contain the property ${lastNamePart} extracted from the action name ${name} you provided to the builder`,
@@ -82,7 +80,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray}) => (dat
                   svcValue['globalErrors'].map(element => {
                     return dispatch({
                       type: 'PUSH_MESSAGE', message : {
-                        content: element,
+                        content: i18n ? i18n.t(element) : element,
                         id: _getMessageId()
                       }
                     })
@@ -204,7 +202,7 @@ export const actionBuilder = ({names, type, service, message}) => {
     }, {types: {}, creators: {}, actionCreatorsArray: []});
 //    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray, type, message});
 
-    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray});
+    const action = _asyncActionCreator({service, actionCreatorsArray: _creatorsAndTypes.actionCreatorsArray, type, message});
     return {
         action,
         types: _creatorsAndTypes.types,
