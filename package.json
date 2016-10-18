@@ -1,15 +1,60 @@
 {
-    "name": "focus-graph",
-    "version": "3.0.0-rc10",
-    "description": "Form, data behaviours",
-    "main": "src/index.js",
-    "author": "FOCUS <focus@kleegroup.com>",
-    "license": "MIT",
-    "files": [
-        "actions", "components",  "middlewares", "README.md", "server.js",  "test", "api","dist", "reducers", "src","webpack.config.js", "behaviours", "LICENSE","package.json", "scripts", "store", "index.js"
-    ],
-    "bugs": {
-        "url": "https://github.com/get-focus/focus-graph/issues"
+  "name": "focus-graph",
+  "version": "3.0.0-rc11",
+  "description": "Form, data behaviours",
+  "main": "src/index.js",
+  "author": "FOCUS <focus@kleegroup.com>",
+  "license": "MIT",
+  "files": [
+    "actions",
+    "components",
+    "middlewares",
+    "README.md",
+    "server.js",
+    "test",
+    "api",
+    "dist",
+    "reducers",
+    "src",
+    "webpack.config.js",
+    "behaviours",
+    "LICENSE",
+    "package.json",
+    "scripts",
+    "store",
+    "index.js"
+  ],
+  "bugs": {
+    "url": "https://github.com/get-focus/focus-graph/issues"
+  },
+  "homepage": "https://github.com/get-focus/focus-graph#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/get-focus/focus-graph.git"
+  },
+  "scripts": {
+    "test": "BABEL_ENV=test mocha src/**/__tests__/**/*.js",
+    "test:watch": "BABEL_ENV=test mocha src/**/__tests__/**/*.js --watch",
+    "test-windows:watch": "better-npm-run test",
+    "start": "better-npm-run dev-server",
+    "build:node": "better-npm-run babelify",
+    "build": "npm run build:node",
+    "prepublish": "npm run build"
+  },
+  "betterScripts": {
+    "test": {
+      "command": "mocha src/**/__tests__/**/*.js --watch",
+      "env": {
+        "BABEL_ENV": "test",
+        "DEV": true,
+        "SOURCE_MAPS": false,
+        "ENTRY_FILE_PATH": "./src/example/index",
+        "PAGE_TITLE": "Focus entity dev page",
+        "MINIMIFY": false,
+        "API_PORT": 9999,
+        "PACKAGE_JSON_PATH": "../",
+        "ANCHOR_CLASS": "entity-example"
+      }
     },
     "dev-server": {
       "command": "node ./server.js",
