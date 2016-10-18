@@ -5,6 +5,9 @@ import {syncFormsEntity, toggleFormEditing, setFormToSaving} from '../actions/fo
 import get from 'lodash/get';
 import map from 'lodash/map';
 import find from 'lodash/find';
+import xorWith from 'lodash/xorWith';
+import reduce from 'lodash/reduce';
+
 const FORM_MIDDLEWARE =  'FORM_MIDDLEWARE';
 const formMiddleware = store => next => action => {
 
@@ -19,8 +22,20 @@ const formMiddleware = store => next => action => {
         const {_meta: {status, saving}} = action;
 
         // Get the updated dataset
-        const {dataset, forms} = store.getState();
+        const {dataset, forms, definitions} = store.getState();
+
         const entityPath = action.entityPath;
+        const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
+          if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+            name: key,
+            entityPath: entityPath,
+            dataSetValue: undefined,
+            loading: false,
+            saving : false
+          })
+          return acc
+        }, [])
+
         // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
         const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
             const field = {
@@ -36,7 +51,7 @@ const formMiddleware = store => next => action => {
         });
 
         // Dispatch the SYNC_FORMS_ENTITY action
-        store.dispatch(syncFormsEntity(entityPath, fields));
+        store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
 
         // Treat the _meta
         if (saving && status === SUCCESS) {

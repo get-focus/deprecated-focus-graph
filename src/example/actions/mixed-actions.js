@@ -5,6 +5,6 @@ const _loadMixedAction = actionBuilder({names: ['user.information', 'user.addres
 export const loadMixedTypes = _loadMixedAction.types;
 export const loadMixedAction = _loadMixedAction.action;
 
-const _saveMixedAction = actionBuilder({names: ['user', 'address', 'child'], type: 'save', service: saveMixedEntities});
+const _saveMixedAction = actionBuilder({names: ['user', 'address'], type: 'save', service: saveMixedEntities, message: 'saved'});
 export const saveMixedTypes = _saveMixedAction.types;
 export const saveMixedAction = _saveMixedAction.action;

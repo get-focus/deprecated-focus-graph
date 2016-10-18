@@ -30,7 +30,7 @@ export const _checkFieldDefinition = (fieldName: string, entityPath: string, def
 }
 
 export const _checkValueForList = (value,propertyName) => {
-  if(!isArray(value) ){
+  if(!isArray(value) && value !== undefined){
     throw new Error(`${FIELD_MIDDLEWARE}: You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
   }
 }

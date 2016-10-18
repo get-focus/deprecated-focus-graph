@@ -217,7 +217,7 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
     //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
     const entityDefinition = get(definitions, `${entityPath}`) || {};
     const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
-    if(redirect){
+    if(redirect && isArray(value)){
       const redirectDefinition = _getRedirectDefinition(redirect, definitions);
       value = value.map((element, index)=>{
         const newElement ={};
