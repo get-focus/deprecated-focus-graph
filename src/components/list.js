@@ -13,7 +13,7 @@ function List({ fieldForLine, selectForLine, textForLine, LineComponent, childre
          }): <div></div>) // todo: null ?
     }
     return (
-      <div className='list'> {renderLine()}</div>
+      <div className='list'>{renderLine()}</div>
   );
 }
 
