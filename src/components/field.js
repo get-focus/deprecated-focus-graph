@@ -43,6 +43,10 @@ Field.displayName = 'Field';
 Field.propTypes = {
     error: PropTypes.string,
     name: PropTypes.string.isRequired,
-    multiple: PropTypes.bool
+    multiple: PropTypes.bool,
+    hasLabel: PropTypes.bool
+};
+Field.defaultProps = {
+    hasLabel: true
 };
 export default Field;
