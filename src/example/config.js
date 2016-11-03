@@ -81,7 +81,7 @@ export const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
-        test: {domain: 'DO_RODRIGO', isRequired:false},
+        test: {domain: 'DO_DON_DIEGO', isRequired:true},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
         // TODO: ['childs'] ?
         childs : {redirect: ['user.child']}
@@ -117,7 +117,6 @@ export const domains = {
                 maxLength: 200
             }
         }],
-        formatter: value => value + ' - formaté'
 
     },
     DO_AUTOCOMPLETE: {

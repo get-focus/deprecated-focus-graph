@@ -25,6 +25,7 @@ class UserForm extends Component {
         return (
             <Panel title='User with more details for Mrs' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
+                {fieldFor('test', {entityPath: 'user.information'})}
                 {selectFor('civility', {entityPath: 'user.information', masterDatum: 'civility'})}
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('firstName', {entityPath: 'user.information'})}
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('lastName', {entityPath: 'user.information'})}

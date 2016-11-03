@@ -22,7 +22,7 @@ export const ERROR = 'ERROR';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {})});
+const _actionCreatorBuilder = (type, name, _meta) => (payload, formKey) => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {}), formKey});
 
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
@@ -35,15 +35,15 @@ const _actionCreatorBuilder = (type, name, _meta) => payload => ({...{type, enti
 //     error: the function standing for an action creator of error
 //   }]
 // }
-const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  message}) => (data => {
+const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  message}) => ((data, formKey) => {
     return async dispatch => {
         try {
-            actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data)));
+            actionCreatorsArray.forEach(({name, request: requestActionCreator}) => dispatch(requestActionCreator(data, formKey)));
             const svcValue = await promiseSvc(data);
             actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
-                  dispatch(responseActionCreator(svcValue));
+                  dispatch(responseActionCreator(svcValue,formKey));
                   if(type === 'save'){
                     dispatch({
                       type: 'PUSH_MESSAGE',
@@ -60,7 +60,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                   const responsePartFromName = svcValue[lastNamePart];
                   if(responsePartFromName){
 
-                    dispatch(responseActionCreator(responsePartFromName));
+                    dispatch(responseActionCreator(responsePartFromName,formKey));
 
                     if(type === 'save'){
                       dispatch({

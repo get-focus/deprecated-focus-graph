@@ -45,7 +45,7 @@ const getDefaultState = defaultData => ({
     saving: false
 });
 
-const _reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defaultData), {type, payload}) => {
+const _reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defaultData), {type, payload, formKey}) => {
     //todo: add some validation and check here
     const {load ={}, save ={}} = types;
     switch(type) {

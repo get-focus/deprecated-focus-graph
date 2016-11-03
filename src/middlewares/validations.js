@@ -125,17 +125,19 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
         throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
       }
 
-    }else {
+    }else if(value){
       //TODO: Maybe it should be entityName + fieldName.
       const domain = domains[domainName];
       if(!domain){
         throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: Your field ${fieldName} in the entity ${entityPath} don't have a domain, you may have an array field which have a **redirect** property in it.`)
       }
       validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+    }else {
+      validationResult = isRequired ? {isValid: false} : {isValid: true};
     }
 
     if (validationResult.isValid == false  ) {
-        dispatch(inputError(formKey, fieldName, entityPath, validationResult.error));
+        dispatch(inputError(formKey, fieldName, entityPath, 'required'));
         return false;
     } else {
         return true;
