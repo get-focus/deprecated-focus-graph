@@ -11,7 +11,8 @@ export const loadError= async () => {
     return data;
 }
 
-export const saveUser = async ({user}) => {
+export const saveUser = async (data) => {
+    const user = data['user.information']
     await new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve()
