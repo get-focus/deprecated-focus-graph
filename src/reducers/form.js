@@ -7,7 +7,7 @@ import findIndex from 'lodash/findIndex';
 
 const initializeField = field => ({
     valid: true,
-    error: false,
+    error: null,
     active: true,
     dirty: false,
     loading: false,
@@ -141,7 +141,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                 name: action.fieldName,
                                 entityPath: action.entityPath,
                                 valid: true,
-                                error: false,
+                                error: null,
                                 loading: false,
                                 saving: false,
                                 active: true,

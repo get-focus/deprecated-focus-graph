@@ -14,18 +14,11 @@ const SmartSelectComponent = ({
     SelectComponent,
     ...otherProps
 }, {store: {getState}}) => {
-
     const {masterData = []} = getState();
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
     const {value} = masterDatumObject;
     const selectValues = values || value
-
-    return (
-        <div>
-            <SelectComponent onChange={onChange} valid={valid} error={error} name={name} values={selectValues} value={rawInputValue} {...otherProps}/>
-            {!valid && <b style={{color: 'red'}}>{error}</b>}
-        </div>
-    );
+    return <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={rawInputValue} valid={valid}  {...otherProps}/>
 };
 
 SmartSelectComponent.contextTypes = {

@@ -39,7 +39,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
     entityPath = entityPath ? entityPath : entityPathArray[0];
     const metadata = list ? getListFieldMetadata(propertyName, redirectEntityPath, definitions, domains) :  getFieldMetadata(propertyName, entityPath, definitions, domains);
 
-    const field =  find(fields, {entityPath, name: propertyName});
+    const field = find(fields, {entityPath, name: propertyName});
     const {rawInputValue} = field || {};
     const onChange = rawValue => {
         onInputChange(propertyName, entityPath, rawValue);
@@ -95,9 +95,9 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
         if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
         if (userDefinedOnBlur) userDefinedOnBlur();
       }
-
+      const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
       return <FieldComponent {...field}
-                error={fieldTab.error && fieldTab.error[index] && fieldTab.error[index][propertyName]}
+                error={fieldError}
                 textOnly={textOnly}
                 editing={editing}
                 multiple={multiple}
