@@ -51,12 +51,13 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         if (get(definitions, `${entityPath}.${propertyName}`).validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
-    const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName)(props): {};
-    const selectForLine = list ? fieldForListBuilder(entityPath, propertyName, true)(props): {};
+    const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName, false, false, options.displayLabel, options.isRaw)(props): {};
+    const selectForLine = list ? fieldForListBuilder(entityPath, propertyName, true, false)(props): {};
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
     return <FieldComponent  {...field}
+              displayLabel={options.displayLabel}
               fieldForLine={fieldForLine}
               textForLine={textForLine}
               selectForLine={selectForLine}
@@ -72,7 +73,11 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
 }
 
 
+<<<<<<< HEAD
 const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, textOnly= false) => {
+=======
+const fieldForListBuilder = (entityPathList, propertyNameList, multiple=false, textOnly=false, displayLabel, isRaw) => {
+>>>>>>> Working on the listFor display
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const {onChange: optionsOnChange, ...otherOptions} = options;
@@ -97,6 +102,8 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
       }
       const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
       return <FieldComponent {...field}
+                displayLabel={displayLabel}
+                isRaw={isRaw}
                 error={fieldError}
                 textOnly={textOnly}
                 editing={editing}

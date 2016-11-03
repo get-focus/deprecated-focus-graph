@@ -8,11 +8,13 @@ import DefaultListComponent from './list';
 import DefaultTextComponent from './text';
 import DefaultSelectDisplayComponent from './select-display';
 
-const FieldLabelValueComponent = ({editing, isRequired, label, name, valid, ValueComponent, rawValid}) => (
+const FieldLabelValueComponent = ({editing, isRequired, label, name, valid, ValueComponent, displayLabel, isRaw}) => (
     <div data-focus='field' className='mdl-grid' data-mode={editing ? 'edit' : 'consult'} data-required={isRequired} data-valid={valid}>
-        <div data-focus='field-label-container' className='mdl-cell mdl-cell--top mdl-cell--4-col'>
-            <Label name={name} text={label} />
-        </div>
+        {(displayLabel || displayLabel === undefined) &&
+            <div data-focus='field-label-container' className='mdl-cell mdl-cell--top mdl-cell--4-col' style={isRaw ? {width: 'initial'} : {}}>
+                <Label name={name} text={label} />
+            </div>
+        }
         <div data-focus='field-value-container' className='mdl-cell mdl-cell--top mdl-cell--8-col'>
             {ValueComponent}
             {editing && rawValid && <i className="material-icons">check</i>}
@@ -36,13 +38,15 @@ class Field extends PureComponent {
         const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectDisplayComponent {...otherProps} /> : <DisplayComponent  {...otherProps} />);
         const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SmartSelectComponent SelectComponent={SelectComponent} {...otherProps}/> : <InputComponent {...otherProps}/>);
         const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
-        return textOnly ? ValueComponent : <FieldLabelValueComponent ValueComponent={ValueComponent} {...otherProps} />
-    }
+        return textOnly ? ValueComponent : <FieldLabelValueComponent ValueComponent={ValueComponent} displayLabel={otherProps.displayLabel} isRaw={otherProps.isRaw} {...otherProps} />
+}
 }
 Field.displayName = 'Field';
 Field.propTypes = {
     error: PropTypes.string,
     name: PropTypes.string.isRequired,
-    multiple: PropTypes.bool
+    multiple: PropTypes.bool,
+    displaLabel: PropTypes.bool,
+    isRaw: PropTypes.bool
 };
 export default Field;
