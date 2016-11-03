@@ -94,7 +94,7 @@ const formMiddleware = store => next => action => {
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
                   if (!fieldValid) formValid = false;
-                  return fieldValid;
+                  return formValid;
               }, true);
               // If the form is valid, then dispatch the save action
               if (formValid) {
