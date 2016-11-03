@@ -6,10 +6,8 @@ import get from 'lodash/get';
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object,
     components: PropTypes.shape ({
-        InputComponent: PropTypes.func,
-        DisplayComponent: PropTypes.func,
-        SelectComponent: PropTypes.func,
-        SelectDisplayComponent: PropTypes.func
+       InputComponent: PropTypes.func,
+       DisplayComponent: PropTypes.func
     })
 };
 
@@ -25,11 +23,11 @@ const getFieldMetadata = (propertyName, entityPath, definitions, domains) => {
 }
 
 const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domains) => {
-    const propertyDefinition = get(definitions,entityPath)
-    return {
-        isRequired: propertyDefinition.isRequired,
-        ...domains[propertyDefinition.domain]
-    };
+  const propertyDefinition = get(definitions,entityPath)
+  return {
+    isRequired: propertyDefinition.isRequired,
+    ...domains[propertyDefinition.domain]
+  };
 }
 
 const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange, ...options} = {}) => {
@@ -59,59 +57,59 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
 
     const finalEditing = options.editing !== undefined ? options.editing : editing;
     return <FieldComponent  {...field}
-        fieldForLine={fieldForLine}
-        textForLine={textForLine}
-        selectForLine={selectForLine}
-        multiple={multiple}
-        list={list}
-        textOnly={textOnly}
-        editing={finalEditing}
-        name={propertyName}
-        onBlur={onBlur}
-        onChange={onChange}
-        metadata={{ ...components, ...metadata}}
-        {...options}/>;
+              fieldForLine={fieldForLine}
+              textForLine={textForLine}
+              selectForLine={selectForLine}
+              multiple={multiple}
+              list={list}
+              textOnly={textOnly}
+              editing={finalEditing}
+              name={propertyName}
+              onBlur={onBlur}
+              onChange={onChange}
+              metadata={{ ...components, ...metadata}}
+              {...options}/>;
 }
 
 
 const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, textOnly= false) => {
-    const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
-        const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
-        const {onChange: optionsOnChange, ...otherOptions} = options;
-        const fieldTab = find(fields, {name: propertyNameList});
-        if(!isArray(fieldTab.rawInputValue) || !isArray(fieldTab.formattedInputValue) ){
-            throw new Error(`You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
-        }
+  const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
+      const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
+      const {onChange: optionsOnChange, ...otherOptions} = options;
+      const fieldTab = find(fields, {name: propertyNameList});
+      if(!isArray(fieldTab.rawInputValue) || !isArray(fieldTab.formattedInputValue) ){
+        throw new Error(`You must provide an array when calling listFor('${propertyName}') in the DEFAULT_DATA (reducer) or in the service`);
+      }
 
-        const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
-        const field = {
-            rawInputValue : fieldTab.rawInputValue[index][propertyName],
-            formattedInputValue: fieldTab.formattedInputValue[index][propertyName]
-        }
-        const onChange = rawValue => {
-            fieldTab.rawInputValue[index][propertyName] = rawValue;
-            onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
-            if (userDefinedOnChange) userDefinedOnChange(rawValue);
-        }
-        const onBlur = () => {
-            if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
-            if (userDefinedOnBlur) userDefinedOnBlur();
-        }
-        const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
-        return <FieldComponent {...field}
-            error={fieldError}
-            textOnly={textOnly}
-            editing={editing}
-            multiple={multiple}
-            name={propertyName}
-            metadata={metadata}
-            onChange={onChange}
-            onBlur={onBlur}
-            fields={fields}
-            {...connectedComponentProps}
-            {...options} />;
-    }
-    return fieldForLineBuilder;
+      const metadata = getFieldMetadata(propertyName, entityPath, definitions, domains);
+      const field = {
+        rawInputValue : fieldTab.rawInputValue[index][propertyName],
+        formattedInputValue: fieldTab.formattedInputValue[index][propertyName]
+      }
+      const onChange = rawValue => {
+       fieldTab.rawInputValue[index][propertyName] = rawValue;
+        onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
+        if (userDefinedOnChange) userDefinedOnChange(rawValue);
+      }
+      const onBlur = () => {
+        if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
+        if (userDefinedOnBlur) userDefinedOnBlur();
+      }
+      const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
+      return <FieldComponent {...field}
+                error={fieldError}
+                textOnly={textOnly}
+                editing={editing}
+                multiple={multiple}
+                name={propertyName}
+                metadata={metadata}
+                onChange={onChange}
+                 onBlur={onBlur}
+                 fields={fields}
+                 {...connectedComponentProps}
+                 {...options} />;
+  }
+  return fieldForLineBuilder;
 
 }
 
@@ -119,12 +117,13 @@ export function connect() {
     return function connectComponent(ComponentToConnect) {
         function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers, components}) {
             const props = {...otherProps, components}
+            const {InputComponent, DisplayComponent} = components;
             const fieldFor = fieldHelpers.fieldForBuilder(props);
             const textFor = fieldHelpers.fieldForBuilder(props, true);
             const selectFor = fieldHelpers.fieldForBuilder(props, false, true);
             const listFor = fieldHelpers.fieldForBuilder(props, false, false, true, fieldHelpers.fieldForListBuilder);
             const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} components={components} fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
+            return <ComponentToConnect {...otherProps} _behaviours={behaviours} components={components}  fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
@@ -141,10 +140,8 @@ class FieldProvider extends PureComponent {
                 fieldForListBuilder
             },
             components: {
-                InputComponent : this.props.InputComponent,
-                DisplayComponent: this.props.DisplayComponent,
-                SelectComponent: this.props.SelectComponent,
-                SelectDisplayComponent: this.props.SelectDisplayComponent
+              InputComponent : this.props.InputComponent,
+              DisplayComponent: this.props.DisplayComponent
             }
         }
     }
