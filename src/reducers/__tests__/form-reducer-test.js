@@ -22,7 +22,7 @@ describe('The form reducer', () => {
                 dataSetValue: 'fieldValue',
                 active: true,
                 dirty: false,
-                error: false,
+                error: null,
                 valid: true,
                 loading: false,
                 saving: false,
