@@ -30,6 +30,7 @@ const formMiddleware = store => next => action => {
             name: key,
             entityPath: entityPath,
             dataSetValue: undefined,
+            isRequired: value.isRequired,
             loading: false,
             saving : false
           })
