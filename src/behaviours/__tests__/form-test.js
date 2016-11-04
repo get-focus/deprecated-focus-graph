@@ -6,8 +6,9 @@ const {renderIntoDocument} = TestUtils;
 import find from 'lodash/find';
 import rootReducer from '../../reducers';
 import DevTools from '../../example/containers/dev-tools';
+import {Provider as MetadataProvider} from '../metadata';
 
-const store = builder({dataset:rootReducer}, [], [DevTools.instrument()]);
+const alteredStore = builder({dataset:rootReducer}, [], [DevTools.instrument()]);
 
 describe('The form connect', () => {
     let capturedProps;
@@ -15,7 +16,23 @@ describe('The form connect', () => {
         capturedProps = props;
         return (<div>my component</div>);
     }
-
+    const domains= {
+      DO_DOMAINE : {
+        type: 'text'
+      }
+    }
+    const definitions= {
+      user: {
+        firstName: {
+          domain: 'DO_DOMAINE',
+          isRequired: true
+        },
+        lastName: {
+          domain: 'DO_DOMAINE',
+          isRequired: true
+        }
+      }
+    };
     describe('when used with no option', () => {
         const formOptions = {};
         it('should throw an error on the formKey option', () => {
@@ -39,8 +56,10 @@ describe('The form connect', () => {
         };
         const ConnectedTestComponent = connect(formOptions)(MyComponent);
         const TestWrapperComponent = () => (
-            <StoreProvider store={store}>
+            <StoreProvider store={alteredStore}>
+              <MetadataProvider definitions={definitions} domains={domains}>
                 <ConnectedTestComponent/>
+              </MetadataProvider>
             </StoreProvider>
         );
 
@@ -53,6 +72,7 @@ describe('The form connect', () => {
             expect(() => connect(formOptions)(MyComponent)).to.not.throw();
         });
         it('should have the form state in the props', () => {
+            console.log(capturedProps)
             expect(capturedProps.formKey).to.equal('testForm');
             expect(capturedProps.loading).to.be.false;
             expect(capturedProps.editing).to.be.false;
@@ -61,15 +81,18 @@ describe('The form connect', () => {
         });
     });
     describe('when onInputChange is called', () => {
-        const dispatchSpy = sinon.spy(store, 'dispatch');
+        const dispatchSpy = sinon.spy(alteredStore, 'dispatch');
+
         const formOptions = {
             formKey: 'testForm',
             entityPathArray: ['user']
         };
         const ConnectedTestComponent = connect(formOptions)(MyComponent);
         const TestWrapperComponent = () => (
-            <StoreProvider store={store}>
-                <ConnectedTestComponent/>
+            <StoreProvider store={alteredStore}>
+              <MetadataProvider definitions={definitions} domains={domains}>
+                  <ConnectedTestComponent/>
+                </MetadataProvider>
             </StoreProvider>
         );
         let renderedTestComponent;
@@ -77,23 +100,25 @@ describe('The form connect', () => {
             dispatchSpy.reset();
             renderedTestComponent = renderIntoDocument(<TestWrapperComponent/>);
             const {onInputChange} = capturedProps;
-            onInputChange('uuid', 'user', 'new value');
+            onInputChange('firstName', 'user', 'new value');
         });
         it('should trigger an INPUT_CHANGE action', () => {
             expect(dispatchSpy).to.have.been.calledWith({
                 type: 'INPUT_CHANGE',
                 formKey: 'testForm',
-                fieldName: 'uuid',
+                fieldName: 'firstName',
                 entityPath: 'user',
                 rawValue: 'new value'
+
             });
         });
         it('should update the state', () => {
-            const uuidField = find(capturedProps.fields, field => field.name === 'uuid');
+            const uuidField = find(capturedProps.fields, field => field.name === 'firstName');
+            console.log(capturedProps)
             expect(uuidField.rawInputValue).to.equal('new value');
         });
         it('should reflect the change in the getUserInput method', () => {
-            expect(capturedProps.getUserInput().user.uuid).to.equal('new value');
+            expect(capturedProps.getUserInput().user.firstName).to.equal('new value');
         });
     })
 })

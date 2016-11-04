@@ -15,8 +15,12 @@ import compose from 'lodash/flowRight';
 class UserForm extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
-        load({id});
+        //load({id});
         loadMasterData();
+    }
+    componentWillReceiveProps(newProps){
+      console.log(newProps.saving);
+      console.log(this.props.saving)
     }
 
     render() {
@@ -25,6 +29,7 @@ class UserForm extends Component {
         return (
             <Panel title='User with more details for Mrs' {...this.props}>
                 {fieldFor('uuid', {entityPath: 'user.information', onChange: () => {console.log(fields)}})}
+                {fieldFor('test', {entityPath: 'user.information'})}
                 {selectFor('civility', {entityPath: 'user.information', masterDatum: 'civility'})}
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('firstName', {entityPath: 'user.information'})}
                 {civilityField && civilityField.rawInputValue === 'MRS' && fieldFor('lastName', {entityPath: 'user.information'})}
@@ -40,9 +45,8 @@ UserForm.displayName = 'UserForm';
 const formConfig = {
     formKey: 'userCustomForm',
     entityPathArray: ['user.information'],
-    loadAction: loadUserAction,
     saveAction: saveUserAction,
-    nonValidatedFields: ['user.information.firstName']
+    nonValidatedFields: ['user.information.firstName', 'user.information.lastName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)

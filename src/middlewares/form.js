@@ -1,7 +1,7 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
 import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue} from './validations'
-import {syncFormsEntity, toggleFormEditing, setFormToSaving} from '../actions/form';
+import {syncFormsEntity, toggleFormEditing, setFormToSaving, validateForm} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
 import find from 'lodash/find';
@@ -19,10 +19,10 @@ const formMiddleware = store => next => action => {
         // Grab the new state, to have the updates on the dataset
         const newState = next(action);
 
-        const {_meta: {status, saving}} = action;
+        const {_meta: {status, saving, loading}} = action;
 
         // Get the updated dataset
-        const {dataset, forms, definitions} = store.getState();
+        const {dataset, forms, definitions,domains} = store.getState();
 
         const entityPath = action.entityPath;
         const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
@@ -31,8 +31,9 @@ const formMiddleware = store => next => action => {
             entityPath: entityPath,
             dataSetValue: undefined,
             isRequired: value.isRequired,
-            loading: false,
-            saving : false
+            loading: loading,
+            saving : saving,
+            valid:true
           })
           return acc
         }, [])
@@ -43,14 +44,14 @@ const formMiddleware = store => next => action => {
                 name: fieldName,
                 entityPath,
                 dataSetValue: fieldValue,
-                loading: get(dataset, `${entityPath}.loading`),
+                loading: get(dataset, `${entityPath}.loading`) ,
+                valid:true,
                 saving: get(dataset, `${entityPath}.saving`)
             };
             // If action was a success, then replace the rawInputValue
             if (status === SUCCESS) field.rawInputValue = fieldValue;
             return field;
         });
-
         // Dispatch the SYNC_FORMS_ENTITY action
         store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
 
@@ -80,8 +81,8 @@ const formMiddleware = store => next => action => {
                     entityPath,
                     dataSetValue: fieldValue,
                     rawInputValue: fieldValue,
-                    loading: get(dataset, `${entityPath}.loading`),
-                    saving: get(dataset, `${entityPath}.saving`)
+                    loading: get(dataset, `${entityPath}.loading`) || false ,
+                    saving: get(dataset, `${entityPath}.saving`) || false
                 }))
             ]), []);
             return next({...action, fields});
