@@ -27,10 +27,19 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         dataSetValue: 'Joe',
                         entityPath: 'user',
+                        isRequired: true, 
                         loading: false,
                         saving: false
                     }]
-                }]
+                }],
+                definitions: {
+                  user : {
+                    firstName: {
+                      domain: 'DO_DOMAINE',
+                      isRequired: true
+                    }
+                  }
+                }
             }
         },
         dispatch: dispatchSpy
@@ -129,9 +138,27 @@ describe('The form middleware', () => {
                             dataSetValue: 'Joe',
                             entityPath: 'user',
                             loading: false,
+                            isRequired: true,
                             saving: false
                         }]
-                    }]
+                    }],
+                    domains: {
+                      DO_DOMAINE : {
+                        type: 'text'
+                      }
+                    },
+                    definitions: {
+                      user: {
+                        firstName: {
+                          domain: 'DO_DOMAINE',
+                          isRequired: true
+                        },
+                        lastName: {
+                          domain: 'DO_DOMAINE',
+                          isRequired: true
+                        }
+                      }
+                    }
                 }
             },
             dispatch: dispatchSpy
@@ -139,6 +166,7 @@ describe('The form middleware', () => {
         const myLoadAction = {
             type: 'A_TYPE_THAT_THE_FORM_SHOULD_LOOK_AFTER',
             syncForm: true,
+            formKey: 'formKey',
             entityPath: 'user',
             _meta: {
                 status: SUCCESS,
@@ -163,7 +191,8 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         loading: true,
                         saving: true,
-                        rawInputValue: 'David'
+                        rawInputValue: 'David',
+                        valid: true
                     },
                     {
                         dataSetValue: 'Lopez',
@@ -171,7 +200,8 @@ describe('The form middleware', () => {
                         name: 'lastName',
                         loading: true,
                         saving: true,
-                        rawInputValue: 'Lopez'
+                        rawInputValue: 'Lopez',
+                        valid: true
                     }
                 ]
             });
@@ -199,7 +229,8 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         loading: true,
                         saving: true,
-                        rawInputValue: 'David'
+                        rawInputValue: 'David',
+                        valid: true
                     },
                     {
                         dataSetValue: 'Lopez',
@@ -207,7 +238,8 @@ describe('The form middleware', () => {
                         name: 'lastName',
                         loading: true,
                         saving: true,
-                        rawInputValue: 'Lopez'
+                        rawInputValue: 'Lopez',
+                        valid: true
                     }
                 ]
             });
