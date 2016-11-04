@@ -19,7 +19,7 @@ const formMiddleware = store => next => action => {
         // Grab the new state, to have the updates on the dataset
         const newState = next(action);
 
-        const {_meta: {status, saving}} = action;
+        const {_meta: {status, saving, loading}} = action;
 
         // Get the updated dataset
         const {dataset, forms, definitions,domains} = store.getState();
@@ -31,8 +31,8 @@ const formMiddleware = store => next => action => {
             entityPath: entityPath,
             dataSetValue: undefined,
             isRequired: value.isRequired,
-            loading: false,
-            saving : false,
+            loading: loading,
+            saving : saving,
             valid:true
           })
           return acc
@@ -44,7 +44,7 @@ const formMiddleware = store => next => action => {
                 name: fieldName,
                 entityPath,
                 dataSetValue: fieldValue,
-                loading: get(dataset, `${entityPath}.loading`),
+                loading: get(dataset, `${entityPath}.loading`) ,
                 valid:true,
                 saving: get(dataset, `${entityPath}.saving`)
             };
@@ -54,11 +54,6 @@ const formMiddleware = store => next => action => {
         });
         // Dispatch the SYNC_FORMS_ENTITY action
         store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
-        [...fieldsOnlyInDefinitions,...fields].reduce((formValid, field) => {
-            const fieldValid = validateField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
-            if (!fieldValid) formValid = false;
-            return formValid;
-        }, true);
 
         // Treat the _meta
         if (saving && status === SUCCESS) {
@@ -86,8 +81,8 @@ const formMiddleware = store => next => action => {
                     entityPath,
                     dataSetValue: fieldValue,
                     rawInputValue: fieldValue,
-                    loading: get(dataset, `${entityPath}.loading`),
-                    saving: get(dataset, `${entityPath}.saving`)
+                    loading: get(dataset, `${entityPath}.loading`) || false ,
+                    saving: get(dataset, `${entityPath}.saving`) || false
                 }))
             ]), []);
             return next({...action, fields});

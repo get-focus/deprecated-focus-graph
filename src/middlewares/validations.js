@@ -12,7 +12,7 @@ import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import omit from 'lodash/omit';
 import map from 'lodash/map';
-import _fakeValidate from './_fake-validate';
+import validate from './validate';
 /**
  * Default field formatter. Defaults to the identity function
  * @type {function}
@@ -27,7 +27,7 @@ const MIDDLEWARES_FORM_VALIDATION = 'MIDDLEWARES_FORM_VALIDATION';
 // TODO : replace this with the focus core function
 export const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
 
-    const validationResult =  _fakeValidate({name, value: rawValue}, validators);
+    const validationResult =  validate({name, value: rawValue}, validators);
     const isValid = validationResult.isValid;
 
     //const rand = Math.random();
@@ -137,7 +137,7 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
     }
 
     if (validationResult.isValid == false  ) {
-        dispatch(inputError(formKey, fieldName, entityPath, 'required'));
+        dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
         return false;
     } else {
         return true;

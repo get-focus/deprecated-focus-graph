@@ -15,8 +15,12 @@ import compose from 'lodash/flowRight';
 class UserForm extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
-        load({id});
+        //load({id});
         loadMasterData();
+    }
+    componentWillReceiveProps(newProps){
+      console.log(newProps.saving);
+      console.log(this.props.saving)
     }
 
     render() {
@@ -41,9 +45,8 @@ UserForm.displayName = 'UserForm';
 const formConfig = {
     formKey: 'userCustomForm',
     entityPathArray: ['user.information'],
-    loadAction: loadUserAction,
     saveAction: saveUserAction,
-    nonValidatedFields: ['user.information.firstName']
+    nonValidatedFields: ['user.information.firstName', 'user.information.lastName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)

@@ -1,15 +1,66 @@
 import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
+import isNaN from 'lodash/isNaN';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+
 //Dependency
 
-const translate = (str, params) => `${str} ${JSON.stringify(params)}`;
+const translate = (str, params) => `${str}`;
+const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-//Focus validators
-const emailValidation = v => typeof v === 'string';
-const numberValidation = v => typeof v === 'number';
-const stringLength = v => typeof v === 'string';
-const dateValidation = v => typeof v === 'string';
 
+
+/* Function to  validate that an input is a number.
+ * @param  {string || number} numberToValidate - Number to validate with the function.
+ * @param  {object} options = {}, Allow the caller to specify min and max values.
+ * @return {boolean} True if the validator works.
+ */
+function numberValidation(numberToValidate, options = {}) {
+    if (isUndefined(numberToValidate) || isNull(numberToValidate)) {
+        return true;
+    }
+    let castNumberToValidate = +numberToValidate; //Cast it into a number.
+    if (isNaN(castNumberToValidate)) {
+        return false;
+    }
+    if(!isNumber(castNumberToValidate)){
+        return false;
+    }
+    let isMin = options.min !== undefined ? castNumberToValidate >= options.min : true;
+    let isMax = options.max !== undefined ? castNumberToValidate <= options.max : true;
+    return isMin && isMax;
+};
+
+
+function stringLength(stringToTest, options = {}) {
+    if (!isString(stringToTest)) {
+        return false;
+    }
+    options.minLength = options.minLength || 0;
+    const isMinLength = options.minLength !== undefined ? stringToTest.length >= options.minLength : true;
+    const isMaxLength = options.maxLength !== undefined ? stringToTest.length <= options.maxLength : true;
+    return isMinLength && isMaxLength;
+};
+
+
+
+/**
+ * Email validator using a Regex.
+ * @param  {string} emailToValidate - The email to validate.
+ * @return {boolean} - True if the email is valide , false otherwise.
+ */
+function emailValidation(emailToValidate) {
+    return EMAIL_REGEX.test(emailToValidate);
+};
+
+function dateValidation(dateToValidate, options) {
+    const moment = require('moment');
+    if(!moment){
+        console.warn('Moment library is not a part of your project, please download it : http://momentjs.com/');
+    }
+    return moment(dateToValidate, options).isValid();
+};
 /**
 * Validae a property given validators.
 * @param  {object} property   - Property to validate which should be as follows: `{name: "field_name",value: "field_value", validators: [{...}] }`.
@@ -84,7 +135,7 @@ function validateProperty(property, validator) {
         }
     })();
     if (isUndefined(isValid) || isNull(isValid)) {
-        console.warn(`The validator of type: ${validator.tye} is not defined`);
+        console.warn(`The validator of type: ${validator.type} is not defined`);
     } else if (false === isValid) {
         //Add the name of the property.
         return getErrorLabel(validator.type, property.modelName + '.' + property.name, options); //"The property " + property.name + " is invalid.";

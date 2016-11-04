@@ -7,7 +7,6 @@ export const loadUser = async ({id}) => {
 export const loadError= async () => {
     const response = await fetch(`http://localhost:9999/x/error`)
     const data = await response.json();
-    console.log(data)
     return data;
 }
 
@@ -18,5 +17,5 @@ export const saveUser = async (data) => {
             resolve()
         }, 1500);
     });
-    return {...user, firstName: 'Name changed by the server mwahaha'};
+    return {};
 }
