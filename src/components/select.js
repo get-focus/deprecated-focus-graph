@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import reactReduxStoreShape from 'react-redux/lib/utils/storeShape';
 import find from 'lodash/find';
 
@@ -10,9 +10,9 @@ const SelectComponent = ({
     valid,
     error
 }) => {
-      const wrappedOnChange = ({target:{value}}) => {
-          onChange(value);
-      }
+    const wrappedOnChange = ({target:{value}}) => {
+        onChange(value);
+    }
     return (
 
         <div>
@@ -25,8 +25,18 @@ const SelectComponent = ({
     );
 };
 
+SelectComponent.propTypes = {
+    error: PropTypes.string,
+    onChange: PropTypes.func,
+    name: PropTypes.string,
+    valid: PropTypes.bool,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    values: PropTypes.array
+};
+SelectComponent.defaultProps = {
+    values: []
+};
 SelectComponent.contextTypes = {
     store: reactReduxStoreShape
 };
-
 export default SelectComponent;

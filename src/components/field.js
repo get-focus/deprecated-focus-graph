@@ -30,10 +30,10 @@ class Field extends PureComponent {
             DisplayComponent = DefaultDisplayComponent,
             InputComponent = DefaultInputComponent,
             SelectComponent = DefaultSelectComponent,
-            SelectComponentDisplay = DefaultSelectDisplayComponent,
+            SelectDisplayComponent = DefaultSelectDisplayComponent,
             ListComponent = DefaultListComponent
         } = otherProps.metadata;
-        const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponentDisplay {...otherProps} /> : <DisplayComponent  {...otherProps} />);
+        const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectDisplayComponent {...otherProps} /> : <DisplayComponent  {...otherProps} />);
         const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SmartSelectComponent SelectComponent={SelectComponent} {...otherProps}/> : <InputComponent {...otherProps}/>);
         const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
         return textOnly ? ValueComponent : <FieldLabelValueComponent ValueComponent={ValueComponent} {...otherProps} />
