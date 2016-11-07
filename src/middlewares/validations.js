@@ -41,6 +41,38 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
     }
 }
 
+// export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
+//   if(!isArray(nonValidatedFields)){
+//      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);
+//   }
+//   if(nonValidatedFields.length === 0) return fields;
+//   return fields.reduce((finalFieldsToValidate, currentField) => {
+//     const potentialCurrentFieldToValidate = nonValidatedFields.reduce( (field,nonValidateField, idx, tab) => {
+//       const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
+//       // nonValidateField is a string we validate the field if the name doesn not match
+//       if(isString(nonValidateField)){
+//         if(!(FIELD_FULL_PATH === nonValidateField) && !tab.includes(FIELD_FULL_PATH)){
+//           field = currentField;
+//           return field
+//         }
+//       }
+//       // nonValidateFields is an array we have to iterate through all its sub fields
+//       const fieldlistToFilterName = Object.keys(nonValidateField)[0];
+//       if(fieldlistToFilterName.includes(FIELD_FULL_PATH)){
+//           if(!isArray(nonValidateField[FIELD_FULL_PATH])){
+//             throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide an array when you want to have a non validate field for an element of the list : ${currentField.name}`)
+//           }
+//           const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
+//               return omit(value, nonValidateField[FIELD_FULL_PATH]);
+//           });
+//           if(rawInputValueToValidate.length > 0) field = {...currentField, rawInputValue: rawInputValueToValidate};
+//           return field;
+//       }
+//     }, {});
+//     return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;
+//   }, []);
+// }
+
 export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
   if(!isArray(nonValidatedFields)){
      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);
@@ -51,9 +83,9 @@ export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
       const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
       // nonValidateField is a string we validate the field if the name doesn not match
       if(isString(nonValidateField)){
-        if(!(FIELD_FULL_PATH === nonValidateField) && !tab.includes(FIELD_FULL_PATH)){
+
+        if(!tab.includes(FIELD_FULL_PATH)){
           field = currentField;
-          return field
         }
       }
       // nonValidateFields is an array we have to iterate through all its sub fields
@@ -65,11 +97,14 @@ export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
           const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
               return omit(value, nonValidateField[FIELD_FULL_PATH]);
           });
-          if(rawInputValueToValidate.length > 0) field = {...currentField, rawInputValue: rawInputValueToValidate};
-          return field;
+          if(rawInputValueToValidate.length > 0) {
+            field = {...currentField, rawInputValue: rawInputValueToValidate}
+            return field;
+          }
       }
-    }, {});
-    return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;
+      return field
+    }, undefined);
+    return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;;
   }, []);
 }
 
