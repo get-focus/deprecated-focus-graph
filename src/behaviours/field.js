@@ -51,6 +51,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         if (get(definitions, `${entityPath}.${propertyName}`).validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
+    options.displayLabel === undefined ? options.displayLabel = true : options.displayLabel
     const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName, false, false, options.displayLabel, options.isRaw)(props): {};
     const selectForLine = list ? fieldForListBuilder(entityPath, propertyName, true, false)(props): {};
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
@@ -103,6 +104,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple=false, t
       const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
       return <FieldComponent {...field}
                 displayLabel={displayLabel}
+                index={index}
                 isRaw={isRaw}
                 error={fieldError}
                 textOnly={textOnly}
