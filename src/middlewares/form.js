@@ -1,6 +1,6 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields,validateOnChangeField, validateField, validateFieldArray, formatValue} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving, validateForm} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
@@ -56,7 +56,12 @@ const formMiddleware = store => next => action => {
         });
         // Dispatch the SYNC_FORMS_ENTITY action
         store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
-
+        [...fields, ...fieldsOnlyInDefinitions].reduce((formValid, field) => {
+           const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
+           console.log(fieldValid)
+           if (!fieldValid) formValid = false;
+           return formValid;
+         }, true);
         // Treat the _meta
         if (saving && status === SUCCESS) {
             // Get the target form key by looking for forms in a saving state and containing the concerned entity path

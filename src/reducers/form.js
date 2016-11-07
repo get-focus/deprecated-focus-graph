@@ -231,6 +231,8 @@ const forms = (state: Array<FormStateType> = [], action) => {
                         fields: action.editing ? form.fields : form.fields.map(({dataSetValue, ...otherAttributes}) => ({
                             ...otherAttributes,
                             rawInputValue: dataSetValue,
+                            error: null,
+                            valid: true, 
                             dataSetValue
                         }))
                     };
