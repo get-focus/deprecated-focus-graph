@@ -1,5 +1,5 @@
 import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING, CLEAR_FORM} from '../actions/form';
-import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST} from '../actions/input';
+import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST, INPUT_CHANGE_ERROR} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -145,6 +145,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                 loading: false,
                                 saving: false,
                                 active: true,
+                                rawValid: true,
                                 dirty: true,
                                 rawInputValue: action.rawValue,
                                 formattedInputValue: action.formattedValue
@@ -165,12 +166,27 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                 rawInputValue: action.rawValue,
                                 formattedInputValue: action.formattedValue,
                                 dirty: true,
-                                valid: true
+                                valid: true,
+                                rawValid: true
                             };
                         })
                     } : {})
                 }));
             }
+        case INPUT_CHANGE_ERROR:
+            return state.map(form => ({
+                ...form,
+                ...(form.formKey === action.formKey ? {
+                    fields: form.fields.map(field => {
+                        const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                        if (!isFieldConcerned) return field;
+                        return {
+                            ...field,
+                            rawValid: false
+                        };
+                    })
+                } : {})
+            }));
         case INPUT_ERROR:
             return state.map(form => ({
                 ...form,
@@ -215,6 +231,8 @@ const forms = (state: Array<FormStateType> = [], action) => {
                         fields: action.editing ? form.fields : form.fields.map(({dataSetValue, ...otherAttributes}) => ({
                             ...otherAttributes,
                             rawInputValue: dataSetValue,
+                            error: null,
+                            valid: true, 
                             dataSetValue
                         }))
                     };

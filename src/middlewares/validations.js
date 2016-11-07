@@ -1,5 +1,5 @@
 import identity from 'lodash/identity';
-import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList} from '../actions/input';
+import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList, inputChangeError} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
@@ -41,17 +41,50 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
     }
 }
 
+// export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
+//   if(!isArray(nonValidatedFields)){
+//      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);
+//   }
+//   if(nonValidatedFields.length === 0) return fields;
+//   return fields.reduce((finalFieldsToValidate, currentField) => {
+//     const potentialCurrentFieldToValidate = nonValidatedFields.reduce( (field,nonValidateField, idx, tab) => {
+//       const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
+//       // nonValidateField is a string we validate the field if the name doesn not match
+//       if(isString(nonValidateField)){
+//         if(!(FIELD_FULL_PATH === nonValidateField) && !tab.includes(FIELD_FULL_PATH)){
+//           field = currentField;
+//           return field
+//         }
+//       }
+//       // nonValidateFields is an array we have to iterate through all its sub fields
+//       const fieldlistToFilterName = Object.keys(nonValidateField)[0];
+//       if(fieldlistToFilterName.includes(FIELD_FULL_PATH)){
+//           if(!isArray(nonValidateField[FIELD_FULL_PATH])){
+//             throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide an array when you want to have a non validate field for an element of the list : ${currentField.name}`)
+//           }
+//           const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
+//               return omit(value, nonValidateField[FIELD_FULL_PATH]);
+//           });
+//           if(rawInputValueToValidate.length > 0) field = {...currentField, rawInputValue: rawInputValueToValidate};
+//           return field;
+//       }
+//     }, {});
+//     return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;
+//   }, []);
+// }
+
 export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
   if(!isArray(nonValidatedFields)){
      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: nonValidatedFields should be an array`, nonValidatedFields);
   }
   if(nonValidatedFields.length === 0) return fields;
   return fields.reduce((finalFieldsToValidate, currentField) => {
-    const potentialCurrentFieldToValidate = nonValidatedFields.reduce( (field,nonValidateField) => {
+    const potentialCurrentFieldToValidate = nonValidatedFields.reduce( (field,nonValidateField, idx, tab) => {
       const FIELD_FULL_PATH = `${currentField.entityPath}.${currentField.name}`;
       // nonValidateField is a string we validate the field if the name doesn not match
       if(isString(nonValidateField)){
-        if(!finalFieldsToValidate.includes(FIELD_FULL_PATH)){
+
+        if(!tab.includes(FIELD_FULL_PATH)){
           field = currentField;
         }
       }
@@ -64,11 +97,14 @@ export const filterNonValidatedFields = (fields, nonValidatedFields = []) => {
           const rawInputValueToValidate = currentField.rawInputValue.map((value) => {
               return omit(value, nonValidateField[FIELD_FULL_PATH]);
           });
-          if(rawInputValueToValidate.length > 0) field = {...currentField, rawInputValue: rawInputValueToValidate};
+          if(rawInputValueToValidate.length > 0) {
+            field = {...currentField, rawInputValue: rawInputValueToValidate}
+            return field;
+          }
       }
-      return field;
-    }, {});
-    return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;
+      return field
+    }, undefined);
+    return potentialCurrentFieldToValidate ? [...finalFieldsToValidate, potentialCurrentFieldToValidate] : finalFieldsToValidate;;
   }, []);
 }
 
@@ -99,43 +135,8 @@ const _getRedirectDefinition = (redirect: Array, definitions: Object) => {
  * @return {boolean}            the field validation status
  */
 export const validateField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch) => {
-    let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldName}`);
-    let validationResult= {};
     // Redirect use to have the information of a list field
-    if(isArray(value)){
-      // If it is a list field it should redirect to a line entity definition.
-      if(redirect){
-        if(!isArray(redirect)){
-          throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: your redirect property should be an array in the definition of ${entityPath}.${fieldName}.`)
-        }
-        //TODO: feature redirect array
-        const redirectDefinition = _getRedirectDefinition(redirect, definitions);
-        // The value is an array and we iterate over it.
-        validationResult = {isValid : true};
-        value.map((element, index) => {
-          mapKeys(element, (value, propertyNameLine) => {
-            const domain = domains[redirectDefinition[propertyNameLine].domain];
-            const fieldValid = validateFieldForList(definitions, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
-            if(fieldValid === false){
-              validationResult.isValid = false;
-            }
-          })
-        })
-      }else {
-        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
-      }
-
-    }else if(value){
-      //TODO: Maybe it should be entityName + fieldName.
-      const domain = domains[domainName];
-      if(!domain){
-        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: Your field ${fieldName} in the entity ${entityPath} don't have a domain, you may have an array field which have a **redirect** property in it.`)
-      }
-      validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
-    }else {
-      validationResult = isRequired ? {isValid: false} : {isValid: true};
-    }
-
+    const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch);
     if (validationResult.isValid == false  ) {
         dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
         return false;
@@ -143,6 +144,60 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
         return true;
     }
 }
+
+
+export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch)  => {
+  const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch);
+  if (validationResult.isValid == false  ) {
+      dispatch(inputChangeError(formKey, fieldName, entityPath));
+      return false;
+  } else {
+      return true;
+  }
+}
+
+
+
+export const validateGlobal = (definitions, domains , formKey, entityPath, fieldName, value, dispatch)=> {
+  let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldName}`);
+  let validationResult= {};
+  if(isArray(value)){
+    // If it is a list field it should redirect to a line entity definition.
+    if(redirect){
+      if(!isArray(redirect)){
+        throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: your redirect property should be an array in the definition of ${entityPath}.${fieldName}.`)
+      }
+      //TODO: feature redirect array
+      const redirectDefinition = _getRedirectDefinition(redirect, definitions);
+      // The value is an array and we iterate over it.
+      validationResult = {isValid : true};
+      value.map((element, index) => {
+        mapKeys(element, (value, propertyNameLine) => {
+          const domain = domains[redirectDefinition[propertyNameLine].domain];
+          const fieldValid = validateFieldForList(definitions, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
+          if(fieldValid === false){
+            validationResult.isValid = false;
+          }
+        })
+      })
+    }else {
+      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
+    }
+
+  }else if(value){
+    //TODO: Maybe it should be entityName + fieldName.
+    const domain = domains[domainName];
+    if(!domain){
+      throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: Your field ${fieldName} in the entity ${entityPath} don't have a domain, you may have an array field which have a **redirect** property in it.`)
+    }
+    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+  }else {
+    validationResult = isRequired ? {isValid: false} : {isValid: true};
+  }
+  return validationResult
+}
+
+
 
 /**
  * Validate a one field in a list object

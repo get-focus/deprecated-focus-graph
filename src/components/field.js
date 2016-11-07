@@ -8,14 +8,14 @@ import DefaultListComponent from './list';
 import DefaultTextComponent from './text';
 import DefaultSelectDisplayComponent from './select-display';
 
-const FieldLabelValueComponent = ({editing, isRequired, label, name, valid, ValueComponent}) => (
+const FieldLabelValueComponent = ({editing, isRequired, label, name, valid, ValueComponent, rawValid}) => (
     <div data-focus='field' className='mdl-grid' data-mode={editing ? 'edit' : 'consult'} data-required={isRequired} data-valid={valid}>
         <div data-focus='field-label-container' className='mdl-cell mdl-cell--top mdl-cell--4-col'>
             <Label name={name} text={label} />
         </div>
         <div data-focus='field-value-container' className='mdl-cell mdl-cell--top mdl-cell--8-col'>
             {ValueComponent}
-            {editing && valid && <i className="material-icons">check</i>}
+            {editing && rawValid && <i className="material-icons">check</i>}
         </div>
     </div>
 );

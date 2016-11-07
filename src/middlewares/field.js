@@ -1,6 +1,6 @@
 import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST} from '../actions/input';
 import {inputError, inputErrorList} from '../actions/input';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateOnChangeField,validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
 import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
@@ -56,7 +56,7 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
                   ...action,
                   formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
               });
-              validateField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
+              validateOnChangeField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
               break;
           case CREATE_FORM:
           case SYNC_FORM_ENTITIES:

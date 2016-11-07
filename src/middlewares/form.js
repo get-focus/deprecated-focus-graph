@@ -1,6 +1,6 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
 import {SUCCESS} from '../actions/entity-actions-builder';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateFieldArray, formatValue} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields,validateOnChangeField, validateField, validateFieldArray, formatValue} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving, validateForm} from '../actions/form';
 import get from 'lodash/get';
 import map from 'lodash/map';
@@ -31,9 +31,10 @@ const formMiddleware = store => next => action => {
             entityPath: entityPath,
             dataSetValue: undefined,
             isRequired: value.isRequired,
-            loading: loading,
+            loading: false,
             saving : saving,
-            valid:true
+            valid:true,
+            rawValid: true
           })
           return acc
         }, [])
@@ -46,6 +47,7 @@ const formMiddleware = store => next => action => {
                 dataSetValue: fieldValue,
                 loading: get(dataset, `${entityPath}.loading`) ,
                 valid:true,
+                rawValid: true,
                 saving: get(dataset, `${entityPath}.saving`)
             };
             // If action was a success, then replace the rawInputValue
@@ -54,7 +56,12 @@ const formMiddleware = store => next => action => {
         });
         // Dispatch the SYNC_FORMS_ENTITY action
         store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions,...fields ]));
-
+        [...fields, ...fieldsOnlyInDefinitions].reduce((formValid, field) => {
+           const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
+           console.log(fieldValid)
+           if (!fieldValid) formValid = false;
+           return formValid;
+         }, true);
         // Treat the _meta
         if (saving && status === SUCCESS) {
             // Get the target form key by looking for forms in a saving state and containing the concerned entity path
@@ -91,6 +98,7 @@ const formMiddleware = store => next => action => {
               const {fields : fieldCreated} = find(forms, {formKey});
               // Get the fields to validate
               const fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
+              console.log(fieldsToValidate)
               // Validate every field, and if one is invalid, then the form is invalid
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);

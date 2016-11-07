@@ -81,7 +81,7 @@ export const definitions = {
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
         lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
         date: { domain: 'DO_DATE', isRequired: false},
-        test: {domain: 'DO_DON_DIEGO', isRequired:true},
+        test: {domain: 'DO_EMAIL', isRequired:true},
         civility: { domain: 'DO_CIVILITE', isRequired: true},
         // TODO: ['childs'] ?
         childs : {redirect: ['user.child']}
@@ -105,6 +105,12 @@ export const domains = {
             type: 'string'
         }],
          formatter: value => value + ' - formaté rodrigo',
+    },
+    DO_EMAIL: {
+        type: 'text',
+        validators: [{
+            type: 'email'
+        }]
     },
     DO_DON_DIEGO: {
         type: 'text',
