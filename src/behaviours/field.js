@@ -51,7 +51,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         if (get(definitions, `${entityPath}.${propertyName}`).validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
         if (userDefinedOnBlur) userDefinedOnBlur();
     };
-    const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName, false, false, options.listOnly)(props): {};
+    const fieldForLine = list ? fieldForListBuilder(entityPath, propertyName, false, false, options.isRaw, options.listOnly)(props): {};
     const selectForLine = list ? fieldForListBuilder(entityPath, propertyName, true)(props): {};
     const textForLine = list ? fieldForListBuilder(entityPath, propertyName, false, true)(props): {};
 
@@ -72,7 +72,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
 }
 
 
-const fieldForListBuilder = (entityPathList, propertyNameList, multiple=false, textOnly=false, displayLabel, isRaw) => {
+const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, textOnly= false, isRaw, listOnly) => {
   const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
       const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
       const {onChange: optionsOnChange, ...otherOptions} = options;
@@ -107,6 +107,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple=false, t
                 onChange={onChange}
                  onBlur={onBlur}
                  fields={fields}
+                 isRaw={isRaw}
                  {...connectedComponentProps}
                  {...options} />;
   }

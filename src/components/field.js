@@ -12,7 +12,9 @@ const FieldLabelValueComponent = ({editing, isRequired, label, name, valid, Valu
     <div data-focus='field' className='mdl-grid' data-mode={editing ? 'edit' : 'consult'} data-required={isRequired} data-valid={valid}>
         <div
             data-focus='field-label-container'
-            className={(isRaw && index === undefined || listOnly) ? '' : (isRaw && index != undefined) ? 'mdl-cell mdl-cell--top mdl-cell--2-col' : 'mdl-cell mdl-cell--top mdl-cell--4-col'} style={(listOnly) ? {margin: '8px', width: 'calc(10% - 16px)'} : (index != undefined || isRaw) ? {marginTop: '0px'} : {}}>
+            className={(isRaw && index === undefined && !listOnly && label != undefined) ? ''
+                : (isRaw && index != undefined || isRaw && listOnly || isRaw && label === undefined) ? 'mdl-cell mdl-cell--top mdl-cell--2-col'
+                : 'mdl-cell mdl-cell--top mdl-cell--4-col'} style={(index != undefined || isRaw) ? {marginTop: '0px'} : {}}>
             {(displayLabel || (displayLabel === false && index != undefined) || displayLabel === undefined) && <Label name={name} text={label} />}
         </div>
         <div data-focus='field-value-container' className='mdl-cell mdl-cell--top mdl-cell--8-col' style={(index != undefined || isRaw) ? {marginTop: '0px'} : {}}>
@@ -35,7 +37,6 @@ class Field extends PureComponent {
             SelectComponentDisplay = DefaultSelectDisplayComponent,
             ListComponent = DefaultListComponent } = otherProps.metadata;
 
-            console.log(listOnly);
             const renderConsult = () => list ?  <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SelectComponentDisplay {...otherProps} /> : <DisplayComponent  {...otherProps} />);
             const renderEdit = () => list ? <ListComponent fieldForLine={fieldForLine} values={otherProps.formattedInputValue} {...otherProps}/> : (multiple ? <SmartSelectComponent SelectComponent={SelectComponent} {...otherProps}/> : <InputComponent {...otherProps}/>);
             const ValueComponent = otherProps.editing ? renderEdit() : renderConsult();
