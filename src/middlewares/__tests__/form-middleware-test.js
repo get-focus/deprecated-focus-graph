@@ -195,7 +195,7 @@ describe('The form middleware', () => {
                         saving: true,
                         rawInputValue: 'David',
                         valid: true,
-                        rawValid: true
+                        rawValid: false
                     },
                     {
                         dataSetValue: 'Lopez',
@@ -204,7 +204,7 @@ describe('The form middleware', () => {
                         loading: true,
                         saving: true,
                         rawInputValue: 'Lopez',
-                        rawValid: true,
+                        rawValid: false,
                         valid: true
                     }
                 ]
@@ -234,7 +234,7 @@ describe('The form middleware', () => {
                         loading: true,
                         saving: true,
                         rawInputValue: 'David',
-                        rawValid: true,
+                        rawValid: false,
                         valid: true
                     },
                     {
@@ -242,7 +242,7 @@ describe('The form middleware', () => {
                         entityPath: 'user',
                         name: 'lastName',
                         loading: true,
-                        rawValid: true,
+                        rawValid: false,
                         saving: true,
                         rawInputValue: 'Lopez',
                         valid: true
