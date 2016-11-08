@@ -32,7 +32,7 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
 
     //const rand = Math.random();
     //const isValid = rand > 0.5;
-    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue)) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
+    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || (isString(rawValue) && isEmpty(rawValue) )) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
     return {
         name,
         value: rawValue,
@@ -184,7 +184,7 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
       throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
     }
 
-} else if(!isUndefined(value) || !isNull(value)){
+} else if(!isUndefined(value) && !isNull(value)){
     //TODO: Maybe it should be entityName + fieldName.
     const domain = domains[domainName];
     if(!domain){
