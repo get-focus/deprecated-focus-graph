@@ -25,7 +25,19 @@ const formMiddleware = store => next => action => {
         const {dataset, forms, definitions,domains} = store.getState();
 
         const entityPath = action.entityPath;
-
+        const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
+          if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+            name: key,
+            entityPath: entityPath,
+            dataSetValue: undefined,
+            isRequired: value.isRequired,
+            loading: get(dataset, `${entityPath}.loading`) || false,
+            saving : saving,
+            valid:true,
+            rawValid: true
+          })
+          return acc
+        }, [])
 
         // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
         const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
@@ -43,7 +55,7 @@ const formMiddleware = store => next => action => {
             return field;
         });
         // Dispatch the SYNC_FORMS_ENTITY action
-        store.dispatch(syncFormsEntity(entityPath, [...fields ]));
+        store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions ]));
         [...fields].reduce((formValid, field) => {
            const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
            if (!fieldValid) formValid = false;
@@ -70,18 +82,6 @@ const formMiddleware = store => next => action => {
           case CREATE_FORM:
             const fields = entityPathArray.reduce((acc, entityPath) => ([
                 ...acc,
-                ...map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => ({
-                    name: fieldName,
-                    entityPath,
-                    dataSetValue: fieldValue,
-                    rawInputValue: fieldValue,
-                    rawValid: false,
-                    loading: get(dataset, `${entityPath}.loading`) || false ,
-                    saving: get(dataset, `${entityPath}.saving`) || false
-                }))
-            ]), []);
-            const fieldsOnlyInDefinitions = entityPathArray.reduce((acc, entityPath) => ([
-                ...acc,
                 ...reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
                   if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
                     name: key,
@@ -94,19 +94,27 @@ const formMiddleware = store => next => action => {
                     rawValid: false
                   })
                   return acc
-                }, [])
+                }, []),
+                ...map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => ({
+                    name: fieldName,
+                    entityPath,
+                    dataSetValue: fieldValue,
+                    rawInputValue: fieldValue,
+                    rawValid: false,
+                    loading: get(dataset, `${entityPath}.loading`) || false ,
+                    saving: get(dataset, `${entityPath}.saving`) || false
+                }))
             ]), []);
 
 
 
 
-            return next({...action, fields : [...fields, ...fieldsOnlyInDefinitions ]});
+            return next({...action, fields});
               break;
           case VALIDATE_FORM:
               const {fields : fieldCreated} = find(forms, {formKey});
               // Get the fields to validate
               const fieldsToValidate = filterNonValidatedFields(fieldCreated, nonValidatedFields);
-              console.log(fieldsToValidate)
               // Validate every field, and if one is invalid, then the form is invalid
               const formValid = fieldsToValidate.reduce((formValid, field) => {
                   const fieldValid = validateField(definitions, domains, formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
