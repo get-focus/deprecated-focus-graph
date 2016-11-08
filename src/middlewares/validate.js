@@ -130,6 +130,8 @@ function validateProperty(property, validator) {
                 return dateValidation(value, options);
             case 'function':
                 return validator.value(value, options);
+            case 'checkbox':
+                return (isUndefined(value) || isNull(value)) ? false : true;
             default:
                 return void 0;
         }

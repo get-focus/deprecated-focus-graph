@@ -184,7 +184,7 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
       throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
     }
 
-  }else if(value){
+} else if(!isUndefined(value) || !isNull(value)){
     //TODO: Maybe it should be entityName + fieldName.
     const domain = domains[domainName];
     if(!domain){
