@@ -34,7 +34,7 @@ const formMiddleware = store => next => action => {
             loading: get(dataset, `${entityPath}.loading`) || false,
             saving : saving,
             valid:true,
-            rawValid: true
+            rawValid: false
           })
           return acc
         }, [])
@@ -47,7 +47,7 @@ const formMiddleware = store => next => action => {
                 dataSetValue: fieldValue,
                 loading: get(dataset, `${entityPath}.loading`) ,
                 valid:true,
-                rawValid: true,
+                rawValid: false,
                 saving: get(dataset, `${entityPath}.saving`)
             };
             // If action was a success, then replace the rawInputValue

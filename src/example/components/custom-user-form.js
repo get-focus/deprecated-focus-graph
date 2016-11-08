@@ -49,7 +49,7 @@ const formConfig = {
     entityPathArray: ['user.information'],
     loadAction: loadUserAction,
     saveAction: saveUserAction,
-    nonValidatedFields: ['user.information.firstName', 'user.information.lastName']
+    nonValidatedFields: ['user.information.uuid', 'user.information.lastName']
 };
 
 //Connect the component to all its behaviours (respect the order for store, store -> props, helper)
