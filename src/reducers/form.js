@@ -4,7 +4,8 @@ import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
 import findIndex from 'lodash/findIndex';
-
+import clone from 'lodash/clone';
+import isArray from 'lodash/isArray';
 const initializeField = field => ({
     valid: true,
     error: null,
@@ -209,13 +210,15 @@ const forms = (state: Array<FormStateType> = [], action) => {
                   fields: form.fields.map(field => {
                       const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                       if (!isFieldConcerned) return field;
-                      const error=field.error || {}, errorLine ={};
+                      const validList = {};
+                      const error= (isArray(field.error) ? field.error : [] ), errorLine ={...error[action.index]};
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;
+                      validList[action.index] = false;
                       return {
                           ...field,
                           error: error,
-                          valid: false
+                          valid: validList
                       };
                   })
 
@@ -232,7 +235,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                             ...otherAttributes,
                             rawInputValue: dataSetValue,
                             error: null,
-                            valid: true, 
+                            valid: true,
                             dataSetValue
                         }))
                     };

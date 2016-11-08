@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 
 
-function List({ fieldForLine, selectForLine, textForLine, LineComponent, children, options, error, values, ...otherProps}) {
+function List({ fieldForLine, selectForLine, textForLine, LineComponent, children, options, values, ...otherProps}) {
     const renderLine = () => {
     return (values ? values.map((element, index) => {
             // fieldFor which wrapp the index.

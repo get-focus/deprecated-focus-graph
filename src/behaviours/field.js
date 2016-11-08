@@ -98,6 +98,8 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
             if (userDefinedOnBlur) userDefinedOnBlur();
         }
         const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
+        const validList  = fieldTab.valid && !fieldTab.valid[index] ? fieldTab.valid[index] : undefined;
+        debugger;
         return <FieldComponent {...field}
             error={fieldError}
             textOnly={textOnly}
@@ -108,6 +110,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
             onChange={onChange}
             onBlur={onBlur}
             fields={fields}
+            valid={validList}
             {...connectedComponentProps}
             {...options} />;
     }
