@@ -87,6 +87,7 @@ describe('The form middleware', () => {
                         name: 'firstName',
                         loading: true,
                         saving: false,
+                        rawValid: false,
                         rawInputValue: 'Joe'
                     },
                     {
@@ -94,6 +95,7 @@ describe('The form middleware', () => {
                         entityPath: 'user',
                         name: 'lastName',
                         loading: true,
+                        rawValid: false,
                         saving: false,
                         rawInputValue: 'Lopez'
                     }
