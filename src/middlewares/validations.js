@@ -32,7 +32,7 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
 
     //const rand = Math.random();
     //const isValid = rand > 0.5;
-    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || isEmpty(rawValue)) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
+    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue)) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
     return {
         name,
         value: rawValue,
