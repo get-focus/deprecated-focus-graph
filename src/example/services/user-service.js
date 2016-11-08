@@ -17,5 +17,5 @@ export const saveUser = async (data) => {
             resolve()
         }, 1500);
     });
-    return {};
+    return {...user};
 }

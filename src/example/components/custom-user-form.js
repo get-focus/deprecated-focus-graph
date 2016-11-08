@@ -21,6 +21,8 @@ class UserForm extends Component {
     componentWillReceiveProps(newProps){
       console.log(newProps.loading);
       console.log(this.props.loading)
+      console.log(newProps.saving);
+      console.log(this.props.saving)
     }
 
     render() {
