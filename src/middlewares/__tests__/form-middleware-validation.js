@@ -57,7 +57,7 @@ describe('Form: validation', () => {
         ];
         const validationResult = validateField(definitions, domains, 'formBalec', 'user.information', 'childs', newListValue, dispatchSpy);
         expect(validationResult).to.be.false;
-        expect(dispatchSpy).to.have.callCount(2);
+        expect(dispatchSpy).to.have.callCount(1);
         const dispatchArgs = dispatchSpy.lastCall.args[0];
         expect(dispatchArgs.type = INPUT_ERROR);
         expect(dispatchArgs.formKey === 'formBalec');
