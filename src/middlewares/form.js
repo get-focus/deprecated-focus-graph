@@ -32,7 +32,7 @@ const formMiddleware = store => next => action => {
             dataSetValue: undefined,
             isRequired: value.isRequired,
             loading: get(dataset, `${entityPath}.loading`) || false,
-            saving : saving,
+            saving : get(dataset, `${entityPath}.saving`),
             valid:true,
             rawValid: false
           })
