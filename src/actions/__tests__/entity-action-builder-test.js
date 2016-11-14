@@ -107,7 +107,7 @@ describe('The actionBuilder', () => {
                 expect(dispatchSpy).to.have.callCount(3);
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncForm: true, formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE,  formKey: undefined,syncForm: true, entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true}});
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1"}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1", type: 'success'}});
                 done();
             });
             it('when called with an unsuccessfull save service should call the error action creator', async done => {

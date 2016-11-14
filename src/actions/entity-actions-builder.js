@@ -49,7 +49,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                       type: 'PUSH_MESSAGE',
                       message : {
                         content: message ? message : name+'.fields.saved',
-                        id: _getMessageId()
+                        id: _getMessageId(),
+                        type: 'success'
                       }})
                   }
                 } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
@@ -67,7 +68,9 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                         type: 'PUSH_MESSAGE',
                         message : {
                           content: message ? message : name+'.fields.saved',
-                          id: _getMessageId()
+                          id: _getMessageId(),
+                          type: 'success'
+
                         }})
                     }
                   } else {
@@ -81,7 +84,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                     return dispatch({
                       type: 'PUSH_MESSAGE', message : {
                         content: i18n ? i18n.t(element) : element,
-                        id: _getMessageId()
+                        id: _getMessageId(),
+                        type: 'error'
                       }
                     })
                   })
