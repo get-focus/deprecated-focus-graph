@@ -99,7 +99,6 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
         }
         const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
         const validList  = fieldTab.valid && !fieldTab.valid[index] ? fieldTab.valid[index] : undefined;
-        debugger;
         return <FieldComponent {...field}
             error={fieldError}
             textOnly={textOnly}
