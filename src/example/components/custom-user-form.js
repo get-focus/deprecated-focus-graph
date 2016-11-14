@@ -19,10 +19,9 @@ class UserForm extends Component {
         loadMasterData();
     }
     componentWillReceiveProps(newProps){
-      console.log(newProps.loading);
-      console.log(this.props.loading)
-      console.log(newProps.saving);
-      console.log(this.props.saving)
+
+      console.log('newProps.saving', newProps.saving);
+      console.log('this.props.saving', this.props.saving)
     }
 
     render() {
