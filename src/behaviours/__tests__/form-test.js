@@ -72,7 +72,6 @@ describe('The form connect', () => {
             expect(() => connect(formOptions)(MyComponent)).to.not.throw();
         });
         it('should have the form state in the props', () => {
-            console.log(capturedProps)
             expect(capturedProps.formKey).to.equal('testForm');
             expect(capturedProps.loading).to.be.false;
             expect(capturedProps.editing).to.be.false;
@@ -114,7 +113,6 @@ describe('The form connect', () => {
         });
         it('should update the state', () => {
             const uuidField = find(capturedProps.fields, field => field.name === 'firstName');
-            console.log(capturedProps)
             expect(uuidField.rawInputValue).to.equal('new value');
         });
         it('should reflect the change in the getUserInput method', () => {
