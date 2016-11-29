@@ -293,7 +293,8 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
       return value;
     }
     const {formatter = defaultFormatter} = domains[domainName] || {};
-    return formatter(value);
+    const {unformatter = defaultFormatter} = domains[domainName] || {};
+    return formatter !== identity ? formatter(value) : unformatter(value);
 };
 
 
