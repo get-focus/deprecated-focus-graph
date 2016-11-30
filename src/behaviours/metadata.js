@@ -13,22 +13,26 @@ const METADATA_CONTEXT_TYPE = {
 export function connect(definitionNameArray : Array<string> = []) {
     if (!isArray(definitionNameArray)) throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You must provide a definitionNameArray as an array to the metadata connector. Instead, you gave '${definitionNameArray}'`);
     return function getMetadataConnectedComponent(ComponentToConnect) {
-        function MetadataConnectedComponent(props, context) {
-            const {definitions, domains} = context;
+        class MetadataConnectedComponent extends PureComponent {
+            constructor(props, context) {
+                super(props, context);
+                const {definitions, domains} = context;
 
-            if(isEmpty(definitions) || isEmpty(domains)) {
-                throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You must provide definitions and domains to the Provider, check your **MetadataProvider**`)
+                if (isEmpty(definitions) || isEmpty(domains)) {
+                    throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You must provide definitions and domains to the Provider, check your **MetadataProvider**`)
+                }
+                // todo: verif child presence (list)
+                this.builtDefinitions = definitionNameArray.reduce((builtDefinitions, definitionName) => {
+                    const candidateDefinition = definitions[definitionName];
+                    if (!candidateDefinition) throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You asked for the definition '${definitionName}', but it is not present in the definitions you provided to the **MetadataProvider**`);
+                    return {...builtDefinitions, [definitionName]: candidateDefinition};
+                }, {});
+                this.behaviours = {connectedToMetadata: true, ...props._behaviours};
             }
-            // todo: verif child presence (list)
-            const builtDefinitions = definitionNameArray.reduce((builtDefinitions, definitionName) => {
-                const candidateDefinition = definitions[definitionName];
-                if (!candidateDefinition) throw new Error(`${BEHAVIOUR_METADATA_CONNECT} You asked for the definition '${definitionName}', but it is not present in the definitions you provided to the **MetadataProvider**`);
-                return {...builtDefinitions, [definitionName]: candidateDefinition};
-            }, {});
 
-            const {_behaviours, ...otherProps} = props;
-            const behaviours = {connectedToMetadata: true, ..._behaviours};
-            return <ComponentToConnect _behaviours={behaviours} definitions={builtDefinitions} domains={domains} {...otherProps} />;
+            render() {
+                return <ComponentToConnect {...this.props} _behaviours={this.behaviours} definitions={this.builtDefinitions} domains={this.context.domains} />;
+            }
         }
         MetadataConnectedComponent.displayName = `${ComponentToConnect.displayName}MetadataConnected`;
         MetadataConnectedComponent.contextTypes = METADATA_CONTEXT_TYPE;
