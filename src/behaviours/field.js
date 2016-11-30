@@ -121,11 +121,14 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
 export function connect() {
     return function connectComponent(ComponentToConnect) {
         class FieldConnectedComponent extends PureComponent {
-            fieldFor = () => null;
-            textFor = () => null;
-            selectFor = () => null;
-            listFor = () => null;
-            behaviours = {connectedToFieldHelpers: true, ...this.props._behaviours};
+            constructor(props, context) {
+                super(props, context)
+                this.fieldFor = context.fieldHelpers.fieldForBuilder(props);
+                this.textFor = context.fieldHelpers.fieldForBuilder(props, true);
+                this.selectFor = context.fieldHelpers.fieldForBuilder(props, false, true);
+                this.listFor = context.fieldHelpers.fieldForBuilder(props, false, false, true, context.fieldHelpers.fieldForListBuilder);
+                this.behaviours = {connectedToFieldHelpers: true, ...props._behaviours};
+            }
 
             componentWillReceiveProps(props) {
                 if (!isEqual(props.fields, this.props.fields) || props.editing !== props.editing) {
