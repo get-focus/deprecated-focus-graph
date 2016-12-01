@@ -35,21 +35,27 @@ const connectMasterData = (names : Array<string> = [] ) => {
         throw new Error(`${MASTER_DATA_CONNECT}: the names property must contain at least a name.`);
     }
     return function connectComponent(ComponentToConnect) {
-        const MasterDataConnectedComponent = (props, {masterDatumLoaders, store: {dispatch}}) => {
-            const _loadAddMasterDatumContainer = masterDatumLoaders.reduce((res, current) => {
-                if(names.indexOf(current.name) !== -1){
-                    const dispatchLoader = () => dispatch(loadMasterDatum(current.name, current.service, current.cacheDuration));
-                    return [...res, dispatchLoader];
+        class MasterDataConnectedComponent extends PureComponent {
+            constructor(props, context) {
+                super(props, context);
+                const {masterDatumLoaders, store: {dispatch}} = context;
+                const _loadAddMasterDatumContainer = masterDatumLoaders.reduce((res, current) => {
+                    if(names.indexOf(current.name) !== -1){
+                        const dispatchLoader = () => dispatch(loadMasterDatum(current.name, current.service, current.cacheDuration));
+                        return [...res, dispatchLoader];
+                    }
+                    return res;
+                }, []);
+                if (_loadAddMasterDatumContainer === 0){
+                    console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDatumLoaders ${masterDatumLoaders.reduce((res, current) => [...res, current.name], [])}`)
                 }
-                return res;
-            }, []);
-            if(_loadAddMasterDatumContainer === 0){
-                console.warn(`connectMasterData: your keys ${Object.keys(names)} are not in the masterDatumLoaders ${masterDatumLoaders.reduce((res, current) => [...res, current.name], [])}`)
+                this.loadMasterData = () => _loadAddMasterDatumContainer.forEach(loader => loader());
+                this.behaviours = {connectedToMasterData: true, ...props._behaviours};
             }
-            const loadMasterData = () => _loadAddMasterDatumContainer.forEach(loader => loader());
-            const {_behaviours, ...otherProps} = props;
-            const behaviours = {connectedToMasterData: true, ..._behaviours}
-            return <ComponentToConnect {...otherProps}  loadMasterData={loadMasterData} _behaviours={behaviours} />;
+
+            render() {
+                return <ComponentToConnect {...this.props} loadMasterData={this.loadMasterData} _behaviours={this.behaviours} />;
+            }
         }
         MasterDataConnectedComponent.displayName = `${ComponentToConnect.displayName}MasterDataConnectedComponent`;
         //Connect to the redux store

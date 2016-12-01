@@ -2,6 +2,7 @@ import React, {PureComponent, PropTypes} from 'react';
 import DefaultFieldComponent from '../components/field';
 import find from 'lodash/find';
 import isArray from 'lodash/isArray';
+import isEqual from "lodash/isEqual";
 import get from 'lodash/get';
 const FIELD_CONTEXT_TYPE = {
     fieldHelpers: PropTypes.object,
@@ -119,14 +120,28 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
 
 export function connect() {
     return function connectComponent(ComponentToConnect) {
-        function FieldConnectedComponent({_behaviours, ...otherProps}, {fieldHelpers, components}) {
-            const props = {...otherProps, components}
-            const fieldFor = fieldHelpers.fieldForBuilder(props);
-            const textFor = fieldHelpers.fieldForBuilder(props, true);
-            const selectFor = fieldHelpers.fieldForBuilder(props, false, true);
-            const listFor = fieldHelpers.fieldForBuilder(props, false, false, true, fieldHelpers.fieldForListBuilder);
-            const behaviours = {connectedToFieldHelpers: true, ..._behaviours};
-            return <ComponentToConnect {...otherProps} _behaviours={behaviours} components={components} fieldFor={fieldFor} selectFor={selectFor} textFor={textFor} listFor={listFor}/>;
+        class FieldConnectedComponent extends PureComponent {
+            constructor(props, context) {
+                super(props, context)
+                this.fieldFor = context.fieldHelpers.fieldForBuilder(props);
+                this.textFor = context.fieldHelpers.fieldForBuilder(props, true);
+                this.selectFor = context.fieldHelpers.fieldForBuilder(props, false, true);
+                this.listFor = context.fieldHelpers.fieldForBuilder(props, false, false, true, context.fieldHelpers.fieldForListBuilder);
+                this.behaviours = {connectedToFieldHelpers: true, ...props._behaviours};
+            }
+
+            componentWillReceiveProps(props) {
+                if (!isEqual(props.fields, this.props.fields) || props.editing !== props.editing) {
+                    this.fieldFor = this.context.fieldHelpers.fieldForBuilder(props);
+                    this.textFor = this.context.fieldHelpers.fieldForBuilder(props, true);
+                    this.selectFor = this.context.fieldHelpers.fieldForBuilder(props, false, true);
+                    this.listFor = this.context.fieldHelpers.fieldForBuilder(props, false, false, true, this.context.fieldHelpers.fieldForListBuilder);
+                }
+            }
+
+            render() {
+                return <ComponentToConnect {...this.props} _behaviours={this.behaviours} components={this.context.components} fieldFor={this.fieldFor} selectFor={this.selectFor} textFor={this.textFor} listFor={this.listFor} />;
+            }
         }
         FieldConnectedComponent.displayName = `${ComponentToConnect.displayName}FieldConnected`;
         FieldConnectedComponent.contextTypes = FIELD_CONTEXT_TYPE;
