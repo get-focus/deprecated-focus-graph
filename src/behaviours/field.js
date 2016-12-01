@@ -131,7 +131,7 @@ export function connect() {
             }
 
             componentWillReceiveProps(props) {
-                if (!isEqual(props.fields, this.props.fields) || props.editing !== props.editing) {
+                if (!isEqual(props.fields, this.props.fields) || props.editing !== this.props.editing) {
                     this.fieldFor = this.context.fieldHelpers.fieldForBuilder(props);
                     this.textFor = this.context.fieldHelpers.fieldForBuilder(props, true);
                     this.selectFor = this.context.fieldHelpers.fieldForBuilder(props, false, true);
