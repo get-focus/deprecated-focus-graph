@@ -1,28 +1,29 @@
 {
     "name": "focus-graph",
-    "version": "3.0.0-beta7",
+    "version": "3.0.0-beta8",
     "description": "Form, data behaviours",
     "main": "src/index.js",
     "author": "FOCUS <focus@kleegroup.com>",
     "license": "MIT",
     "files": [
-        "actions",
-        "components",
-        "middlewares",
-        "README.md",
-        "server.js",
-        "test",
         "api",
-        "dist",
-        "reducers",
-        "src",
-        "webpack.config.js",
+        "actions",
         "behaviours",
+        "components",
+        "dist",
+        "index.js",
         "LICENSE",
+        "middlewares",
         "package.json",
+        "README.md",
+        "reducers",
         "scripts",
+        "server.js",
+        "src",
         "store",
-        "index.js"
+        "style",
+        "test",
+        "webpack.config.js"
     ],
     "bugs": {
         "url": "https://github.com/get-focus/focus-graph/issues"
@@ -33,15 +34,18 @@
         "url": "git+https://github.com/get-focus/focus-graph.git"
     },
     "scripts": {
+        "build": "npm run build:node",
+        "build:node": "better-npm-run copy-sass && better-npm-run babelify",
+        "start": "better-npm-run dev-server",
         "test": "BABEL_ENV=test mocha src/**/__tests__/**/*.js",
         "test:watch": "BABEL_ENV=test mocha src/**/__tests__/**/*.js --watch",
         "test-windows:watch": "better-npm-run test",
-        "start": "better-npm-run dev-server",
-        "build:node": "better-npm-run babelify",
-        "build": "npm run build:node",
         "prepublish": "npm run build"
     },
     "betterScripts": {
+        "copy-sass": {
+            "command": "cd src && find . -name *.scss | xargs tar cvf - | tar xfp - -C ../"
+        },
         "test": {
             "command": "mocha src/**/__tests__/**/*.js --watch",
             "env": {

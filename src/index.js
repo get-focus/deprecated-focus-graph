@@ -1,4 +1,3 @@
 export default () => {
-  console.log(`Focus redux.... so great....`)
-  
+    console.log(`Tools based on Redux to easily integrate forms, validate and manipulate data. http://getfocus.io/focus-documentation/`);
 }
