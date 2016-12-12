@@ -34,7 +34,8 @@ const formMiddleware = store => next => action => {
             loading: get(dataset, `${entityPath}.loading`) || false,
             saving : get(dataset, `${entityPath}.saving`),
             valid:true,
-            rawValid: false
+            rawValid: false,
+            rawInputValue: undefined,
           })
           return acc
         }, [])
@@ -87,6 +88,7 @@ const formMiddleware = store => next => action => {
                     name: key,
                     entityPath: entityPath,
                     dataSetValue: undefined,
+                    rawInputValue: undefined,
                     isRequired: value.isRequired,
                     loading: get(dataset, `${entityPath}.loading`) || false,
                     saving : get(dataset, `${entityPath}.saving`) || false,

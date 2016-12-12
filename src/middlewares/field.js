@@ -79,7 +79,6 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
                     return {
                         ...field,
                         formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
-                        rawInputValue: field.dataSetValue,
                         label: translate(field.entityPath + "." + field.name),
                         ..._redirectEntityPath
                     }
