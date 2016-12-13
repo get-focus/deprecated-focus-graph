@@ -3,7 +3,7 @@ import {connect as connectToForm } from '../../behaviours/form';
 import {connect as connectToMetadata} from '../../behaviours/metadata';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
-import {loadUserErrorAction} from '../actions/user-actions';
+import {loadUserErrorAction, saveUserAction} from '../actions/user-actions';
 const Code = props => <pre><code>{JSON.stringify(props, null, 4)}</code></pre>
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
@@ -13,7 +13,7 @@ class UserErrors extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
         load();
-        loadMasterData();
+        
     }
 
     render() {
@@ -34,6 +34,7 @@ const formConfig = {
     formKey: 'userAndAddressForm',
     entityPathArray: ['user.information'/*, 'child'*/],
     loadAction: loadUserErrorAction,
+    saveAction: saveUserAction,
     nonValidatedFields: ['user.information.uuid', {'user.childs': ['firstName']}    ]
 };
 

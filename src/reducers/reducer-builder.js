@@ -39,6 +39,7 @@ import isObject from 'lodash/isObject';
 // }
 // ```
 
+// To Do add a error boolean ??
 const getDefaultState = defaultData => ({
     data: defaultData,
     loading: false,
@@ -104,7 +105,7 @@ type ReducerBuilderOptions = { defaultData: Object, name: string, loadTypes: Obj
 //  }
 // }
 // ```
-export function reducerBuilder({defaultData, name, loadTypes, saveTypes} : ReducerBuilderOptions){
+export function reducerBuilder({defaultData, name, loadTypes, saveTypes, errorTypes} : ReducerBuilderOptions){
   if(!isString(name)){
     throw new Error('REDUCER_BUILDER: you need to provide a name.')
   }
@@ -117,13 +118,15 @@ export function reducerBuilder({defaultData, name, loadTypes, saveTypes} : Reduc
   if(isObject(loadTypes)){
     const REQUEST_LOAD = loadTypes[`REQUEST_LOAD_${UPPERCASE_NAME}`];
     const RESPONSE_LOAD = loadTypes[`RESPONSE_LOAD_${UPPERCASE_NAME}`];
-    reducerBuilderTypes.load=  {request: REQUEST_LOAD, response: RESPONSE_LOAD};
+    const ERROR_LOAD = loadTypes[`ERROR_LOAD_${UPPERCASE_NAME}`];
+    reducerBuilderTypes.load=  {request: REQUEST_LOAD, response: RESPONSE_LOAD, error: ERROR_LOAD};
   }
 
   if(isObject(saveTypes)){
     const REQUEST_SAVE = saveTypes[`REQUEST_SAVE_${UPPERCASE_NAME}`];
     const RESPONSE_SAVE = saveTypes[`RESPONSE_SAVE_${UPPERCASE_NAME}`];
-    reducerBuilderTypes.save=  {request: REQUEST_SAVE, response: RESPONSE_SAVE};
+    const ERROR_SAVE = saveTypes[`ERROR_SAVE_${UPPERCASE_NAME}`];
+    reducerBuilderTypes.save=  {request: REQUEST_SAVE, response: RESPONSE_SAVE, error: ERROR_SAVE};
 
   }
 

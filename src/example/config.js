@@ -79,10 +79,10 @@ export const definitions = {
   information: {
         uuid: { domain: 'DO_DON_DIEGO', isRequired: true},
         firstName: { domain: 'DO_RODRIGO', isRequired: false},
-        lastName: { domain: 'DO_DON_DIEGO', isRequired: true},
+        lastName: { domain: 'DO_DON_DIEGO', isRequired: false},
         date: { domain: 'DO_DATE', isRequired: false},
-        test: {domain: 'DO_EMAIL', isRequired:true},
-        civility: { domain: 'DO_CIVILITE', isRequired: true},
+        test: {domain: 'DO_EMAIL', isRequired:false},
+        civility: { domain: 'DO_CIVILITE', isRequired: false},
         // TODO: ['childs'] ?
         childs : {redirect: ['user.child']}
    },
@@ -93,7 +93,7 @@ export const definitions = {
    },
     address: {
         uuid: { domain: 'DO_RODRIGO', isRequired: false},
-        city: { domain: 'DO_DON_DIEGO', isRequired: true}
+        city: { domain: 'DO_DON_DIEGO', isRequired: false}
     }
   }
 }

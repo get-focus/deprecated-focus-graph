@@ -10,7 +10,7 @@ function _getMessageId(){
 }
 
 const ACTION_BUILDER = 'ACTION_BUILDER';
-const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
+const ALLOW_ACTION_TYPES = ['load', 'save', 'delete', 'error'];
 const STRING_EMPTY = '';
 const LOAD = ALLOW_ACTION_TYPES[0];
 const SAVE = ALLOW_ACTION_TYPES[1];
