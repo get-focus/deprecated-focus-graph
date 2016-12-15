@@ -1,5 +1,5 @@
 import {CREATE_FORM, SYNC_FORM_ENTITIES, VALIDATE_FORM} from '../actions/form';
-import {SUCCESS} from '../actions/entity-actions-builder';
+import {SUCCESS, PENDING} from '../actions/entity-actions-builder';
 import {__fake_focus_core_validation_function__, filterNonValidatedFields,validateOnChangeField, validateField, validateFieldArray, formatValue} from './validations'
 import {syncFormsEntity, toggleFormEditing, setFormToSaving, validateForm} from '../actions/form';
 import get from 'lodash/get';
@@ -13,66 +13,143 @@ const formMiddleware = store => next => action => {
 
     if(!store || !store.getState){ throw new Error(`${FORM_MIDDLEWARE}: You middleware needs a redux store.`)}
 
-    if(action.syncForm) {
+    if(action.syncTypeForm === 'request') {
+      console.log('nfdlkjsfhlkjdsjfdslkjghfdskjghfdhgkjfdshglkjfdshlmgfdshglkjfdshglfdshgkjlfdshkjgkfdshglkjfdshgkfdhsjgf')
+      // The action requires the forms to sync themselves with the dataset, let's do it
+      // Grab the new state, to have the updates on the dataset
+      const newState = next(action);
+      const {_meta: {status, saving, loading}} = action;
 
-        // The action requires the forms to sync themselves with the dataset, let's do it
-        // Grab the new state, to have the updates on the dataset
-        const newState = next(action);
+      // Get the updated dataset
+      const {dataset,definitions,domains, forms} = store.getState();
+      const findField = (formKey) => {
+        return forms.find(element => element.formKey === formKey).fields;
+      }
+      //console.log(findField(action.formKey));
+      const entityPath = action.entityPath;
+      const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
+        if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+          ...findField(action.formKey).find(elm => elm.name === key),
+          loading: get(dataset, `${entityPath}.loading`) || false,
+          saving : get(dataset, `${entityPath}.saving`),
+          valid:true,
+          rawValid: false,
+        })
 
-        const {_meta: {status, saving, loading}} = action;
+        return acc
+      }, [])
 
-        // Get the updated dataset
-        const {dataset, forms, definitions,domains} = store.getState();
+      // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
+      const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
+          const field = {
+              ...findField(action.formKey).find(elm => elm.name === fieldName),
+              loading: get(dataset, `${entityPath}.loading`) ,
+              valid:true,
+              rawValid: false,
+              saving: get(dataset, `${entityPath}.saving`)
+          };
+          return field;
+      });
+      // Dispatch the SYNC_FORMS_ENTITY action
+      console.log(fields)
+      store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions, ...fields ]));
+    } else if(action.syncTypeForm === 'response'){
 
-        const entityPath = action.entityPath;
-        const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
-          if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
-            name: key,
-            entityPath: entityPath,
-            dataSetValue: undefined,
-            isRequired: value.isRequired,
-            loading: get(dataset, `${entityPath}.loading`) || false,
-            saving : get(dataset, `${entityPath}.saving`),
-            valid:true,
-            rawValid: false,
-            rawInputValue: undefined,
-          })
-          return acc
-        }, [])
+              // The action requires the forms to sync themselves with the dataset, let's do it
+              // Grab the new state, to have the updates on the dataset
+              const newState = next(action);
 
-        // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
-        const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
-            const field = {
-                name: fieldName,
-                entityPath,
-                dataSetValue: fieldValue,
-                loading: get(dataset, `${entityPath}.loading`) ,
-                valid:true,
-                rawValid: false,
-                saving: get(dataset, `${entityPath}.saving`)
-            };
-            // If action was a success, then replace the rawInputValue
-            if (status === SUCCESS) field.rawInputValue = fieldValue;
-            return field;
-        });
-        // Dispatch the SYNC_FORMS_ENTITY action
-        store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions ]));
-        [...fields].reduce((formValid, field) => {
-           const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
-           if (!fieldValid) formValid = false;
-           return formValid;
-         }, true);
-        // Treat the _meta
-        if (saving && status === SUCCESS) {
-            // Get the target form key by looking for forms in a saving state and containing the concerned entity path
-            const formKey = forms.reduce((acc, form) => (form.saving && form.entityPathArray.indexOf(action.entityPath) !== -1) ? form.formKey : acc, null);
-            // Toggle the form back to consulting since the save was a success #YOLO
-            store.dispatch(toggleFormEditing(formKey, false));
-        }
+              const {_meta: {status, saving, loading}} = action;
+              console.log('RESPOOOOOOOOOOOOOOOOONSE')
+              // Get the updated dataset
+              const {dataset, forms, definitions,domains} = store.getState();
+              const entityPath = action.entityPath;
+              const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
+                if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+                  name: key,
+                  entityPath: entityPath,
+                  dataSetValue: undefined,
+                  isRequired: value.isRequired,
+                  loading: get(dataset, `${entityPath}.loading`) || false,
+                  saving : get(dataset, `${entityPath}.saving`),
+                  valid:true,
+                  rawValid: false,
+                  rawInputValue: undefined,
+                })
 
-        // Continue with the rest of the redux flow
-        return newState;
-    }else {
+                return acc
+              }, [])
+
+              // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
+              const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
+                  const field = {
+                      name: fieldName,
+                      entityPath,
+                      dataSetValue: fieldValue,
+                      loading: get(dataset, `${entityPath}.loading`) ,
+                      valid:true,
+                      rawValid: false,
+                      saving: get(dataset, `${entityPath}.saving`)
+                  };
+                  // If action was a success, then replace the rawInputValue
+                  field.rawInputValue = fieldValue;
+                  return field;
+              });
+              // Dispatch the SYNC_FORMS_ENTITY action
+              store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions ]));
+              [...fields].reduce((formValid, field) => {
+                 const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
+                 if (!fieldValid) formValid = false;
+                 return formValid;
+               }, true);
+              // Treat the _meta
+              if (saving && status === SUCCESS) {
+                  // Get the target form key by looking for forms in a saving state and containing the concerned entity path
+                  const formKey = forms.reduce((acc, form) => (form.saving && form.entityPathArray.indexOf(action.entityPath) !== -1) ? form.formKey : acc, null);
+                  // Toggle the form back to consulting since the save was a success #YOLO
+                  store.dispatch(toggleFormEditing(formKey, false));
+              }
+
+              // Continue with the rest of the redux flow
+              return newState;
+    }else if(action.syncTypeForm === 'error'){
+      // The action requires the forms to sync themselves with the dataset, let's do it
+      // Grab the new state, to have the updates on the dataset
+      const newState = next(action);
+      const {_meta: {status, saving, loading}} = action;
+
+      // Get the updated dataset
+      const {dataset,definitions,domains, forms} = store.getState();
+      const findField = (formKey) => {
+        return forms.find(element => element.formKey === formKey).fields;
+      }
+      const entityPath = action.entityPath;
+      const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
+        if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
+          ...findField(action.formKey).find(elm => elm.name === key),
+          loading: get(dataset, `${entityPath}.loading`) || false,
+          saving : get(dataset, `${entityPath}.saving`),
+          valid:true,
+          rawValid: false,
+        })
+
+        return acc
+      }, [])
+
+      // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
+      const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
+          const field = {
+              ...findField(action.formKey).find(elm => elm.name === fieldName),
+              loading: get(dataset, `${entityPath}.loading`) ,
+              valid:true,
+              rawValid: false,
+              saving: get(dataset, `${entityPath}.saving`)
+          };
+          return field;
+      });
+      // Dispatch the SYNC_FORMS_ENTITY action
+      store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions ]));
+    } else {
       if(store === null){
         throw new Error('Store not defined')
       }

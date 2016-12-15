@@ -3,17 +3,16 @@ import {connect as connectToForm } from '../../behaviours/form';
 import {connect as connectToMetadata} from '../../behaviours/metadata';
 import {connect as connectToFieldHelpers} from '../../behaviours/field';
 import {connect as connectToMasterData} from '../../behaviours/master-data';
-import {loadUserErrorAction, saveUserAction} from '../actions/user-actions';
+import {saveErrorUserAction, saveUserAction} from '../actions/user-actions';
 const Code = props => <pre><code>{JSON.stringify(props, null, 4)}</code></pre>
 import Panel from '../../components/panel';
 import compose from 'lodash/flowRight';
 import LineComponent from '../../components/line'
-console.log(loadUserErrorAction)
 class UserErrors extends Component {
     componentWillMount() {
         const {id, load, loadMasterData} = this.props;
-        load();
-        
+        //load();
+
     }
 
     render() {
@@ -33,8 +32,8 @@ const formConfig = {
     //todo: it should raise an error if i use the same formKey.
     formKey: 'userAndAddressForm',
     entityPathArray: ['user.information'/*, 'child'*/],
-    loadAction: loadUserErrorAction,
-    saveAction: saveUserAction,
+    //loadAction: loadUserErrorAction,
+    saveAction: saveErrorUserAction,
     nonValidatedFields: ['user.information.uuid', {'user.childs': ['firstName']}    ]
 };
 

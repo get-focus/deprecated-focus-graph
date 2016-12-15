@@ -1,7 +1,7 @@
 export const loadUser = async ({id}) => {
     const response = await fetch(`http://localhost:9999/x/entity/${id}`)
     const data = await response.json();
-    return {test:'lala'};
+    return data;
 }
 
 export const loadError= async () => {

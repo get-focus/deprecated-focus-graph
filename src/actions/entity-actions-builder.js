@@ -22,8 +22,7 @@ export const ERROR = 'ERROR';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = (type, name, _meta) => (payload, formKey) => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {}), formKey});
-
+const _actionCreatorBuilder = (type, name, _meta, syncTypeForm) => (payload, formKey) => ({...{type, entityPath: name, syncTypeForm, _meta}, ...(payload ? {payload} : {}), formKey});
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
 // {
@@ -89,7 +88,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                       }
                     })
                   })
-                    dispatch(errorActionCreator(svcValue))
+                    console.log(formKey)
+                    dispatch(errorActionCreator(svcValue, formKey))
                 }
               });
 
@@ -176,9 +176,9 @@ export const actionBuilder = ({names, type, service, message}) => {
       }
       // todo: find another name for name and value // not crystal clear
       const creators = {
-          request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},
-          response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response)},
-          error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error)}
+          request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request, 'request')},
+          response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response, 'response')},
+          error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error, 'error')}
       }
 
       return {
