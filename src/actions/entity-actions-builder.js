@@ -161,7 +161,7 @@ export const actionBuilder = ({names, type, service, message}) => {
     const _metas = {
         request: {status: PENDING, loading, saving},
         response: {status: SUCCESS, loading, saving},
-        error: {status: ERROR, loading: false, saving: false}
+        error: {status: ERROR, loading: false, saving: false, error: true}
     }
     // for each node action types and action creators are made.
     const _creatorsAndTypes = names.reduce((res, name) => {

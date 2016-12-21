@@ -14,7 +14,9 @@ class UserErrors extends Component {
         //load();
 
     }
-
+    componentWillReceiveProps(nextProps){
+      console.log(nextProps.error)
+    }
     render() {
         const {editing, fields, fieldFor, listFor, selectFor} = this.props;
         return (

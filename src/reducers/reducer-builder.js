@@ -51,17 +51,17 @@ const _reducerBuilder = ({types, defaultData}) => ((state = getDefaultState(defa
     const {load ={}, save ={}} = types;
     switch(type) {
         case load.request:
-            return {...state, loading: true};
+            return {...state, loading: true, error: false};
         case save.request:
-            return {...state, saving: true};
+            return {...state, saving: true, error: false};
         case load.response:
-            return {...state, data: payload, loading: false};
+            return {...state, data: payload, loading: false, error: false};
         case save.response:
-            return {...state, data: payload, saving: false};
+            return {...state, data: payload, saving: false, error: false};
         case load.error:
-            return {...state, loading: false};
+            return {...state, loading: false, error: true};
         case save.error:
-            return {...state, saving: false};
+            return {...state, saving: false, error: true};
         default:
             return state;
     }

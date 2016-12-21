@@ -14,44 +14,49 @@ const formMiddleware = store => next => action => {
     if(!store || !store.getState){ throw new Error(`${FORM_MIDDLEWARE}: You middleware needs a redux store.`)}
 
     if(action.syncTypeForm === 'request') {
-      console.log('nfdlkjsfhlkjdsjfdslkjghfdskjghfdhgkjfdshglkjfdshlmgfdshglkjfdshglfdshgkjlfdshkjgkfdshglkjfdshgkfdhsjgf')
       // The action requires the forms to sync themselves with the dataset, let's do it
       // Grab the new state, to have the updates on the dataset
       const newState = next(action);
       const {_meta: {status, saving, loading}} = action;
-
       // Get the updated dataset
       const {dataset,definitions,domains, forms} = store.getState();
-      const findField = (formKey) => {
-        return forms.find(element => element.formKey === formKey).fields;
-      }
-      //console.log(findField(action.formKey));
       const entityPath = action.entityPath;
+      const form = find(forms, {formKey: action.formKey});
+      const fieldsFound = get(form, 'fields')
       const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
-        if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
-          ...findField(action.formKey).find(elm => elm.name === key),
-          loading: get(dataset, `${entityPath}.loading`) || false,
-          saving : get(dataset, `${entityPath}.saving`),
-          valid:true,
-          rawValid: false,
-        })
-
+        if(!get(dataset, `${entityPath}.data`, {})[key]) {
+          let field = {
+            name: key,
+            entityPath: entityPath,
+            isRequired: value.isRequired,
+            loading: get(dataset, `${entityPath}.loading`) || false,
+            saving : get(dataset, `${entityPath}.saving`),
+            valid:true,
+            error: false,
+            rawValid: false,
+          }
+          acc.push(field)
+        }
         return acc
       }, [])
 
       // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
       const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
-          const field = {
-              ...findField(action.formKey).find(elm => elm.name === fieldName),
+          let field = {
+              name: fieldName,
+              entityPath,
+              rawInputValue: fieldsFound ? get(find(fieldsFound, {entityPath, name:fieldName }), 'rawInputValue') : fieldValue,
+              dataSetValue: fieldValue,
               loading: get(dataset, `${entityPath}.loading`) ,
               valid:true,
               rawValid: false,
+              error: false,
               saving: get(dataset, `${entityPath}.saving`)
           };
           return field;
       });
-      // Dispatch the SYNC_FORMS_ENTITY action
       console.log(fields)
+      // Dispatch the SYNC_FORMS_ENTITY action
       store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions, ...fields ]));
     } else if(action.syncTypeForm === 'response'){
 
@@ -60,7 +65,6 @@ const formMiddleware = store => next => action => {
               const newState = next(action);
 
               const {_meta: {status, saving, loading}} = action;
-              console.log('RESPOOOOOOOOOOOOOOOOONSE')
               // Get the updated dataset
               const {dataset, forms, definitions,domains} = store.getState();
               const entityPath = action.entityPath;
@@ -73,6 +77,8 @@ const formMiddleware = store => next => action => {
                   loading: get(dataset, `${entityPath}.loading`) || false,
                   saving : get(dataset, `${entityPath}.saving`),
                   valid:true,
+                  error: false,
+                  globalErrors: undefined,
                   rawValid: false,
                   rawInputValue: undefined,
                 })
@@ -86,9 +92,11 @@ const formMiddleware = store => next => action => {
                       name: fieldName,
                       entityPath,
                       dataSetValue: fieldValue,
+                      rawInputValue: fieldValue,
                       loading: get(dataset, `${entityPath}.loading`) ,
                       valid:true,
                       rawValid: false,
+                      error: false,
                       saving: get(dataset, `${entityPath}.saving`)
                   };
                   // If action was a success, then replace the rawInputValue
@@ -120,29 +128,38 @@ const formMiddleware = store => next => action => {
 
       // Get the updated dataset
       const {dataset,definitions,domains, forms} = store.getState();
-      const findField = (formKey) => {
-        return forms.find(element => element.formKey === formKey).fields;
-      }
+      const fieldsFound = get(forms.find(element => element.formKey === action.formKey), 'fields')
+
       const entityPath = action.entityPath;
       const fieldsOnlyInDefinitions = reduce(get(definitions, `${entityPath}`), (acc, value, key) => {
-        if(!get(dataset, `${entityPath}.data`, {})[key]) acc.push({
-          ...findField(action.formKey).find(elm => elm.name === key),
-          loading: get(dataset, `${entityPath}.loading`) || false,
-          saving : get(dataset, `${entityPath}.saving`),
-          valid:true,
-          rawValid: false,
-        })
+        if(!get(dataset, `${entityPath}.data`, {})[key]){
+          let field = {
+           name: key,
+           entityPath,
+           isRequired: value.isRequired,
+           loading: get(dataset, `${entityPath}.loading`) || false,
+           saving : get(dataset, `${entityPath}.saving`),
+           valid:true,
+           error:true,
+           rawValid: false,
+         }
+          acc.push(field);
+        }
 
         return acc
       }, [])
 
       // Read the fields in the dataset at the entityPath location, and build a minimum field object that will be merged with the form fields
       const fields = map(get(dataset, `${entityPath}.data`), (fieldValue, fieldName) => {
-          const field = {
-              ...findField(action.formKey).find(elm => elm.name === fieldName),
+          let field = {
+              name: fieldName,
+              entityPath,
+              dataSetValue: fieldValue,
+              rawInputValue: fieldsFound ? get(find(fieldsFound, {entityPath, name:fieldName}), 'rawInputValue') : fieldValue,
               loading: get(dataset, `${entityPath}.loading`) ,
               valid:true,
               rawValid: false,
+              error:true,
               saving: get(dataset, `${entityPath}.saving`)
           };
           return field;

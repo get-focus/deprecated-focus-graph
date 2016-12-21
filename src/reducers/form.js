@@ -55,6 +55,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                 editing: false,
                 loading: false,
                 saving: false,
+                error: false,
                 fields: action.fields.map(initializeField)
             }];
         case DESTROY_FORM:
@@ -108,6 +109,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                 };
                 // Iterate over fields to check if form is loading
                 newForm.loading = newForm.fields.reduce((acc, {loading}) => acc || loading, false);
+                newForm.error = newForm.fields.reduce((acc, {error}) => acc || error, false);
                 // Iterate over fields to check if the form was saving and that all fields have saved.
                 // If that's the case, then the form has finished saving, so toggle it.
                 if (newForm.saving) {
