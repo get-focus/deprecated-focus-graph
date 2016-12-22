@@ -89,8 +89,8 @@ describe('The actionBuilder', () => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedLoadResolveAsync()(dispatchSpy);
                 expect(dispatchSpy).to.have.callCount(2);
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false}});
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE, formKey: undefined, syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: true, saving: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false,  error: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE, formKey: undefined, syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: true, saving: false,  error: false}});
 
                 done();
             });
@@ -98,16 +98,16 @@ describe('The actionBuilder', () => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedLoadRejectAsync()(dispatchSpy);
                 expect(dispatchSpy).to.have.callCount(2);
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false}});
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_LOAD_TEST', payload: REJECT_VALUE, syncTypeForm: 'error',formKey: undefined,  entityPath: 'test', _meta: {status: ERROR, loading: false, saving: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false,  error: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_LOAD_TEST', payload: REJECT_VALUE, syncTypeForm: 'error',formKey: undefined,  entityPath: 'test', _meta: {status: ERROR, loading: false, saving: false, error: true}});
                 done();
             });
             it('when called with a successfull save service should call the response and request action creators', async done => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedSaveResolveAsync()(dispatchSpy);
                 expect(dispatchSpy).to.have.callCount(3);
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true}});
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE,  formKey: undefined,syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true,  error: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE,  formKey: undefined,syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true, error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1", type: 'success'}});
                 done();
             });
@@ -116,8 +116,8 @@ describe('The actionBuilder', () => {
                 dispatchSpy.reset();
                 await actionBuildedSaveRejectAsync()(dispatchSpy);
                 expect(dispatchSpy).to.have.callCount(2);
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST',  syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true}});
-                expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_SAVE_TEST', payload: REJECT_VALUE, syncTypeForm: 'error',formKey: undefined,  entityPath: 'test', _meta: {status: ERROR, loading: false, saving: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST',  syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true,  error: false}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'ERROR_SAVE_TEST', payload: REJECT_VALUE, syncTypeForm: 'error',formKey: undefined,  entityPath: 'test', _meta: {status: ERROR, loading: false, saving: false, error: true}});
                 done();
             });
         });

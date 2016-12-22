@@ -42,6 +42,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
             actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
+                  console.log(responseActionCreator(svcValue,formKey))
                   dispatch(responseActionCreator(svcValue,formKey));
                   if(type === 'save'){
                     dispatch({
@@ -159,8 +160,8 @@ export const actionBuilder = ({names, type, service, message}) => {
     const saving = type === SAVE;
 
     const _metas = {
-        request: {status: PENDING, loading, saving},
-        response: {status: SUCCESS, loading, saving},
+        request: {status: PENDING, loading, saving, error: false},
+        response: {status: SUCCESS, loading, saving, error: false},
         error: {status: ERROR, loading: false, saving: false, error: true}
     }
     // for each node action types and action creators are made.
