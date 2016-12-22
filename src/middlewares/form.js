@@ -29,6 +29,8 @@ const formMiddleware = store => next => action => {
             name: key,
             entityPath: entityPath,
             isRequired: value.isRequired,
+            dataSetValue: undefined,
+            rawInputValue: fieldsFound ? get(find(fieldsFound, {entityPath, name:key}), 'rawInputValue') : undefined,
             loading: get(dataset, `${entityPath}.loading`) || false,
             saving : get(dataset, `${entityPath}.saving`),
             valid:true,
@@ -55,7 +57,6 @@ const formMiddleware = store => next => action => {
           };
           return field;
       });
-      console.log(fields)
       // Dispatch the SYNC_FORMS_ENTITY action
       store.dispatch(syncFormsEntity(entityPath, [...fieldsOnlyInDefinitions, ...fields ]));
     } else if(action.syncTypeForm === 'response'){
@@ -136,6 +137,8 @@ const formMiddleware = store => next => action => {
           let field = {
            name: key,
            entityPath,
+           dataSetValue: undefined,
+           rawInputValue: fieldsFound ? get(find(fieldsFound, {entityPath, name:key}), 'rawInputValue') : undefined,
            isRequired: value.isRequired,
            loading: get(dataset, `${entityPath}.loading`) || false,
            saving : get(dataset, `${entityPath}.saving`),
