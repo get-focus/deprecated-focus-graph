@@ -16,6 +16,7 @@ describe('The form middleware', () => {
                             firstName: 'Joe',
                             lastName: 'Lopez'
                         },
+                        erorr:false,
                         loading: true,
                         saving: false
                     }
@@ -28,6 +29,7 @@ describe('The form middleware', () => {
                         dataSetValue: 'Joe',
                         entityPath: 'user',
                         isRequired: true,
+                        error: false,
                         loading: false,
                         saving: false
                     }]
@@ -138,6 +140,7 @@ describe('The form middleware', () => {
                         fields: [{
                             name: 'firstName',
                             dataSetValue: 'Joe',
+                            rawInputValue: 'Joe',
                             entityPath: 'user',
                             loading: false,
                             isRequired: true,
@@ -167,12 +170,13 @@ describe('The form middleware', () => {
         };
         const myLoadAction = {
             type: 'A_TYPE_THAT_THE_FORM_SHOULD_LOOK_AFTER',
-            syncForm: true,
+            syncTypeForm: 'request',
             formKey: 'formKey',
             entityPath: 'user',
             _meta: {
                 status: SUCCESS,
                 saving: false,
+                error:false,
                 loading: true
             }
         }
@@ -187,33 +191,34 @@ describe('The form middleware', () => {
                 type: SYNC_FORMS_ENTITY,
                 entityPath: 'user',
                 fields: [
-                    {
-                        dataSetValue: 'David',
-                        entityPath: 'user',
-                        name: 'firstName',
-                        loading: true,
-                        saving: true,
-                        rawInputValue: 'David',
-                        valid: true,
-                        rawValid: false
-                    },
-                    {
-                        dataSetValue: 'Lopez',
-                        entityPath: 'user',
-                        name: 'lastName',
-                        loading: true,
-                        saving: true,
-                        rawInputValue: 'Lopez',
-                        rawValid: false,
-                        valid: true
-                    }
+                  {
+                      name: 'firstName',
+                      dataSetValue: 'David',
+                      rawInputValue: 'Joe',
+                      entityPath: 'user',
+                      error:false,
+                      loading: true,
+                      rawValid:false,
+                      valid:true,
+                      saving: true
+                  },
+                  {   name: 'lastName',
+                      dataSetValue: 'Lopez',
+                      rawInputValue: undefined,
+                      entityPath: 'user',
+                      error:false,
+                      loading: true,
+                      rawValid: false,
+                      saving: true,
+                      valid: true
+                  }
                 ]
             });
         });
         it('should dispatch a TOGGLE_FORM_EDITING when a successful save is passed', () => {
             const mySuccessfulSaveAction = {
                 type: 'A_TYPE_THAT_THE_FORM_SHOULD_LOOK_AFTER',
-                syncForm: true,
+                syncTypeForm: 'response',
                 entityPath: 'user',
                 _meta: {
                     status: SUCCESS,
@@ -235,6 +240,7 @@ describe('The form middleware', () => {
                         saving: true,
                         rawInputValue: 'David',
                         rawValid: false,
+                        error: false,
                         valid: true
                     },
                     {
@@ -244,6 +250,7 @@ describe('The form middleware', () => {
                         loading: true,
                         rawValid: false,
                         saving: true,
+                        error: false,
                         rawInputValue: 'Lopez',
                         valid: true
                     }

@@ -70,16 +70,15 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
                 ...action,
                 fields: action.fields.map(field => {
                     _checkFieldDefinition(field.name, field.entityPath, definitions);
-                    const redirectEntityPath = getRedirectEntityPath(field.dataSetValue, field.entityPath, field.name, definitions, domains);
+                    const redirectEntityPath = getRedirectEntityPath(field.rawInputValue, field.entityPath, field.name, definitions, domains);
                     let _redirectEntityPath= {};
                     if(redirectEntityPath){
-                        _checkValueForList(field.dataSetValue, field.name)
+                        _checkValueForList(field.rawInputValue, field.name)
                         _redirectEntityPath = {redirectEntityPath}
                     }
                     return {
                         ...field,
-                        formattedInputValue: formatValue(field.dataSetValue, field.entityPath, field.name, definitions, domains),
-                        rawInputValue: field.dataSetValue,
+                        formattedInputValue: formatValue(field.rawInputValue, field.entityPath, field.name, definitions, domains),
                         label: translate(field.entityPath + "." + field.name),
                         ..._redirectEntityPath
                     }

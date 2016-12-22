@@ -10,7 +10,7 @@ function _getMessageId(){
 }
 
 const ACTION_BUILDER = 'ACTION_BUILDER';
-const ALLOW_ACTION_TYPES = ['load', 'save', 'delete'];
+const ALLOW_ACTION_TYPES = ['load', 'save', 'delete', 'error'];
 const STRING_EMPTY = '';
 const LOAD = ALLOW_ACTION_TYPES[0];
 const SAVE = ALLOW_ACTION_TYPES[1];
@@ -22,8 +22,7 @@ export const ERROR = 'ERROR';
 // A simple function to create action creators
 // Return a function which returns a type and a payload
 // example:  _actionCreatorBuilder('REQUEST_LOAD_USER') will return `payload => {type: 'REQUEST_LOAD_USER', payload}`
-const _actionCreatorBuilder = (type, name, _meta) => (payload, formKey) => ({...{type, entityPath: name, syncForm: true, _meta}, ...(payload ? {payload} : {}), formKey});
-
+const _actionCreatorBuilder = (type, name, _meta, syncTypeForm) => (payload, formKey) => ({...{type, entityPath: name, syncTypeForm, _meta}, ...(payload ? {payload} : {}), formKey});
 // A simple function to create async middleware dispatcher for redux
 // You have to provide a object with the following properties
 // {
@@ -43,6 +42,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
             actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
+                  console.log(responseActionCreator(svcValue,formKey))
                   dispatch(responseActionCreator(svcValue,formKey));
                   if(type === 'save'){
                     dispatch({
@@ -89,7 +89,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                       }
                     })
                   })
-                    dispatch(errorActionCreator(svcValue))
+                    console.log(formKey)
+                    dispatch(errorActionCreator(svcValue, formKey))
                 }
               });
 
@@ -159,9 +160,9 @@ export const actionBuilder = ({names, type, service, message}) => {
     const saving = type === SAVE;
 
     const _metas = {
-        request: {status: PENDING, loading, saving},
-        response: {status: SUCCESS, loading, saving},
-        error: {status: ERROR, loading: false, saving: false}
+        request: {status: PENDING, loading, saving, error: false},
+        response: {status: SUCCESS, loading, saving, error: false},
+        error: {status: ERROR, loading: false, saving: false, error: true}
     }
     // for each node action types and action creators are made.
     const _creatorsAndTypes = names.reduce((res, name) => {
@@ -176,9 +177,9 @@ export const actionBuilder = ({names, type, service, message}) => {
       }
       // todo: find another name for name and value // not crystal clear
       const creators = {
-          request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request)},
-          response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response)},
-          error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error)}
+          request: {name: `request${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.request, name, _metas.request, 'request')},
+          response: {name: `response${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.response, name, _metas.response, 'response')},
+          error: {name: `error${CAPITALIZE_TYPE}${CAPITALIZE_NAME}`, value: _actionCreatorBuilder(constants.error, name, _metas.error, 'error')}
       }
 
       return {

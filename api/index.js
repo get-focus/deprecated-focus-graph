@@ -125,7 +125,7 @@ app.get(API_ROOT  + '/entity/create', function createNotifs(req, res) {
 
 app.get(API_ROOT  + '/error', function createNotifs(req, res) {
     res.status(403);
-    res.json({"globalErrors":[" Libelle doit être renseigné"]})
+    res.json({"globalErrors":[" Libelle doit être renseigné"], "status": 'ERROR'})
 
   }
 );
