@@ -80,15 +80,18 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                     );
                   }
                 }else {
-                  svcValue['globalErrors'].map(element => {
-                    return dispatch({
-                      type: 'PUSH_MESSAGE', message : {
-                        content: i18n ? i18n.t(element) : element,
-                        id: _getMessageId(),
-                        type: 'error'
-                      }
+                  if(svcValue.response['globalErrors']){
+                    svcValue.response['globalErrors'].map(element => {
+                      return dispatch({
+                        type: 'PUSH_MESSAGE', message : {
+                          content: i18n ? i18n.t(element) : element,
+                          id: _getMessageId(),
+                          type: 'error'
+                        }
+                      })
                     })
-                  })
+                  }
+
                     dispatch(svcValue.updateRequestStatus);
                     dispatch(errorActionCreator(svcValue.response, formKey))
                 }
