@@ -42,8 +42,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
             actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
                 if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
-                  console.log(responseActionCreator(svcValue,formKey))
-                  dispatch(responseActionCreator(svcValue,formKey));
+                  dispatch(responseActionCreator(svcValue.response,formKey));
+                  dispatch(svcValue.updateRequestStatus)
                   if(type === 'save'){
                     dispatch({
                       type: 'PUSH_MESSAGE',
@@ -58,9 +58,9 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                   // TODO: a bit ugly but with the convention on name it should work.
                   const splitName = name.split('.');
                   const lastNamePart = splitName[splitName.length - 1];
-                  const responsePartFromName = svcValue[lastNamePart];
+                  const responsePartFromName = svcValue.response[lastNamePart];
                   if(responsePartFromName){
-
+                    dispatch(svcValue.updateRequestStatus);
                     dispatch(responseActionCreator(responsePartFromName,formKey));
 
                     if(type === 'save'){
@@ -89,8 +89,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                       }
                     })
                   })
-                    console.log(formKey)
-                    dispatch(errorActionCreator(svcValue, formKey))
+                    dispatch(svcValue.updateRequestStatus);
+                    dispatch(errorActionCreator(svcValue.response, formKey))
                 }
               });
 
