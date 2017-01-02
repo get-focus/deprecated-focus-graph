@@ -4,7 +4,7 @@ import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import * as focusReducersDefault from '../reducers';
 import formMiddleware from '../middlewares/form';
 import fieldMiddlewareBuilder from '../middlewares/field';
-
+import find from 'lodash/find'
 const loggerMiddleware = createLogger();
 type ProjectReducersType = {
   dataset: Function,
@@ -68,6 +68,16 @@ export const selectFieldsByFormKey = formKey => (state= {}) => {
    if( !state.dataset[name]) throw new Error(`SELECTOR_DATASET : there is no ${name} in the dataset of the state`);
    return state.dataset[name]
  }
+
+ export const selectreferenceList = nameListRef => (state ={}) => {
+   const {masterData} = state;
+   const listRef = masterData.reduce((acc, element) => {
+     if(nameListRef.indexOf(element.name)!== -1) acc.push(element)
+     return acc;
+   },[])
+   return {referenceList: listRef}
+ }
+
 
 
  // It extracts customData from the state
