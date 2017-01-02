@@ -55,10 +55,10 @@ describe('The actionBuilder', () => {
     describe('when called with right parameters', () => {
         const RESOLVE_VALUE = {testValue: 'tests'};
         const REJECT_VALUE = {error: 'error'};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'load', service: () => Promise.resolve(RESOLVE_VALUE)};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'load', service: () => Promise.reject(REJECT_VALUE)};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'save', service: () => Promise.resolve(RESOLVE_VALUE)};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'save', service: () => Promise.reject(REJECT_VALUE)};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'load', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({response: data})))};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'load', service: () => (Promise.reject(REJECT_VALUE).then(data => ({response: data, status: 'ERROR'})))};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'save', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({response: data})))};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'save', service: () => (Promise.reject(REJECT_VALUE).then(data => ({response: data, status: 'ERROR'})))};
 
         it('should return an object with types, creators, action', () => {
             const actionBuilded = actionBuilder(TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE);
@@ -88,7 +88,7 @@ describe('The actionBuilder', () => {
             it('when called with a successfull load service should call the response and request action creators', async done => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedLoadResolveAsync()(dispatchSpy);
-                expect(dispatchSpy).to.have.callCount(2);
+                expect(dispatchSpy).to.have.callCount(3);
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_LOAD_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: true, saving: false,  error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_LOAD_TEST', payload: RESOLVE_VALUE, formKey: undefined, syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: true, saving: false,  error: false}});
 
@@ -105,7 +105,7 @@ describe('The actionBuilder', () => {
             it('when called with a successfull save service should call the response and request action creators', async done => {
                 const dispatchSpy = sinon.spy();
                 await actionBuildedSaveResolveAsync()(dispatchSpy);
-                expect(dispatchSpy).to.have.callCount(3);
+                expect(dispatchSpy).to.have.callCount(4);
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true,  error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE,  formKey: undefined,syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true, error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1", type: 'success'}});
