@@ -69,7 +69,7 @@ export const selectFieldsByFormKey = formKey => (state= {}) => {
    return state.dataset[name]
  }
 
- export const selectreferenceList = nameListRef => (state ={}) => {
+ export const selectReferenceList = nameListRef => (state ={}) => {
    const {masterData} = state;
    const listRef = masterData.reduce((acc, element) => {
      if(nameListRef.indexOf(element.name)!== -1) acc.push(element)
