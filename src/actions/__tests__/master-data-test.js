@@ -71,9 +71,9 @@ describe('Master datum actions', () => {
             describe('The built action part of the result', () => {
                 const NAME = 'chiffres';
                 const ERROR_MASTER_DATUM_MOCK = 'No way to load this list';
-                const loadActionWithResolveServiceAsync =  loadMasterDatum(NAME, d => Promise.resolve(MOCKED_MASTER_DATUM), 0);
-                const loadActionWithResolveServiceAsyncWithCache =  loadMasterDatum(NAME, d => Promise.resolve(MOCKED_MASTER_DATUM));
-                const loadActionWithRejectServiceAsync =  loadMasterDatum(NAME, d => Promise.reject(ERROR_MASTER_DATUM_MOCK), 0);
+                const loadActionWithResolveServiceAsync =  loadMasterDatum(NAME, d => (Promise.resolve(MOCKED_MASTER_DATUM).then(data => ({response: data}))), 0);
+                const loadActionWithResolveServiceAsyncWithCache =  loadMasterDatum(NAME, d => Promise.resolve(MOCKED_MASTER_DATUM).then(data => ({response: data})));
+                const loadActionWithRejectServiceAsync =  loadMasterDatum(NAME, d => Promise.reject(ERROR_MASTER_DATUM_MOCK).then(data => ({response: data})), 0);
 
                 it('should return a function', () => {
                     expect(loadActionWithResolveServiceAsync).to.be.a.function;

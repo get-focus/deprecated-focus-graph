@@ -57,7 +57,7 @@ export const loadMasterDatum = (name, service, cacheDuration = DEFAULT_CACHE_DUR
           dispatch(requestMasterDatum(name));
           const res = await service()
           _setDataInCache(name, cacheDuration);
-          dispatch(responseMasterDatum(name, res));
+          dispatch(responseMasterDatum(name, res.response));
         }
       } catch(err){
         dispatch(errorMasterDatum(name, err));
