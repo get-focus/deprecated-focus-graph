@@ -9,6 +9,7 @@ const FIELD_CONTEXT_TYPE = {
         InputComponent: PropTypes.func,
         DisplayComponent: PropTypes.func,
         SelectComponent: PropTypes.func,
+        ListComponent: PropTypes.func, 
         SelectDisplayComponent: PropTypes.func
     })
 };
@@ -147,6 +148,7 @@ class FieldProvider extends PureComponent {
                 InputComponent : this.props.InputComponent,
                 DisplayComponent: this.props.DisplayComponent,
                 SelectComponent: this.props.SelectComponent,
+                ListComponent : this.props.ListComponent,
                 SelectDisplayComponent: this.props.SelectDisplayComponent
             }
         }
