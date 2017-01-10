@@ -9,7 +9,7 @@ const FIELD_CONTEXT_TYPE = {
         InputComponent: PropTypes.func,
         DisplayComponent: PropTypes.func,
         SelectComponent: PropTypes.func,
-        ListComponent: PropTypes.func, 
+        ListComponent: PropTypes.func,
         SelectDisplayComponent: PropTypes.func
     })
 };
@@ -77,7 +77,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
 
 const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, textOnly= false) => {
     const fieldForLineBuilder = (connectedComponentProps) => (propertyName, {FieldComponent = DefaultFieldComponent, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange,  ...options} = {}, index) => {
-        const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList} = connectedComponentProps;
+        const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, onInputBlurList, components} = connectedComponentProps;
         const {onChange: optionsOnChange, ...otherOptions} = options;
         const fieldTab = find(fields, {name: propertyNameList});
         if(!isArray(fieldTab.rawInputValue) || !isArray(fieldTab.formattedInputValue) ){
@@ -98,21 +98,25 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
             if (get(definitions, `${entityPathList}.${propertyNameList}`).validateOnBlur !== false) onInputBlurList(propertyNameList, entityPathList, fieldTab.rawInputValue[index][propertyName], propertyName, index);
             if (userDefinedOnBlur) userDefinedOnBlur();
         }
-        const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : undefined;
-        const validList  = fieldTab.valid && !fieldTab.valid[index] ? fieldTab.valid[index] : undefined;
+        const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : true;
+        const rawValidList  = fieldTab.rawValid && fieldTab.rawValid[index] ? fieldTab.rawValid[index][propertyName] : true;
+        const validList  = fieldTab.valid && fieldTab.valid[index] ? fieldTab.valid[index][propertyName] : true;
+        console.log('Il se passe quoi ici ?', fieldError, 'raw', rawValidList, 'valid', validList)
         return <FieldComponent {...field}
-            error={fieldError}
             textOnly={textOnly}
             editing={editing}
             multiple={multiple}
             name={propertyName}
-            metadata={metadata}
+            metadata={{ ...components, ...metadata}}
             onChange={onChange}
             onBlur={onBlur}
             fields={fields}
-            valid={validList}
             {...connectedComponentProps}
-            {...options} />;
+            {...options}
+            rawValid={rawValidList}
+            valid={validList}
+            error={fieldError}
+          />;
     }
     return fieldForLineBuilder;
 

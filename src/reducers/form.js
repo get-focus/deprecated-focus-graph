@@ -1,5 +1,5 @@
 import {CREATE_FORM, DESTROY_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, TOGGLE_FORM_EDITING, SET_FORM_TO_SAVING, CLEAR_FORM} from '../actions/form';
-import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST, INPUT_CHANGE_ERROR} from '../actions/input';
+import {INPUT_CHANGE, INPUT_ERROR, INPUT_ERROR_LIST, INPUT_CHANGE_ERROR, INPUT_ERROR_CHANGE_LIST} from '../actions/input';
 import find from 'lodash/find';
 import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
@@ -157,24 +157,27 @@ const forms = (state: Array<FormStateType> = [], action) => {
                     } : {})
                 }));
             } else {
+              //TODO check if it's an array field
                 // The field exists, so just update the rawInputValue
-                return state.map(form => ({
-                    ...form,
-                    ...(form.formKey === action.formKey ? {
-                        fields: form.fields.map(field => {
-                            const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
-                            if (!isFieldConcerned) return field;
-                            return {
-                                ...field,
-                                rawInputValue: action.rawValue,
-                                formattedInputValue: action.formattedValue,
-                                dirty: true,
-                                valid: true,
-                                rawValid: true
-                            };
-                        })
-                    } : {})
-                }));
+                return state.map(form => {
+                  return {
+                      ...form,
+                      ...(form.formKey === action.formKey ? {
+                          fields: form.fields.map(field => {
+                              const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                              if (!isFieldConcerned) return field;
+                              return {
+                                  ...field,
+                                  rawInputValue: action.rawValue,
+                                  formattedInputValue: action.formattedValue,
+                                  dirty: true,
+                                  valid: isArray(action.rawValue) ? field.valid : true,
+                                  rawValid:isArray(action.rawValue) ? field.rawValid : true
+                              };
+                          })
+                      } : {})
+                    }
+                });
             }
         case INPUT_CHANGE_ERROR:
             return state.map(form => ({
@@ -209,18 +212,41 @@ const forms = (state: Array<FormStateType> = [], action) => {
           return state.map(form => ({
               ...form,
               ...(form.formKey === action.formKey ? {
-                  fields: form.fields.map(field => {
+                  fields: form.fields.map((field, index) => {
                       const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                       if (!isFieldConcerned) return field;
-                      const validList = {};
-                      const error= (isArray(field.error) ? field.error : [] ), errorLine ={...error[action.index]};
+                      const error= (isArray(field.error) ? field.error : [] ), valid = (isArray(field.rawValid) ? field.rawValid : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
+                      console.log(validLine)
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;
-                      validList[action.index] = false;
+                      validLine[action.propertyNameLine] = false;
+                      valid[action.index] = validLine;
                       return {
                           ...field,
                           error: error,
-                          valid: validList
+                          valid: valid,
+                          rawValid: valid
+                      };
+                  })
+
+              }  : {})
+          }));
+      case INPUT_ERROR_CHANGE_LIST:
+          return state.map(form => ({
+              ...form,
+              ...(form.formKey === action.formKey ? {
+                  fields: form.fields.map((field, index) => {
+                      const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
+                      if (!isFieldConcerned) return field;
+                      const error= (isArray(field.error) ? field.error : [] ), valid = (isArray(field.rawValid) ? field.rawValid : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
+                      errorLine[action.propertyNameLine] = action.error;
+                      error[action.index] = errorLine;
+                      validLine[action.propertyNameLine] = false;
+                      valid[action.index] = validLine;
+                      return {
+                          ...field,
+                          error: error,
+                          rawValid: valid
                       };
                   })
 

@@ -3,6 +3,7 @@ export const INPUT_BLUR = 'INPUT_BLUR';
 export const INPUT_ERROR = 'INPUT_ERROR';
 export const INPUT_BLUR_LIST = 'INPUT_BLUR_LIST';
 export const INPUT_ERROR_LIST = 'INPUT_ERROR_LIST';
+export const INPUT_ERROR_CHANGE_LIST = 'INPUT_ERROR_CHANGE_LIST';
 export const INPUT_CHANGE_ERROR = 'INPUT_CHANGE_ERROR';
 
 /**
@@ -16,6 +17,17 @@ export const INPUT_CHANGE_ERROR = 'INPUT_CHANGE_ERROR';
  */
 export const inputErrorList = (formKey, fieldName, entityPath, error, propertyNameLine, index) => ({
     type: INPUT_ERROR_LIST,
+    formKey,
+    fieldName,
+    entityPath,
+    error,
+    propertyNameLine,
+    index
+});
+
+
+export const inputErrorChangeList = (formKey, fieldName, entityPath, error, propertyNameLine, index) => ({
+    type: INPUT_ERROR_CHANGE_LIST,
     formKey,
     fieldName,
     entityPath,
