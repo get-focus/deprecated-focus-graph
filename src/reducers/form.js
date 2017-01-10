@@ -215,8 +215,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                   fields: form.fields.map((field, index) => {
                       const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                       if (!isFieldConcerned) return field;
-                      const error= (isArray(field.error) ? field.error : [] ), valid = (isArray(field.rawValid) ? field.rawValid : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
-                      console.log(validLine)
+                      const error= (isArray(field.error) ? [...field.error] : [] ), valid = (isArray(field.rawValid) ? [...field.rawValid] : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;
                       validLine[action.propertyNameLine] = false;
@@ -238,14 +237,14 @@ const forms = (state: Array<FormStateType> = [], action) => {
                   fields: form.fields.map((field, index) => {
                       const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                       if (!isFieldConcerned) return field;
-                      const error= (isArray(field.error) ? field.error : [] ), valid = (isArray(field.rawValid) ? field.rawValid : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
+                      //TODO horrible !!!
+                      const error= (isArray(field.error) ? [...field.error] : [] ), valid = (isArray(field.rawValid) ? [...field.rawValid] : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;
                       validLine[action.propertyNameLine] = false;
                       valid[action.index] = validLine;
                       return {
                           ...field,
-                          error: error,
                           rawValid: valid
                       };
                   })

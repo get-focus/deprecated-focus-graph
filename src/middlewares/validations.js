@@ -149,8 +149,8 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
 export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch)  => {
   const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch, true);
   if (validationResult.isValid == false ) {
-      if(!validationResult.isList) console.log('il se passe quoi ?'); //dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
-      //selse dispatch(inputChangeError(formKey, fieldName, entityPath));
+      console.log('Bonjour je suis la pour vous servir!')
+      if(!validationResult.isList) dispatch(inputChangeError(formKey, fieldName, entityPath)); //dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
       return false;
   } else {
       return true;
@@ -172,14 +172,13 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
       //TODO: feature redirect array
       const redirectDefinition = _getRedirectDefinition(redirect, definitions);
       // The value is an array and we iterate over it.
-      validationResult = {isValid : true};
+      validationResult = {isValid : true, isList: true};
       value.map((element, index) => {
         mapKeys(element, (value, propertyNameLine) => {
           const domain = domains[redirectDefinition[propertyNameLine].domain];
           const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName ,isOnChange);
           if(fieldValid === false){
             validationResult.isValid = false;
-            validationResult.isList = true;
           }
         })
       })

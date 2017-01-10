@@ -99,8 +99,8 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
             if (userDefinedOnBlur) userDefinedOnBlur();
         }
         const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : true;
-        const rawValidList  = fieldTab.rawValid && fieldTab.rawValid[index] ? fieldTab.rawValid[index][propertyName] : true;
-        const validList  = fieldTab.valid && fieldTab.valid[index] ? fieldTab.valid[index][propertyName] : true;
+        const rawValidList  = fieldTab.rawValid && fieldTab.rawValid[index] ? fieldTab.rawValid[index][propertyName] !== undefined ? false : true : true;
+        const validList  = fieldTab.valid && fieldTab.valid[index] ? fieldTab.valid[index][propertyName] !== undefined ? false :  true : true;
         console.log('Il se passe quoi ici ?', fieldError, 'raw', rawValidList, 'valid', validList)
         return <FieldComponent {...field}
             textOnly={textOnly}
