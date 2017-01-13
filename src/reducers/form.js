@@ -5,6 +5,7 @@ import xorWith from 'lodash/xorWith';
 import isUndefined from 'lodash/isUndefined';
 import findIndex from 'lodash/findIndex';
 import clone from 'lodash/clone';
+import omit from 'lodash/omit'
 import isArray from 'lodash/isArray';
 const initializeField = field => ({
     valid: true,
@@ -166,13 +167,43 @@ const forms = (state: Array<FormStateType> = [], action) => {
                           fields: form.fields.map(field => {
                               const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                               if (!isFieldConcerned) return field;
+                              debugger;
                               return {
                                   ...field,
                                   rawInputValue: action.rawValue,
                                   formattedInputValue: action.formattedValue,
                                   dirty: true,
-                                  valid: isArray(action.rawValue) ? field.valid : true,
-                                  rawValid:isArray(action.rawValue) ? field.rawValid : true
+                                  valid: ((isArray(action.rawValue) && isArray(field.valid) ) || (action.propertyNameLine && isArray(field.valid)) )?
+                                          field.valid.reduce((acc, valid, index) => {
+                                            if(valid[action.propertyNameLine] === false && index === action.index ) {
+                                              debugger;
+
+                                              if(Object.keys(valid) <= 1) {
+                                                return acc;
+                                              }
+                                              else {
+                                                acc.push(omit(valid, [action.propertyNameLine]))
+                                                return acc;}
+                                            }
+                                            debugger;
+                                            acc.push(valid);
+                                            return acc;
+                                          }, [])
+                                          : field.valid,
+                                  rawValid: ((isArray(action.rawValue) && isArray(field.rawValid) ) || (action.propertyNameLine  && isArray(field.rawValid)) )? field.rawValid.reduce((acc, rawValid, index) => {
+                                    if(rawValid[action.propertyNameLine] === false && index === action.index ){
+                                      if(Object.keys(rawValid) <= 1) {
+                                        debugger;
+                                        return acc;
+                                      }
+                                      else {
+                                        acc.push(omit(rawValid, [action.propertyNameLine]))
+                                        return acc;
+                                      }
+                                    }
+                                    acc.push(rawValid);
+                                    return acc;
+                                  }, []) :  field.rawValid
                               };
                           })
                       } : {})
@@ -238,6 +269,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                       const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                       if (!isFieldConcerned) return field;
                       //TODO horrible !!!
+                      debugger;
                       const error= (isArray(field.error) ? [...field.error] : [] ), valid = (isArray(field.rawValid) ? [...field.rawValid] : []), errorLine ={...error[index], ...error[action.index]}, validLine = {...valid[index], ...valid[action.index]}
                       errorLine[action.propertyNameLine] = action.error;
                       error[action.index] = errorLine;

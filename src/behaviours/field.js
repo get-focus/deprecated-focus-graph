@@ -91,7 +91,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
         }
         const onChange = rawValue => {
             fieldTab.rawInputValue[index][propertyName] = rawValue;
-            onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue);
+            onInputChange(propertyNameList, entityPathList, fieldTab.rawInputValue, propertyName, index);
             if (userDefinedOnChange) userDefinedOnChange(rawValue);
         }
         const onBlur = () => {
@@ -101,7 +101,6 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
         const fieldError = fieldTab.error && fieldTab.error[index] ? fieldTab.error[index][propertyName] : true;
         const rawValidList  = fieldTab.rawValid && fieldTab.rawValid[index] ? fieldTab.rawValid[index][propertyName] !== undefined ? false : true : true;
         const validList  = fieldTab.valid && fieldTab.valid[index] ? fieldTab.valid[index][propertyName] !== undefined ? false :  true : true;
-        console.log('Il se passe quoi ici ?', fieldError, 'raw', rawValidList, 'valid', validList)
         return <FieldComponent {...field}
             textOnly={textOnly}
             editing={editing}

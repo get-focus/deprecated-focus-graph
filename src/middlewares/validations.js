@@ -146,10 +146,9 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
 }
 
 
-export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch)  => {
-  const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch, true);
+export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, propertyNameLineOnChange, indexOnChange)  => {
+  const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch, true, propertyNameLineOnChange, indexOnChange);
   if (validationResult.isValid == false ) {
-      console.log('Bonjour je suis la pour vous servir!')
       if(!validationResult.isList) dispatch(inputChangeError(formKey, fieldName, entityPath)); //dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
       return false;
   } else {
@@ -159,7 +158,7 @@ export const validateOnChangeField = (definitions, domains , formKey, entityPath
 
 
 
-export const validateGlobal = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, isOnChange = false) => {
+export const validateGlobal = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, isOnChange = false, propertyNameLineOnChange, indexOnChange) => {
   let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldName}`);
   let validationResult= {};
   if(isArray(value)){
@@ -173,15 +172,25 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
       const redirectDefinition = _getRedirectDefinition(redirect, definitions);
       // The value is an array and we iterate over it.
       validationResult = {isValid : true, isList: true};
-      value.map((element, index) => {
-        mapKeys(element, (value, propertyNameLine) => {
-          const domain = domains[redirectDefinition[propertyNameLine].domain];
-          const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName ,isOnChange);
-          if(fieldValid === false){
-            validationResult.isValid = false;
-          }
+      if(isOnChange){
+        const domain = domains[redirectDefinition[propertyNameLineOnChange].domain];
+        const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLineOnChange, formKey, value[indexOnChange][propertyNameLineOnChange], dispatch,indexOnChange, entityPath, fieldName ,isOnChange);
+        if(fieldValid === false){
+          validationResult.isValid = false;
+        }
+      }else {
+        value.map((element, index) => {
+          mapKeys(element, (value, propertyNameLine) => {
+            const domain = domains[redirectDefinition[propertyNameLine].domain];
+            const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName ,isOnChange);
+            if(fieldValid === false){
+              validationResult.isValid = false;
+            }
+          })
+
         })
-      })
+      }
+
     }else {
       throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
     }
@@ -233,7 +242,7 @@ export const validateFieldForList = (definitions, domain, propertyNameLine, form
 /**
  * [description]
  * @param  {object} definitions      the application's definitions
- * @param  {[type]} domains          the application's domains
+ * @param  {[type]} domains          the application#'s domains
  * @param  {string} formKey          the form key
  * @param  {string} entityPath       entityPath where is the list
  * @param  {string} fieldNameList         the name of the field List

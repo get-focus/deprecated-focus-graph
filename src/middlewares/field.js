@@ -61,7 +61,7 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
                 ...action,
                 formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
             });
-            validateOnChangeField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch);
+            validateOnChangeField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch, action.propertyNameLine, action.index);
             break;
             case CREATE_FORM:
             case SYNC_FORM_ENTITIES:
