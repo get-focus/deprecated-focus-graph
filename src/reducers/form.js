@@ -167,39 +167,32 @@ const forms = (state: Array<FormStateType> = [], action) => {
                           fields: form.fields.map(field => {
                               const isFieldConcerned = field.name === action.fieldName && field.entityPath === action.entityPath;
                               if (!isFieldConcerned) return field;
-                              debugger;
+                              let initTab = [], newFieldTab = [...field.rawValid];
+                              initTab[action.index] = {[action.propertyNameLine]: true}
+                              newFieldTab[action.index] = {...field.rawValid[action.index],[action.propertyNameLine]: true}
+                              const tabRawValid = isArray(field.rawValid) ? newFieldTab : initTab ;
+                              const tabValid = isArray(field.valid) ? newFieldTab : initTab;
+
                               return {
                                   ...field,
                                   rawInputValue: action.rawValue,
                                   formattedInputValue: action.formattedValue,
                                   dirty: true,
-                                  valid: ((isArray(action.rawValue) && isArray(field.valid) ) || (action.propertyNameLine && isArray(field.valid)) )?
-                                          field.valid.reduce((acc, valid, index) => {
-                                            if(valid[action.propertyNameLine] === false && index === action.index ) {
-                                              debugger;
-
-                                              if(Object.keys(valid) <= 1) {
-                                                return acc;
-                                              }
-                                              else {
-                                                acc.push(omit(valid, [action.propertyNameLine]))
-                                                return acc;}
+                                  valid: action.propertyNameLine ?
+                                          tabValid.reduce((acc, valid, index) => {
+                                            if(!valid[action.propertyNameLine] && index === action.index ){
+                                              acc.push({...valid, [action.propertyNameLine] : true})
+                                              return acc;
                                             }
-                                            debugger;
                                             acc.push(valid);
                                             return acc;
                                           }, [])
                                           : field.valid,
-                                  rawValid: ((isArray(action.rawValue) && isArray(field.rawValid) ) || (action.propertyNameLine  && isArray(field.rawValid)) )? field.rawValid.reduce((acc, rawValid, index) => {
-                                    if(rawValid[action.propertyNameLine] === false && index === action.index ){
-                                      if(Object.keys(rawValid) <= 1) {
-                                        debugger;
-                                        return acc;
-                                      }
-                                      else {
-                                        acc.push(omit(rawValid, [action.propertyNameLine]))
-                                        return acc;
-                                      }
+                                  rawValid: action.propertyNameLine ? tabRawValid.reduce((acc, rawValid, index) => {
+
+                                    if(!rawValid[action.propertyNameLine] && index === action.index ){
+                                      acc.push({...rawValid, [action.propertyNameLine] : true})
+                                      return acc;
                                     }
                                     acc.push(rawValid);
                                     return acc;
