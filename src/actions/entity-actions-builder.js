@@ -1,5 +1,6 @@
 import {capitalize, toUpper} from 'lodash/string';
 import {isArray, isFunction,isString} from 'lodash/lang';
+import omit from 'lodash/omit';
 import i18n from 'i18next';
 
 let msgId = 0;
@@ -34,6 +35,15 @@ const _actionCreatorBuilder = (type, name, _meta, syncTypeForm) => (payload, for
 //     error: the function standing for an action creator of error
 //   }]
 // }
+
+const validFetchArgument = (args, dispatch) => {
+  if(args.__Focus__updateRequestStatus){
+    dispatch(svcValue.__Focus__updateRequestStatus)
+  }else {
+    console.warn(`Thank to give the parameter __Focus__updateRequestStatus and ___Focus__status in the then of you, now you just give : ${args}`)
+  }
+}
+
 const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  message}) => ((data, formKey) => {
     return async dispatch => {
         try {
@@ -41,9 +51,9 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
             const svcValue = await promiseSvc(data);
             actionCreatorsArray.forEach(({name, response: responseActionCreator, error:errorActionCreator}) => {
                 // When there is only one node the complete payload is dispatched.
-                if(actionCreatorsArray.length === 1 && svcValue['status'] !== 'ERROR'){
-                  dispatch(responseActionCreator(svcValue.response,formKey));
-                  dispatch(svcValue.updateRequestStatus)
+                if(actionCreatorsArray.length === 1 && svcValue['__Focus__status'] !== 'ERROR'){
+                  dispatch(responseActionCreator(omit(svcValue, ["__Focus__updateRequestStatus"]),formKey));
+                  validFetchArgument(svcValue, dispatch)
                   if(type === 'save'){
                     dispatch({
                       type: 'PUSH_MESSAGE',
@@ -53,14 +63,14 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                         type: 'success'
                       }})
                   }
-                } else if (actionCreatorsArray.length !== 1 && svcValue['status'] !== 'ERROR') {
+                } else if (actionCreatorsArray.length !== 1 && svcValue['__Focus__status'] !== 'ERROR') {
                   // Whene there is more node only a part of the payload is dispathed.
                   // TODO: a bit ugly but with the convention on name it should work.
                   const splitName = name.split('.');
                   const lastNamePart = splitName[splitName.length - 1];
-                  const responsePartFromName = svcValue.response[lastNamePart];
+                  const responsePartFromName = svcValue[lastNamePart];
                   if(responsePartFromName){
-                    dispatch(svcValue.updateRequestStatus);
+                    validFetchArgument(svcValue, dispatch)
                     dispatch(responseActionCreator(responsePartFromName,formKey));
 
                     if(type === 'save'){
@@ -80,8 +90,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                     );
                   }
                 }else {
-                  if(svcValue.response['globalErrors']){
-                    svcValue.response['globalErrors'].map(element => {
+                  if(svcValue['globalErrors']){
+                    svcValue['globalErrors'].map(element => {
                       return dispatch({
                         type: 'PUSH_MESSAGE', message : {
                           content: i18n ? i18n.t(element) : element,
@@ -92,8 +102,8 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                     })
                   }
 
-                    dispatch(svcValue.updateRequestStatus);
-                    dispatch(errorActionCreator(svcValue.response, formKey))
+                    validFetchArgument(svcValue, dispatch)
+                    dispatch(errorActionCreator(omit(svcValue, ["__Focus__updateRequestStatus"]), formKey))
                 }
               });
 
