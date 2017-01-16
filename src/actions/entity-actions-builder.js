@@ -38,7 +38,7 @@ const _actionCreatorBuilder = (type, name, _meta, syncTypeForm) => (payload, for
 
 const validFetchArgument = (args, dispatch) => {
   if(args.__Focus__updateRequestStatus){
-    dispatch(svcValue.__Focus__updateRequestStatus)
+    dispatch(args.__Focus__updateRequestStatus)
   }else {
     console.warn(`Thank to give the parameter __Focus__updateRequestStatus and ___Focus__status in the then of you, now you just give : ${args}`)
   }
@@ -103,7 +103,7 @@ const _asyncActionCreator = ({service: promiseSvc, actionCreatorsArray,type,  me
                   }
 
                     validFetchArgument(svcValue, dispatch)
-                    dispatch(errorActionCreator(omit(svcValue, ["__Focus__updateRequestStatus"]), formKey))
+                    dispatch(errorActionCreator(omit(svcValue, ["__Focus__updateRequestStatus", '__Focus__status']), formKey))
                 }
               });
 

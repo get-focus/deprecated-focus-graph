@@ -55,10 +55,10 @@ describe('The actionBuilder', () => {
     describe('when called with right parameters', () => {
         const RESOLVE_VALUE = {testValue: 'tests'};
         const REJECT_VALUE = {error: 'error'};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'load', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({response: data})))};
-        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'load', service: () => (Promise.reject(REJECT_VALUE).then(data => ({response: data, status: 'ERROR'})))};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'save', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({response: data})))};
-        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'save', service: () => (Promise.reject(REJECT_VALUE).then(data => ({response: data, status: 'ERROR'})))};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'load', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({...data, __Focus__updateRequestStatus: {type: 'UPDATE_REQUEST', request:  'id'}})))};
+        const TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'load', service: () => (Promise.reject(REJECT_VALUE).then(data => ({...data, __Focus__updateRequestStatus: {type: 'UPDATE_REQUEST', request:  'id'}, __Focus__status: 'ERROR'})))};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_RESOLVE = {names: ['test'], type: 'save', service: () => (Promise.resolve(RESOLVE_VALUE).then(data => ({...data, __Focus__updateRequestStatus: {type: 'UPDATE_REQUEST', request:  'id'}})))};
+        const TEST_VALID_ACTION_SAVE_BUILDER_PARAMS_REJECT = {names: ['test'], type: 'save', service: () => (Promise.reject(REJECT_VALUE).then(data => ({...data,__Focus__updateRequestStatus: {type: 'UPDATE_REQUEST', request:  'id'},  __Focus__status: 'ERROR'})))};
 
         it('should return an object with types, creators, action', () => {
             const actionBuilded = actionBuilder(TEST_VALID_ACTION_LOAD_BUILDER_PARAMS_RESOLVE);
@@ -109,6 +109,8 @@ describe('The actionBuilder', () => {
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'REQUEST_SAVE_TEST', syncTypeForm: 'request', formKey: undefined, entityPath: 'test', _meta: {status: PENDING, loading: false, saving: true,  error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'RESPONSE_SAVE_TEST', payload: RESOLVE_VALUE,  formKey: undefined,syncTypeForm: 'response', entityPath: 'test', _meta: {status: SUCCESS, loading: false, saving: true, error: false}});
                 expect(dispatchSpy).to.have.been.called.calledWith({type: 'PUSH_MESSAGE', message:  {content: 'test.fields.saved', id:"msgId_1", type: 'success'}});
+                expect(dispatchSpy).to.have.been.called.calledWith({type: 'UPDATE_REQUEST', request:  'id'});
+
                 done();
             });
             it('when called with an unsuccessfull save service should call the error action creator', async done => {
