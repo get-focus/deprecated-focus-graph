@@ -40,7 +40,7 @@ const validFetchArgument = (args, dispatch) => {
   if(args.__Focus__updateRequestStatus){
     dispatch(args.__Focus__updateRequestStatus)
   } else {
-    console.warn(`The response needs properties __Focus__updateRequestStatus and ___Focus__status. You see the message because you removed it in your service. Please add it the return of the function of your service : ${args}`);
+    console.warn(`The response needs properties __Focus__updateRequestStatus and ___Focus__status. You see this message because you removed this properties the service you've written. Please add it the return of the function of your service : ${args}`);
   }
 }
 
