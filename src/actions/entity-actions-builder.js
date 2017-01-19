@@ -39,8 +39,8 @@ const _actionCreatorBuilder = (type, name, _meta, syncTypeForm) => (payload, for
 const validFetchArgument = (args, dispatch) => {
   if(args.__Focus__updateRequestStatus){
     dispatch(args.__Focus__updateRequestStatus)
-  }else {
-    console.warn(`Thank to give the parameter __Focus__updateRequestStatus and ___Focus__status in the then of you, now you just give : ${args}`)
+  } else {
+    console.warn(`The response needs properties __Focus__updateRequestStatus and ___Focus__status. You see the message because you removed it in your service. Please add it the return of the function of your service : ${args}`);
   }
 }
 
