@@ -18,7 +18,8 @@ const SmartSelectComponent = ({
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
     const {value} = masterDatumObject;
     const selectValues = values || value
-    return <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={rawInputValue} valid={valid}  {...otherProps}/>
+    const defaultValue = selectValues.find(element => element.isDefaultValue);
+    return <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={rawInputValue} valid={valid} defaultValue={defaultValue} {...otherProps}/>
 };
 
 SmartSelectComponent.contextTypes = {

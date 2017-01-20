@@ -8,17 +8,17 @@ const SelectComponent = ({
     onChange,
     name,
     valid,
-    error
+    error,
+    ...otherProps
 }) => {
     const wrappedOnChange = ({target:{value}}) => {
         onChange(value);
     }
     return (
-
         <div>
             <select name={name} onChange={wrappedOnChange} value={value}>
                 <option value={null}></option>
-                {values.map(({code, label}) => <option key={code} value={code}>{label}</option>)}
+                {values.map(({code, label, isDefaultValue}) => <option key={code} value={code} selected={isDefaultValue}>{label}</option>)}
             </select>
             {!valid && <b style={{color: 'red'}}>{error}</b>}
         </div>
