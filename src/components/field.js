@@ -42,7 +42,11 @@ class Field extends PureComponent {
 }
 Field.displayName = 'Field';
 Field.propTypes = {
-    error: PropTypes.string,
+    error: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+      PropTypes.boolean
+  ]),
     name: PropTypes.string.isRequired,
     multiple: PropTypes.bool
 };
