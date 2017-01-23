@@ -3,6 +3,7 @@ export const INPUT_BLUR = 'INPUT_BLUR';
 export const INPUT_ERROR = 'INPUT_ERROR';
 export const INPUT_BLUR_LIST = 'INPUT_BLUR_LIST';
 export const INPUT_ERROR_LIST = 'INPUT_ERROR_LIST';
+export const INPUT_ERROR_CHANGE_LIST = 'INPUT_ERROR_CHANGE_LIST';
 export const INPUT_CHANGE_ERROR = 'INPUT_CHANGE_ERROR';
 
 /**
@@ -24,6 +25,18 @@ export const inputErrorList = (formKey, fieldName, entityPath, error, propertyNa
     index
 });
 
+
+export const inputErrorChangeList = (formKey, fieldName, entityPath, error, propertyNameLine, index) => ({
+    type: INPUT_ERROR_CHANGE_LIST,
+    formKey,
+    fieldName,
+    entityPath,
+    error,
+    propertyNameLine,
+    index
+});
+
+//TODO faire un builder pour les cas des listes ou des champs seuls pour eviter la duplication
 /**
  * Input blur of a list field
  * @param  {string} formKey               the target form key
@@ -56,13 +69,16 @@ export const inputBlurList = (formKey, fieldName, entityPath, rawValue, property
  * @param  {object} rawValue    the new value
  * @return {object}            the action
  */
-export const inputChange = (formKey, fieldName, entityPath, rawValue) => ({
+export const inputChange = (formKey, fieldName, entityPath, rawValue, propertyNameLine, index) => ({
     type: INPUT_CHANGE,
     formKey,
     fieldName,
     entityPath,
-    rawValue
+    rawValue,
+    propertyNameLine,
+    index
 });
+
 
 /**
  * Input blur action

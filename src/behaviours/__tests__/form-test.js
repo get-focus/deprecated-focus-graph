@@ -107,7 +107,9 @@ describe('The form connect', () => {
                 formKey: 'testForm',
                 fieldName: 'firstName',
                 entityPath: 'user',
-                rawValue: 'new value'
+                rawValue: 'new value',
+                propertyNameLine: undefined,
+                index:undefined
 
             });
         });

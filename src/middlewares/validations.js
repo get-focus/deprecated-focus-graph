@@ -1,5 +1,5 @@
 import identity from 'lodash/identity';
-import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList, inputChangeError} from '../actions/input';
+import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList, inputChangeError, inputErrorChangeList} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
 import find from 'lodash/find';
@@ -32,7 +32,7 @@ export const __fake_focus_core_validation_function__ = (isRequired = false, vali
 
     //const rand = Math.random();
     //const isValid = rand > 0.5;
-    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || (isString(rawValue) && isEmpty(rawValue) )) ? `${name} is required` : isValid ? false : validationResult.errors.join(' ');
+    const error = isRequired && (isUndefined(rawValue) || isNull(rawValue) || (isString(rawValue) && isEmpty(rawValue) )) ? `${name}.required` : isValid ? false : validationResult.errors.join(' ');
     return {
         name,
         value: rawValue,
@@ -146,10 +146,10 @@ export const validateField = (definitions, domains , formKey, entityPath, fieldN
 }
 
 
-export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch)  => {
-  const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch, true);
+export const validateOnChangeField = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, propertyNameLineOnChange, indexOnChange)  => {
+  const validationResult = validateGlobal(definitions, domains , formKey, entityPath, fieldName, value, dispatch, true, propertyNameLineOnChange, indexOnChange);
   if (validationResult.isValid == false ) {
-      dispatch(inputChangeError(formKey, fieldName, entityPath));
+      if(!validationResult.isList) dispatch(inputChangeError(formKey, fieldName, entityPath)); //dispatch(inputError(formKey, fieldName, entityPath, validationResult.error || 'Required field'));
       return false;
   } else {
       return true;
@@ -158,7 +158,7 @@ export const validateOnChangeField = (definitions, domains , formKey, entityPath
 
 
 
-export const validateGlobal = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, isOnChange = false) => {
+export const validateGlobal = (definitions, domains , formKey, entityPath, fieldName, value, dispatch, isOnChange = false, propertyNameLineOnChange, indexOnChange) => {
   let {isRequired, domain: domainName, redirect} = get(definitions, `${entityPath}.${fieldName}`);
   let validationResult= {};
   if(isArray(value)){
@@ -167,23 +167,30 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
       if(!isArray(redirect)){
         throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: your redirect property should be an array in the definition of ${entityPath}.${fieldName}.`)
       }
-      if (isOnChange) {
-          return true;
-      }
+
       //TODO: feature redirect array
       const redirectDefinition = _getRedirectDefinition(redirect, definitions);
       // The value is an array and we iterate over it.
-      validationResult = {isValid : true};
-      value.map((element, index) => {
-        mapKeys(element, (value, propertyNameLine) => {
-          const domain = domains[redirectDefinition[propertyNameLine].domain];
-          const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName );
-          if(fieldValid === false){
-            validationResult.isValid = false;
-            validationResult.isList = true;
-          }
+      validationResult = {isValid : true, isList: true};
+      if(isOnChange){
+        const domain = domains[redirectDefinition[propertyNameLineOnChange].domain];
+        const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLineOnChange, formKey, value[indexOnChange][propertyNameLineOnChange], dispatch,indexOnChange, entityPath, fieldName ,isOnChange);
+        if(fieldValid === false){
+          validationResult.isValid = false;
+        }
+      }else {
+        value.map((element, index) => {
+          mapKeys(element, (value, propertyNameLine) => {
+            const domain = domains[redirectDefinition[propertyNameLine].domain];
+            const fieldValid = validateFieldForList(redirectDefinition, domain , propertyNameLine, formKey, value, dispatch,index, entityPath, fieldName ,isOnChange);
+            if(fieldValid === false){
+              validationResult.isValid = false;
+            }
+          })
+
         })
-      })
+      }
+
     }else {
       throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${entityPath}.${fieldName}`)
     }
@@ -216,14 +223,15 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
  * @param  {string} fieldNameList   the name of the field List
  * @return {boolean}             the field validation status
  */
-export const validateFieldForList = (definitions, domain, propertyNameLine, formKey, value, dispatch,index, entityPath, fieldNameList ) => {
+export const validateFieldForList = (definitions, domain, propertyNameLine, formKey, value, dispatch,index, entityPath, fieldNameList, onChange=false ) => {
 //  if(value === 1) throw new Error(JSON.stringify({ domain, propertyNameLine, formKey, value, index, entityPath, fieldNameList}))
     let validationResult= {};
     const {isRequired} = get(definitions, propertyNameLine);
     validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
     //if(value === 1) throw new Error(JSON.stringify(validationResult));
     if (!validationResult.isValid ){
-      dispatch(inputErrorList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
+      if(onChange ) dispatch(inputErrorChangeList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
+      else dispatch(inputErrorList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
       return false;
     } else {
       return true;
@@ -234,7 +242,7 @@ export const validateFieldForList = (definitions, domain, propertyNameLine, form
 /**
  * [description]
  * @param  {object} definitions      the application's definitions
- * @param  {[type]} domains          the application's domains
+ * @param  {[type]} domains          the application#'s domains
  * @param  {string} formKey          the form key
  * @param  {string} entityPath       entityPath where is the list
  * @param  {string} fieldNameList         the name of the field List

@@ -79,9 +79,9 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
             dispatch(destroyForm(formOptions.formKey));
         }
 
-        _onInputChange(name, entityPath, value) {
+        _onInputChange(name, entityPath, value, propertyNameLine, index) {
             const {store: {dispatch}} = this.context;
-            dispatch(inputChange(formOptions.formKey, name, entityPath, value));
+            dispatch(inputChange(formOptions.formKey, name, entityPath, value, propertyNameLine, index));
         }
         _onInputBlurList(name, entityPath, value, propertyNameLine, index){
             const {store: {dispatch}} = this.context;
