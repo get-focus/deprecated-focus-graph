@@ -35,7 +35,7 @@ class SmartSelectComponent extends Component {
 
         const currentValue = isUndefined(rawInputValue) ? get(defaultValue, 'code') : rawInputValue;
         return (
-            <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={currentValue} currentValue={currentValue}  valid={valid} defaultValue={defaultValue} {...otherProps}/>
+            <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={currentValue} currentValue={currentValue}  valid={valid} {...otherProps}/>
         )
     }
 
