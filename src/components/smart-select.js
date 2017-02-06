@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import reactReduxStoreShape from 'react-redux/lib/utils/storeShape';
 import find from 'lodash/find';
+import isEqual from 'lodash/isEqual';
 import compose from 'lodash/flowRight';
 import {connect as connectToState} from 'react-redux';
 
@@ -11,7 +12,7 @@ class SmartSelectComponent extends Component {
     componentWillReceiveProps(newProps){
         const selectValues = newProps.referenceList[0].value || [];
         const defaultValueSelect = this.props.defaultValue ?  this.props.defaultValue  : get(selectValues.find(element => element.isDefaultValue), 'code');
-        if(isUndefined(this.props.rawInputValue) && defaultValueSelect){
+        if(!isEqual(this.props.referenceList, newProps.referenceList) && isUndefined(this.props.rawInputValue) && defaultValueSelect){
             this.props.onChange(defaultValueSelect)
         }
     }

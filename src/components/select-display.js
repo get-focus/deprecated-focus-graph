@@ -25,7 +25,7 @@ const SelectComponent = ({
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
 
     const {value: values} = masterDatumObject;
-    const defaultValueSelect = values ? defaultValue ? defaultValue : get(values.find(element => element.isDefaultValue), 'code') : rawInputValue;
+    const defaultValueSelect = values ? (defaultValue ? defaultValue : get(values.find(element => element.isDefaultValue), 'code')) : rawInputValue;
 
     const label = renderLabelOfCode(values, rawInputValue || defaultValueSelect);
     return (
