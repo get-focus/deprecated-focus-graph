@@ -10,9 +10,9 @@ import {selectReferenceList} from '../store/create-store';
 class SmartSelectComponent extends Component {
     componentWillReceiveProps(newProps){
         const selectValues = newProps.referenceList[0].value || [];
-        const defaultValue = selectValues.find(element => element.isDefaultValue);
-        if(isUndefined(this.props.rawInputValue) && defaultValue){
-            this.props.onChange(defaultValue.code)
+        const defaultValueSelect = this.props.defaultValue ?  this.props.defaultValue  : get(selectValues.find(element => element.isDefaultValue), 'code');
+        if(isUndefined(this.props.rawInputValue) && defaultValueSelect){
+            this.props.onChange(defaultValueSelect)
         }
     }
     render(){
@@ -22,6 +22,7 @@ class SmartSelectComponent extends Component {
             formattedInputValue,
             onChange,
             error,
+            defaultValue,
             valid,
             values = [],
             referenceList =[],
@@ -31,9 +32,9 @@ class SmartSelectComponent extends Component {
         } = this.props;
 
         const selectValues = referenceList[0].value || [];
-        const defaultValue = selectValues.find(element => element.isDefaultValue);
+        const defaultValueSelect = defaultValue ?  defaultValue : get(selectValues.find(element => element.isDefaultValue), 'code');
 
-        const currentValue = isUndefined(rawInputValue) ? get(defaultValue, 'code') : rawInputValue;
+        const currentValue = isUndefined(rawInputValue) ? defaultValueSelect: rawInputValue;
         return (
             <SelectComponent onChange={onChange} error={error} formattedInputValue={formattedInputValue} name={name} values={selectValues} rawInputValue={currentValue} currentValue={currentValue}  valid={valid} {...otherProps}/>
         )

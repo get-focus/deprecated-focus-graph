@@ -16,6 +16,7 @@ const SelectComponent = ({
     formattedInputValue,
     onChange,
     error,
+    defaultValue,
     valid,
     masterDatum,
     ...otherProps
@@ -24,9 +25,9 @@ const SelectComponent = ({
     const masterDatumObject = find(masterData, {name: masterDatum}) || {value: []};
 
     const {value: values} = masterDatumObject;
-    const defaultValue = values ? values.find(element => element.isDefaultValue) : rawInputValue;
+    const defaultValueSelect = values ? defaultValue ? defaultValue : get(values.find(element => element.isDefaultValue), 'code') : rawInputValue;
 
-    const label = renderLabelOfCode(values, rawInputValue || get(defaultValue, 'code'));
+    const label = renderLabelOfCode(values, rawInputValue || defaultValueSelect);
     return (
         <div>
           {i18n.t(label)}
