@@ -3,10 +3,10 @@ import isUndefined from 'lodash/isUndefined';
 import isNaN from 'lodash/isNaN';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
-
+import i18n from 'i18next';
 //Dependency
 
-const translate = (str, params) => `${str}`;
+const translate = (str, params) => `${i18n.t(str)}`;
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 
