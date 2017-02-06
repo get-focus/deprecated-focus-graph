@@ -285,14 +285,16 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
         Object.keys(element).map((propertyNameLine)=> {
           const domain = domains[redirectDefinition[propertyNameLine].domain];
           const {formatter = defaultFormatter} = domain || {};
-          newElement[propertyNameLine] = formatter(element[propertyNameLine]);
+          const {unformatter = defaultFormatter} = domain || {};
+          newElement[propertyNameLine] = unformatter !== defaultFormatter ? unformatter(element[propertyNameLine]) : formatter(element[propertyNameLine]);
         })
         return newElement;
       })
       return value;
     }
     const {formatter = defaultFormatter} = domains[domainName] || {};
-    return formatter(value);
+    const {unformatter = defaultFormatter} = domains[domainName] || {};
+    return unformatter !== defaultFormatter ? unformatter(value) : formatter(value);
 };
 
 
