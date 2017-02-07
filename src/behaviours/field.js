@@ -34,7 +34,7 @@ const getListFieldMetadata = (propertyName, entityPath = {}, definitions, domain
 }
 
 const fieldForBuilder = (props, textOnly = false, multiple = false, list = false, fieldForListBuilder) => (propertyName, {FieldComponent = DefaultFieldComponent, redirectEntityPath, entityPath, onBlur: userDefinedOnBlur,onChange: userDefinedOnChange, ...options} = {}) => {
-    const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, editing, components} = props;
+    const {fields, definitions, domains, onInputChange, onInputBlur, entityPathArray, onInputBlurError, editing, components} = props;
     // Check if the form has multiple entityPath. If it's the case, then check if an entityPath for the field is provided
     // todo: souldn't it check if the property exists in both entity path from the array and throw an error if it is so.
     // Maybe the cost is too high.
@@ -48,7 +48,9 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         onInputChange(propertyName, entityPath, rawValue);
         if (userDefinedOnChange) userDefinedOnChange(rawValue);
     };
-
+    const onBlurError = error => {
+        onInputBlurError(propertyName, entityPath, error);
+    };
     // Construct the onBlur, with the validation if validateOnBlur has not been set to false in the domain
     const onBlur = () => {
         if (get(definitions, `${entityPath}.${propertyName}`).validateOnBlur !== false) onInputBlur(propertyName, entityPath, rawInputValue);
@@ -70,6 +72,7 @@ const fieldForBuilder = (props, textOnly = false, multiple = false, list = false
         name={propertyName}
         onBlur={onBlur}
         onChange={onChange}
+        onBlurError={onBlurError}
         metadata={{ ...components, ...metadata}}
         {...options}/>;
 }

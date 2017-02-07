@@ -2,7 +2,7 @@
 import React, {PureComponent, PropTypes} from 'react';
 import {connect as connectToStore} from './store';
 import {createForm, destroyForm, toggleFormEditing, validateForm, syncFormEntities, clearForm} from '../actions/form';
-import {inputChange, inputBlur, inputBlurList} from '../actions/input';
+import {inputChange, inputBlur, inputBlurList, inputError} from '../actions/input';
 import find from 'lodash/find';
 import compose from 'lodash/flowRight';
 import isString from 'lodash/isString';
@@ -56,6 +56,7 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
         constructor(props){
             super(props)
             this._onInputChange = this._onInputChange.bind(this);
+            this._onInputBlurError = this._onInputBlurError.bind(this);
             this._onInputBlur = this._onInputBlur.bind(this);
             this._onInputBlurList = this._onInputBlurList.bind(this);
             this._toggleEdit = this._toggleEdit.bind(this);
@@ -83,6 +84,10 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
             const {store: {dispatch}} = this.context;
             dispatch(inputChange(formOptions.formKey, name, entityPath, value, propertyNameLine, index));
         }
+        _onInputBlurError(name, entityPath, error) {
+            const {store: {dispatch}} = this.context;
+            dispatch(inputError(formOptions.formKey, name, entityPath, error));
+        }
         _onInputBlurList(name, entityPath, value, propertyNameLine, index){
             const {store: {dispatch}} = this.context;
             dispatch(inputBlurList(formOptions.formKey, name, entityPath, value, propertyNameLine, index));
@@ -109,6 +114,7 @@ const getExtendedComponent = (ComponentToConnect: ReactClass<{}>, formOptions: F
             return <ComponentToConnect {...otherProps} _behaviours={behaviours}
                 getUserInput={this.getUserInput}
                 onInputChange={this._onInputChange}
+                onInputBlurError={this._onInputBlurError}
                 onInputBlur={this._onInputBlur}
                 onInputBlurList={this._onInputBlurList}
                 toggleEdit={this._toggleEdit}
