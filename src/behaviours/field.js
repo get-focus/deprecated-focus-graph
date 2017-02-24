@@ -108,6 +108,7 @@ const fieldForListBuilder = (entityPathList, propertyNameList, multiple= false, 
             textOnly={textOnly}
             editing={editing}
             multiple={multiple}
+            index={index}
             name={propertyName}
             metadata={{ ...components, ...metadata}}
             onChange={onChange}
