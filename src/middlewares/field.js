@@ -1,6 +1,6 @@
 import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST} from '../actions/input';
 import {inputError, inputErrorList} from '../actions/input';
-import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateOnChangeField,validateFieldArray, formatValue,getRedirectEntityPath} from './validations'
+import {__fake_focus_core_validation_function__, filterNonValidatedFields, validateField, validateOnChangeField,validateFieldArray, formatDecoratorValue,getRedirectEntityPath} from './validations'
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES} from '../actions/form';
 import {setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
@@ -59,7 +59,8 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
             case INPUT_CHANGE:
             next({
                 ...action,
-                formattedValue: formatValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains)
+                formattedValue: formatDecoratorValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains, true),
+                rawInputValue: formatDecoratorValue(action.rawValue, action.entityPath, action.fieldName, definitions, domains, false)
             });
             validateOnChangeField(definitions, domains, action.formKey, action.entityPath, action.fieldName, action.rawValue,  store.dispatch, action.propertyNameLine, action.index);
             break;
@@ -78,7 +79,8 @@ const fieldMiddlewareBuilder = (translate = element => element) => {
                     }
                     return {
                         ...field,
-                        formattedInputValue: formatValue(field.rawInputValue, field.entityPath, field.name, definitions, domains),
+                        formattedInputValue: formatDecoratorValue(field.rawInputValue, field.entityPath, field.name, definitions, domains, true),
+                        rawInputValue: formatDecoratorValue(field.rawInputValue, field.entityPath, field.name, definitions, domains, false),
                         label: translate(field.entityPath + "." + field.name),
                         ..._redirectEntityPath
                     }

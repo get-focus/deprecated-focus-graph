@@ -274,7 +274,8 @@ export const validateFieldArray = (definitions, domains, formKey, entityPath, fi
  * @param  {object} domains       the domains object
  * @return {object}               the formatted value
  */
-export const formatValue = (value, entityPath, fieldName, definitions, domains) => {
+
+export const formatDecoratorValue = (value, entityPath, fieldName, definitions, domains, isDecorator) => {
     //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
     const entityDefinition = get(definitions, `${entityPath}`) || {};
     const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
@@ -284,15 +285,15 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
         const newElement ={};
         Object.keys(element).map((propertyNameLine)=> {
           const domain = domains[redirectDefinition[propertyNameLine].domain];
-          const {formatter = defaultFormatter} = domain || {};
-          newElement[propertyNameLine] = formatter(element[propertyNameLine]);
+          const {formatter = defaultFormatter, decorator = defaultFormatter} = domain || {};
+          newElement[propertyNameLine] = isDecorator ? decorator(formatter(element[propertyNameLine])) : formatter(element[propertyNameLine]);
         })
         return newElement;
       })
       return value;
     }
-    const {formatter = defaultFormatter} = domains[domainName] || {};
-    return formatter(value);
+    const {formatter = defaultFormatter, decorator = defaultFormatter} = domains[domainName] || {};
+    return isDecorator ? decorator(formatter(value)) : formatter(value);
 };
 
 
