@@ -1,6 +1,6 @@
 {
     "name": "focus-graph",
-    "version": "3.2.3",
+    "version": "3.2.4",
     "description": "Form, data behaviours",
     "main": "src/index.js",
     "author": "FOCUS <focus@kleegroup.com>",

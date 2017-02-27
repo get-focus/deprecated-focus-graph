@@ -107,7 +107,7 @@ const formMiddleware = store => next => action => {
               // Dispatch the SYNC_FORMS_ENTITY action
               store.dispatch(syncFormsEntity(entityPath, [...fields, ...fieldsOnlyInDefinitions ]));
               [...fields].reduce((formValid, field) => {
-                 const fieldValid = validateOnChangeField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
+                 const fieldValid = validateField(definitions, domains, action.formKey, field.entityPath, field.name, field.rawInputValue, store.dispatch);
                  if (!fieldValid) formValid = false;
                  return formValid;
                }, true);
