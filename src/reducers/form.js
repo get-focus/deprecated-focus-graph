@@ -187,7 +187,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                             acc.push(valid);
                                             return acc;
                                           }, [])
-                                          : field.valid,
+                                          : true,
                                   rawValid: action.propertyNameLine ? tabRawValid.reduce((acc, rawValid, index) => {
 
                                     if(!rawValid[action.propertyNameLine] && index === action.index ){
@@ -196,7 +196,7 @@ const forms = (state: Array<FormStateType> = [], action) => {
                                     }
                                     acc.push(rawValid);
                                     return acc;
-                                  }, []) :  field.rawValid
+                                }, []) :  true
                               };
                           })
                       } : {})

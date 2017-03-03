@@ -2,16 +2,7 @@ import identity from 'lodash/identity';
 import {INPUT_CHANGE, INPUT_BLUR, INPUT_BLUR_LIST,inputError, inputErrorList, inputChangeError, inputErrorChangeList} from '../actions/input';
 import {CREATE_FORM, VALIDATE_FORM, SYNC_FORMS_ENTITY, SYNC_FORM_ENTITIES, setFormToSaving} from '../actions/form';
 import {PENDING} from '../actions/entity-actions-builder';
-import find from 'lodash/find';
-import get from 'lodash/get';
-import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
-import isEmpty from 'lodash/isEmpty';
-import mapKeys from 'lodash/mapKeys';
-import isArray from 'lodash/isArray';
-import isString from 'lodash/isString';
-import omit from 'lodash/omit';
-import map from 'lodash/map';
+import {find, get, isUndefined, isNull, isEmpty, mapKeys, isArray, isString, omit,map} from 'lodash';
 import validate from './validate';
 /**
  * Default field formatter. Defaults to the identity function
@@ -25,7 +16,7 @@ const MIDDLEWARES_FORM_VALIDATION = 'MIDDLEWARES_FORM_VALIDATION';
 
 // THIS IS A MOCK FUNCTION THAT MUST BE REPLACED BY THE FOCUS CORE VALIDATION
 // TODO : replace this with the focus core function
-export const __fake_focus_core_validation_function__ = (isRequired = false, validators = [], name, rawValue) => {
+export const validationByDomain = (isRequired = false, validators = [], name, rawValue) => {
 
     const validationResult =  validate({name, value: rawValue}, validators);
     const isValid = validationResult.isValid;
@@ -201,7 +192,7 @@ export const validateGlobal = (definitions, domains , formKey, entityPath, field
     if(!domain){
       throw new Error(`${MIDDLEWARES_FIELD_VALIDATION}: Your field ${fieldName} in the entity ${entityPath} don't have a domain, you may have an array field which have a **redirect** property in it.`)
     }
-    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, fieldName, value);
+    validationResult = validationByDomain(isRequired, domain.validators, fieldName, value);
   }else {
     validationResult = isRequired ? {isValid: false} : {isValid: true};
   }
@@ -227,7 +218,7 @@ export const validateFieldForList = (definitions, domain, propertyNameLine, form
 //  if(value === 1) throw new Error(JSON.stringify({ domain, propertyNameLine, formKey, value, index, entityPath, fieldNameList}))
     let validationResult= {};
     const {isRequired} = get(definitions, propertyNameLine);
-    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
+    validationResult = validationByDomain(isRequired, domain.validators, propertyNameLine, value);
     //if(value === 1) throw new Error(JSON.stringify(validationResult));
     if (!validationResult.isValid ){
       if(onChange ) dispatch(inputErrorChangeList(formKey, fieldNameList , entityPath, validationResult.error, propertyNameLine , index));
@@ -260,7 +251,7 @@ export const validateFieldArray = (definitions, domains, formKey, entityPath, fi
     const definitionRedirect = get(definitions, `${redirect}.${propertyNameLine}`);
     const isRequired = definitionRedirect.isRequired;
     const domain = domains[definitionRedirect.domain];
-    validationResult = __fake_focus_core_validation_function__(isRequired, domain.validators, propertyNameLine, value);
+    validationResult = validationByDomain(isRequired, domain.validators, propertyNameLine, value);
   }else {
     throw new Error(`${MIDDLEWARES_FIELD_VALIDATION} : You must provide a "redirect" defintions to your list field : ${fieldNameList}`)
   }
@@ -283,7 +274,8 @@ export const validateFieldArray = (definitions, domains, formKey, entityPath, fi
  * @param  {object} domains       the domains object
  * @return {object}               the formatted value
  */
-export const formatValue = (value, entityPath, fieldName, definitions, domains) => {
+
+export const formatDecoratorValue = (value, entityPath, fieldName, definitions, domains, isDecorator) => {
     //To Do ajouter la cas ou la entityDefinition est en required ! Tableau ?
     const entityDefinition = get(definitions, `${entityPath}`) || {};
     const {domain: domainName = {} , redirect} = entityDefinition[fieldName] || {};
@@ -293,15 +285,15 @@ export const formatValue = (value, entityPath, fieldName, definitions, domains) 
         const newElement ={};
         Object.keys(element).map((propertyNameLine)=> {
           const domain = domains[redirectDefinition[propertyNameLine].domain];
-          const {formatter = defaultFormatter} = domain || {};
-          newElement[propertyNameLine] = formatter(element[propertyNameLine]);
+          const {formatter = defaultFormatter, decorator = defaultFormatter} = domain || {};
+          newElement[propertyNameLine] = isDecorator ? decorator(formatter(element[propertyNameLine])) : formatter(element[propertyNameLine]);
         })
         return newElement;
       })
       return value;
     }
-    const {formatter = defaultFormatter} = domains[domainName] || {};
-    return formatter(value);
+    const {formatter = defaultFormatter, decorator = defaultFormatter} = domains[domainName] || {};
+    return isDecorator ? decorator(formatter(value)) : formatter(value);
 };
 
 
