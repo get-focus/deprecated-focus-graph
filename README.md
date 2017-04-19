@@ -60,4 +60,4 @@ Provider(informationsToPassToTheComponentsTree) => Tree => connectToInformations
 
 // todo:
 
-- [] Check the Provider chain presence (form needs metadata)
+- [ ] Check the Provider chain presence (form needs metadata)
